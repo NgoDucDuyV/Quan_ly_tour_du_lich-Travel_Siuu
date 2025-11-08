@@ -26,8 +26,8 @@
             <p class="relative text-sm md:text-lg leading-relaxed mb-6 text-shadow-lg md:mb-8 z-[1]">
                 đến với <strong>Quản lý tour du lịch Travel_Siuu</strong> – hệ thống quản trị du lịch thông minh và mã nguồn mở. Hỗ trợ quản lý tour, khách hàng, lịch trình và điểm đến ở một nơi duy nhất, <strong>nhanh chóng và dễ dàng</strong>.
             </p>
-            <div class="mt-auto flex justify-center md:justify-start md:static absolute bottom-0 right-0 z-[0]">
-                <img src="<?= BASE_URL ?>/assets/Img/imgelogin.png" alt="Travel illustration" class="w-full md:max-w-full max-w-[200px] h-auto object-contain">
+            <div class="mt-auto flex justify-center md:justify-start">
+                <img src="<?= BASE_URL ?>/assets/Img/imgelogin.png" alt="Travel illustration" class="w-full md:max-w-full max-w-[300px] h-auto object-contain">
             </div>
         </div>
 
@@ -49,7 +49,7 @@
                 ?>
             </div>
             <form action="#" method="post" class="w-full *:mb-5">
-                <div class="mb-4 md:mb-6">
+                <div class="mb-6 md:mb-10">
                     <label for="useremail" class="block text-gray-700 text-sm font-bold mb-2">* Email</label>
                     <input type="email" name="useremail" placeholder="Email Đăng Nhập"
                         class="appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-blue-50 border-blue-200">
