@@ -63,7 +63,7 @@
 
                 <button type="submit"
                     class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded w-full transition duration-300">
-                    Signin update
+                    Signin
                 </button>
             </form>
         </div>
