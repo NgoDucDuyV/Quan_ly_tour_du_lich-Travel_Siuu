@@ -2,7 +2,7 @@
 $act = isset($_GET['act']) ? $_GET['act'] : '/';
 
 ob_start();
-match ($act) {
+echo match ($act) {
     '/' => 'anh yeu em',
     default => 'anh yeu em',
 };

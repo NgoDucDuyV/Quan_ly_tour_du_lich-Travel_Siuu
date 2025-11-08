@@ -5,7 +5,7 @@
 
 
 
-    $mode = isset($_GET['mode']) ? $_GET['mode'] : 'client';
+    $mode = isset($_GET['mode']) ? $_GET['mode'] : 'admin';
     ob_start();
     switch ($mode) {
         case 'client': {
@@ -29,10 +29,20 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>:Quản lý tour du lịch - Travel_Siuu</title>
-        <!-- CSS gốc của bạn (luôn load TRƯỚC Tailwind) -->
-        <link rel="stylesheet" href="./assets/css/css.css" />
+        <!-- Fonts + Icons -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet" />
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
-        <!-- Cấu hình Tailwind (tắt reset để không ảnh hưởng CSS gốc) -->
+        <!-- CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="./assets/Css/style.css" />
+
+        <!-- JS Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             tailwind = {
                 config: {
@@ -50,11 +60,9 @@
                 },
             };
         </script>
-        <script src="https://cdn.tailwindcss.com"></script>
-
     </head>
 
-    <body class="font-body text-[16px] bg-white text-gray-800">
+    <body class="bg-gray-100 min-h-screen">
         <?php echo $content_views; ?>
     </body>
 

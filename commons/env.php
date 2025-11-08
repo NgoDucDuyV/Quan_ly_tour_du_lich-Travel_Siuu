@@ -2,8 +2,8 @@
 // session_start();
 // Biến môi trường, dùng chung toàn hệ thống
 // Khai báo dưới dạng HẰNG SỐ để không phải dùng $GLOBALS
-$_SESSION['BASE_URL'] = 'http://localhost/travel_vivu/';
-define('BASE_URL', 'http://localhost/travel_vivu/');
+$_SESSION['BASE_URL'] = 'http://localhost/Quan_ly_tour_du_lich-Travel_Siuu/';
+define('BASE_URL', 'http://localhost/Quan_ly_tour_du_lich-Travel_Siuu/');
 define('Views_Admin', './views/Admin/');
 define('Views_Client', './views/Client/');
 define('Views_Router', './router/');
@@ -15,7 +15,6 @@ define('CSSDuyDumStomaty', BASE_URL . '/assets/css/CssDuyDumStomaty/');
 
 define('Js_Admin', BASE_URL . '/assets/js/Js_Admin/');
 define('Js_Client', BASE_URL . '/assets/js/Js_Client/');
-
 
 define('IMAGECHUNG', BASE_URL . '/assets/upload/image_chung/');
 define('Image_Admin', BASE_URL . '/assets/upload/image_Admin/');
