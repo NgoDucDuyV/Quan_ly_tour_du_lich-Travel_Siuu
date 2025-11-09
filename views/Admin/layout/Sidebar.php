@@ -55,7 +55,7 @@
                 <li class="flex items-center justify-between bg-white px-3 py-2 rounded">
                     <div>
                         <div class="text-sm font-medium">Tour theo yêu cầu</div>
-                        <div class="text-xs text-slate-500">Customized tour updata</div>
+                        <div class="text-xs text-slate-500">Customized tour</div>
                     </div>
                     <div class="text-slate-500 text-sm">5</div>
                 </li>
