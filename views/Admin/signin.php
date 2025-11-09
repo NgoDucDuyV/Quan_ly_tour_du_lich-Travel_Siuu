@@ -37,7 +37,7 @@
                 <img src="<?= BASE_URL ?>/assets/Img/logo_black.png" alt="adminVIVU Logo" class="max-w-50 w-full  mx-auto">
             </div>
 
-            <div id="errorlogin" class="" role="alert">
+            <div id="errorlogin" class="w-full" role="alert">
                 <?php if (isset($_SESSION['success'])): ?>
                     <p class="font-medium text-sm bg-lime-100 border border-lime-400 text-lime-800 px-4 py-3 rounded relative mb-6">
                         <?= htmlspecialchars($_SESSION['success']) ?>
