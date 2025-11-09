@@ -5,34 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sidebar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 </head>
 
 <body>
     <!-- Sidebar -->
-    <aside style="scrollbar-width:none; -ms-overflow-style:none;" class="w-72 bg-white border-r p-4 md:sticky absolute top-0 bottom-0 md:top-0 md:w-[300px] md:min-w-[300px] w-[50px] hover:w-[300px] overflow-hidden z-[1] transition-all duration-150 ease-in-out
-        md:h-[100vh] overflow-y-auto">
-        <div class="mb-6 flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-500 text-white rounded flex items-center justify-center font-bold">DT</div>
-            <div>
+    <aside style="scrollbar-width:none; -ms-overflow-style:none;" class="flex flex-col items-start bg-white border-r shadow-xl py-4 px-2 sticky top-0 min-w-[300px] overflow-hidden z-[1] transition-all duration-150 ease-in-out group
+        md:h-[100vh] overflow-y-auto ">
+        <div class="mb-6 flex gap-3">
+            <div class="w-10 min-w-10 h-10 bg-indigo-500 text-white rounded flex items-center justify-center font-bold">DT</div>
+            <div class="hidden md:inline hidden group-hover:inline">
                 <h1 class="text-lg font-semibold">Điều hành tour</h1>
                 <p class="text-sm text-slate-500">ADMIN dashboard</p>
             </div>
         </div>
 
         <nav class="space-y-2 text-sm">
-            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
-                <span>📁</span> Danh mục tour
-            </button>
-            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
-                <span>🧾</span> Quản lý booking
-            </button>
-            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
-                <span>⚙️</span> Phiên bản & Khuyến mãi
-            </button>
-            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 flex items-center gap-2">
-                <span>🔗</span> Mã QR / Link đặt tour
-            </button>
+            <a href="<?= BASE_URL ?>?act=category"
+                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
+                <span>📁</span>
+                <span class="">Danh mục tour</span>
+            </a>
+
+            <a href="<?= BASE_URL ?>?act=booking"
+                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
+                <span>🧾</span>
+                <span class="">Quản lý booking</span>
+            </a>
+
+            <a href="<?= BASE_URL ?>?act=promotion"
+                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
+                <span>⚙️</span>
+                <span class="">Phiên bản & khuyến mãi</span>
+            </a>
+
+            <a href="<?= BASE_URL ?>?act=qrlink"
+                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
+                <span>🔗</span>
+                <span class="hidden md:inline">Mã QR / Link đặt tour</span>
+            </a>
         </nav>
 
         <div class="mt-6">
