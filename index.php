@@ -3,6 +3,14 @@
     require_once __DIR__ . '/commons/env.php';
     require_once __DIR__ . '/commons/function.php';
 
+    // admin model
+    require_once __DIR__ . '/models/AdminModel.php';
+
+    // admin Controller
+    require_once __DIR__ . '/controllers/AdminController.php';
+    require_once __DIR__ . '/controllers/LayoutController.php';
+    require_once __DIR__ . '/controllers/BookingController.php';
+
 
 
     $mode = isset($_GET['mode']) ? $_GET['mode'] : 'admin';
@@ -32,6 +40,7 @@
         <!-- Fonts + Icons -->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet" />
         <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+        <link href='https://cdn.boxicons.com/3.0.3/fonts/brands/boxicons-brands.min.css' rel='stylesheet'>
 
         <!-- CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -62,7 +71,7 @@
         </script>
     </head>
 
-    <body class="bg-gray-100 min-h-screen">
+    <body class="bg-gray-100 min-h-screen overflow-x-hidden">
         <?php echo $content_views; ?>
     </body>
 

@@ -3,7 +3,7 @@ $act = isset($_GET['act']) ? $_GET['act'] : '/';
 
 ob_start();
 echo match ($act) {
-    '/' => 'anh yeu em',
+    '/' => 'client',
     default => 'anh yeu em',
 };
 $content_views =  ob_get_clean();
