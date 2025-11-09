@@ -4,7 +4,7 @@ $act = isset($_GET['act']) ? $_GET['act'] : '/';
 ob_start();
 echo match ($act) {
     '/' => 'client',
-    default => 'anh yeu em',
+    default => 'client',
 };
 $content_views =  ob_get_clean();
 // var_dump((new UserLoginSiginController())->ShowFromLogin());
