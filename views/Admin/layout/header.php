@@ -2,7 +2,7 @@
     <!-- Bên trái -->
     <div class="flex items-center gap-2 sm:gap-3">
         <button id="btnToggleSidebar" class="p-2 flex item-center justify-center rounded hover:bg-slate-100 text-lg">
-            <i class='bx  bx-menu'></i>
+            <i data-lucide="menu"></i>
         </button>
         <h1 class="text-base sm:text-xl font-semibold">Điều hành tour - ADMIN</h1>
     </div>
