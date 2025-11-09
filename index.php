@@ -46,6 +46,8 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="./assets/Css/style.css" />
 
+        <!-- icon  -->
+        <script src="https://unpkg.com/lucide@latest"></script>
         <!-- JS Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -74,5 +76,8 @@
     <body class="bg-gray-100 w-[100wh] h-[100vh]">
         <?php echo $content_views; ?>
     </body>
+    <script>
+        lucide.createIcons();
+    </script>
 
     </html>
