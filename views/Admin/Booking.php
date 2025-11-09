@@ -265,3 +265,62 @@
             </form>
         </div>
     </div>
+    <script>
+        // Simple UI interactions (demo purposes)
+        function openTourDetail(btn) {
+            // find the closest article and extract data (demo static)
+            const article = btn.closest('article');
+            document.getElementById('detailTitle').innerText = article.querySelector('h4').innerText;
+            document.getElementById('detailPrice').innerText = 'Giá cơ bản: ' + (article.querySelector('.font-semibold')?.innerText || '-');
+            document.getElementById('detailThumb').src = article.querySelector('img').src.replace('80x60', '400x300');
+            showTab('info');
+        }
+
+        function cloneTour(btn) {
+            alert('Clone tour: chức năng demo — sẽ sao chép tour để tạo tour mới (thực hiện ở backend).');
+        }
+
+        function generateQuote(btn) {
+            alert('Báo giá nhanh: mở form chọn số khách và xuất PDF/Email (demo).');
+        }
+
+        function showTab(name) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById('tab-' + name).classList.remove('hidden');
+        }
+
+        document.getElementById('btnNewBooking').addEventListener('click', () => {
+            document.getElementById('modalNewBooking').classList.remove('hidden');
+            document.getElementById('modalNewBooking').classList.add('flex');
+        });
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        document.getElementById('formBooking').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(this).entries());
+            // simple insert to table (demo only)
+            const tbody = document.getElementById('bookingTable');
+            const newId = 'BKG-' + String(Math.floor(Math.random() * 900 + 100));
+            const tr = document.createElement('tr');
+            tr.className = 'border-b hover:bg-slate-50';
+            tr.innerHTML = `\n        <td class="p-2">${newId}</td>\n        <td class="p-2">${data.customer}</td>\n        <td class="p-2">${data.tour}</td>\n        <td class="p-2">${data.date}</td>\n        <td class="p-2">${data.qty}</td>\n        <td class="p-2"><span class="px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-700">Chờ xác nhận</span></td>\n        <td class="p-2"><div class="flex gap-2">\n          <button class="text-xs px-2 py-1 border rounded" onclick="openEditBooking('${newId}')">Sửa</button>\n          <button class="text-xs px-2 py-1 border rounded" onclick="changeStatus('${newId}','Đã cọc')">Đã cọc</button>\n        </div></td>\n      `;
+            tbody.prepend(tr);
+            // update total
+            document.getElementById('totalBookings').innerText = parseInt(document.getElementById('totalBookings').innerText) + 1;
+            closeModal('modalNewBooking');
+            alert('Booking được tạo (demo). Bạn có thể xuất báo giá hoặc gửi email ở bước tiếp theo.');
+        });
+
+        function openEditBooking(id) {
+            alert('Mở form chỉnh sửa cho ' + id + ' (demo).');
+        }
+
+        function changeStatus(id, status) {
+            alert('Thay đổi trạng thái ' + id + ' -> ' + status + ' (demo).');
+        }
+    </script>

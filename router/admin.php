@@ -46,12 +46,10 @@ if ($act == '/' || $act == 'showformSigninAdmin') {
 }
 ?>
 <?= (new LayoutController())->HeaderController() ?>
-<main class="contentAdmin flex flex-row relative md:p-0 ">
+<main class="contentAdmin flex flex-row relative md:p-0 z-[0]">
     <?= (new LayoutController())->SideberController() ?>
-    <div class="md:p-0 pl-[50px]">
+    <div class="flex-1">
         <?= $content_views; ?>
     </div>
 </main>
 <?= (new LayoutController())->FooterController() ?>
-<?php exit; ?>
-?>
