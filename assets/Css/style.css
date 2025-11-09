@@ -20,6 +20,10 @@ a:hover {
     text-decoration: underline;
 }
 
+button{
+    border:none;
+}
+
 /* Container chung */
 .container {
     width: 90%;
@@ -35,20 +39,6 @@ h1, h2, h3, h4, h5 {
 }
 p {
     margin-bottom: 1rem;
-}
-
-/* Nút cơ bản */
-    button, .btn {
-    padding: 8px 14px;
-    background-color: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-button:hover, .btn:hover {
-    background-color: #1e40af;
 }
 
 /* Input / Form */
