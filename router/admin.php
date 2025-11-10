@@ -1,5 +1,5 @@
 <?php
-$act = isset($_GET['act']) ? $_GET['act'] : '/';
+$act = isset($_GET['act']) ? $_GET['act'] : 'showformSigninAdmin';
 function requireAdmin()
 {
     if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_role'] !== 'admin') {
@@ -15,34 +15,49 @@ function requireGuide()
         exit;
     }
 }
+
+function checkSignin()
+{
+    if (isset($_SESSION['admin_logged'])) {
+        header("Location: " . BASE_URL . "?mode=admin&act=dashboard");
+        exit;
+    }
+}
 ob_start();
 echo match ($act) {
     '/' => (function () {
-        require_once "./views/Admin/signin.php";
+        header("Location: " . BASE_URL . "??mode=admin&act=showformSigninAdmin");
+        exit;
     })(),
     'showformSigninAdmin' => (function () {
-        require_once "./views/Admin/signin.php";
+        checkSignin();
+        (new AuthController)->showformSigninAdmin();
     })(),
     'signin' => (function () {
         $requestData = json_decode(file_get_contents("php://input"), true);
-        (new AdminController())->signin($requestData);
+        (new AuthController())->signin($requestData);
         exit;
     })(),
-    'dashboard' => (function () {
-        // kiểm tra session
-        if (!isset($_SESSION['admin_logged'])) {
-            header("Location: " . BASE_URL . "?mode=admin&act=/");
-            exit;
-        }
 
-        // tùy role hiển thị dashboard
-        if ($_SESSION['admin_role'] === 'admin') {
-            require_once "./views/Admin/dashboard.php";
-        } elseif ($_SESSION['admin_role'] === 'guide') {
-            require_once "./views/Admin/guide_dashboard.php";
-        } else {
-            echo "Không có quyền truy cập!";
+    'dashboard' => (function () {
+        switch ($_SESSION['admin_role']) {
+            case 'admin': {
+                    header("Location: " . BASE_URL . "??mode=admin&act=booking");
+                    exit;
+                    break;
+                }
+            case 'guide': {
+                    header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
+                    exit;
+                    break;
+                }
+            default:
+                break;
         }
+    })(),
+    'logout' => (function () {
+        session_destroy();
+        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
         exit;
     })(),
     'booking' => (function () {
@@ -52,7 +67,13 @@ echo match ($act) {
     '404' => (function () {
         require_once "./views/Admin/common/404.php";
     })(),
+
+
     // Hướng dẫn viên
+    'homeguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/homegiude.php";
+    })(),
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
         exit;
@@ -60,21 +81,22 @@ echo match ($act) {
 };
 $content_views = ob_get_clean();
 
+// Xác định layout theo role
+$layoutController = null;
+if (isset($_SESSION['admin_logged'])) {
+    if ($_SESSION['admin_role'] === 'admin') {
+        $layoutController = new AdminLayoutController();
+    } else if ($_SESSION['admin_role'] === 'guide') {
+        $layoutController = new GuideLayoutController();
+    }
+}
+// chuyển hướng đến trang 404
 if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
     echo $content_views;
-    exit;
+    return;
 }
 
 ?>
-<?= (new LayoutController())->HeaderController() ?>
-<main class="contentAdmin flex flex-row relative md:p-0 z-[0]">
-    <?= (new LayoutController())->SideberController() ?>
-    <div class="flex-1">
-        <?= $content_views; ?>
-    </div>
-</main>
-<?= (new LayoutController())->FooterController() ?>
-
 <?php if ($layoutController): ?>
     <?= $layoutController->Header() ?>
     <main class="contentAdmin flex flex-row relative md:p-0 z-[0]">

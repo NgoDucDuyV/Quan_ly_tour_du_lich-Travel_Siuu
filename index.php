@@ -5,11 +5,14 @@
 
     // admin model
     require_once __DIR__ . '/models/AdminModel.php';
+    require_once __DIR__ . '/models/AuthModel.php';
 
     // admin Controller
-    require_once __DIR__ . '/controllers/AdminController.php';
-    require_once __DIR__ . '/controllers/LayoutController.php';
+    require_once __DIR__ . '/controllers//AuthController.php';
     require_once __DIR__ . '/controllers/BookingController.php';
+
+    require_once __DIR__ . '/controllers/AdminLayoutController.php';
+    require_once __DIR__ . '/controllers/GuideLayoutController.php';
 
 
 
@@ -64,7 +67,7 @@
                         extend: {
                             fontFamily: {
                                 title: ['"Poppins"', 'Segoe UI', 'Roboto', 'sans-serif'],
-                                body: ['"Open Sans"', 'Segoe UI', 'Roboto', 'sans-serif'],
+                                body: ['Roboto, sans-serif'],
                             },
                             colors: {
                                 color: "#ffffff",
@@ -102,14 +105,14 @@
                 },
             };
         </script>
-
+        <script>
+            lucide.createIcons();
+            const BASE_URL = '<?= BASE_URL ?>';
+        </script>
     </head>
 
-    <body class="bg-gray-100 w-[100wh] h-[100vh]">
+    <body class="bg-gray-100 flex flex-col w-[100wh] h-[100vh]">
         <?php echo $content_views; ?>
     </body>
-    <script>
-        lucide.createIcons();
-    </script>
 
     </html>

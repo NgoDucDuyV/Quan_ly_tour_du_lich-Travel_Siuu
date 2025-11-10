@@ -21,7 +21,7 @@
         </div>
 
         <nav class="space-y-2 text-sm">
-            <a href="<?= BASE_URL ?>?act=category"
+            <a href="<?= BASE_URL ?>?mode=admin&act=addtour"
                 class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
                 <span>📁</span>
                 <span class="">Danh mục tour</span>
