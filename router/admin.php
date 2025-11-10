@@ -1,5 +1,20 @@
 <?php
 $act = isset($_GET['act']) ? $_GET['act'] : '/';
+function requireAdmin()
+{
+    if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_role'] !== 'admin') {
+        header("Location: " . BASE_URL . "?mode=admin&act=404");
+        exit;
+    }
+}
+
+function requireGuide()
+{
+    if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_role'] !== 'guide') {
+        header("Location: " . BASE_URL . "?mode=admin&act=404");
+        exit;
+    }
+}
 ob_start();
 echo match ($act) {
     '/' => (function () {
@@ -13,10 +28,10 @@ echo match ($act) {
         (new AdminController())->signin($requestData);
         exit;
     })(),
-    'dashboard' => function () {
+    'dashboard' => (function () {
         // kiểm tra session
         if (!isset($_SESSION['admin_logged'])) {
-            header("Location: index.php?mode=admin&act=/");
+            header("Location: " . BASE_URL . "?mode=admin&act=/");
             exit;
         }
 
@@ -28,22 +43,28 @@ echo match ($act) {
         } else {
             echo "Không có quyền truy cập!";
         }
-    },
-    'demo' => (function () {
-        echo 'anh yeu em';
+        exit;
     })(),
-    default => 'admin',
-
     'booking' => (function () {
+        requireAdmin();
         echo (new BookingController)->BookingController();
+    })(),
+    '404' => (function () {
+        require_once "./views/Admin/common/404.php";
+    })(),
+    // Hướng dẫn viên
+    default => (function () {
+        header("Location: " . BASE_URL . "?mode=admin&act=404");
+        exit;
     })(),
 };
 $content_views = ob_get_clean();
 
-if ($act == '/' || $act == 'showformSigninAdmin') {
+if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
     echo $content_views;
     exit;
 }
+
 ?>
 <?= (new LayoutController())->HeaderController() ?>
 <main class="contentAdmin flex flex-row relative md:p-0 z-[0]">
@@ -53,3 +74,16 @@ if ($act == '/' || $act == 'showformSigninAdmin') {
     </div>
 </main>
 <?= (new LayoutController())->FooterController() ?>
+
+<?php if ($layoutController): ?>
+    <?= $layoutController->Header() ?>
+    <main class="contentAdmin flex flex-row relative md:p-0 z-[0]">
+        <?= $layoutController->Sidebar() ?>
+        <div class="flex-1">
+            <?= $content_views ?>
+        </div>
+    </main>
+    <?= $layoutController->Footer() ?>
+<?php else: ?>
+    <?= $content_views ?>
+<?php endif; ?>

@@ -1,17 +1,94 @@
-<header class="flex flex-wrap items-center justify-between w-full bg-white p-3 sm:p-4 border-b shadow-sm relative z-[1]">
-    <!-- Bên trái -->
-    <div class="flex items-center gap-2 sm:gap-3">
-        <button id="btnToggleSidebar" class="p-2 flex item-center justify-center rounded hover:bg-slate-100 text-lg">
-            <i data-lucide="menu"></i>
-        </button>
-        <h1 class="text-base sm:text-xl font-semibold">Điều hành tour - ADMIN</h1>
-    </div>
+<!DOCTYPE html>
+<html lang="vi">
 
-    <!-- Bên phải -->
-    <div class="flex items-center gap-2 sm:gap-4 mt-2 sm:mt-0 w-full sm:w-auto justify-between sm:justify-end">
-        <div class="text-xs sm:text-sm text-slate-500">Xin chào, Admin</div>
-        <button class="px-2 sm:px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base">
-            Đăng xuất
-        </button>
-    </div>
-</header>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navbar - Quản Trị Tour</title>
+</head>
+
+<body class="bg-gray-100">
+
+    <header class="bg-gray-100 relative z-[1]">
+        <nav class="bg-white shadow-md">
+            <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+
+                    <!-- Trái -->
+                    <div class="flex items-center space-x-8">
+                        <button class="text-gray-500 hover:text-gray-700">
+                            <i data-lucide="menu" class="w-6 h-6"></i>
+                        </button>
+
+                        <div class="hidden md:flex space-x-8">
+                            <a href="#" class="flex items-center text-gray-700 hover:text-blue-600 font-medium">
+                                <i data-lucide="home" class="w-5 h-5 mr-2"></i>
+                                <span>Trang Chủ</span>
+                            </a>
+
+                            <a href="#" class="flex items-center text-gray-700 hover:text-blue-600 font-medium">
+                                <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
+                                <span>Giới Thiệu</span>
+                            </a>
+
+                            <a href="#" class="flex items-center text-gray-700 hover:text-blue-600 font-medium">
+                                <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
+                                <span>Danh Mục</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Phải -->
+                    <div class="flex items-center space-x-4">
+
+                        <!-- Thông báo -->
+                        <div class="relative">
+                            <i data-lucide="bell" class="w-6 h-6 text-gray-500"></i>
+                            <span
+                                class="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                1
+                            </span>
+                        </div>
+
+                        <!-- Avatar + menu -->
+                        <div class="relative group">
+                            <div class="flex items-center space-x-3 cursor-pointer select-none">
+                                <div class="">
+                                    <p class="text-sm font-semibold text-gray-900">Ngô Đức Duy</p>
+                                    <p class="text-xs text-gray-500">(Quản Trị Viên Cấp Cao)</p>
+                                </div>
+                                <img
+                                    class="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                    src="https://via.placeholder.com/40/007bff/ffffff?text=NDD"
+                                    alt="Ảnh đại diện">
+                            </div>
+
+                            <!-- Menu user -->
+                            <div
+                                class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out z-50">
+                                <ul class="py-2 text-sm text-gray-700">
+                                    <li>
+                                        <a href="#"
+                                            onclick="return confirm('Bạn có chắc muốn đăng xuất?')"
+                                            class="flex items-center px-4 py-2 hover:bg-gray-100">
+                                            <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Đăng Xuất
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#"
+                                            class="flex items-center px-4 py-2 hover:bg-gray-100">
+                                            <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Cài Đặt
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+
+</html>
