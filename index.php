@@ -58,7 +58,7 @@
             tailwind = {
                 config: {
                     corePlugins: {
-                        preflight: false, // Ngăn Tailwind reset CSS mặc định
+                        preflight: false, // Không reset CSS mặc định
                     },
                     theme: {
                         extend: {
@@ -66,11 +66,43 @@
                                 title: ['"Poppins"', 'Segoe UI', 'Roboto', 'sans-serif'],
                                 body: ['"Open Sans"', 'Segoe UI', 'Roboto', 'sans-serif'],
                             },
+                            colors: {
+                                color: "#ffffff",
+                                main: "#ff681a",
+                                hover: "#ff6619c4",
+                                dark: "#181a1b",
+                                thea: "#37d4d9",
+                            },
+                            backgroundImage: {
+                                hero: "url('img/banner-bg-1.png')",
+                                mau: "linear-gradient(to bottom, #ffa726, #29b6f6)",
+                                thudan: "linear-gradient(to bottom, #ff7e5f, #feb47b)",
+                                toxanh: "linear-gradient(to bottom, #ffa726, #29b6f6)",
+                                song: "repeating-linear-gradient(45deg, #ff9800, #ff9800 20px, #ffffff 20px, #ffffff 40px)",
+                            },
+                            boxShadow: {
+                                soft: "0 0 20px #00000029",
+                                strong: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                                main: "1px 1px 15px #000",
+                            },
+                            transitionProperty: {
+                                smooth: "all",
+                            },
+                            transitionTimingFunction: {
+                                smooth: "ease",
+                            },
+                            transitionDuration: {
+                                normal: "400ms",
+                            },
+                            maxWidth: {
+                                screen: "1500px",
+                            },
                         },
                     },
                 },
             };
         </script>
+
     </head>
 
     <body class="bg-gray-100 w-[100wh] h-[100vh]">
