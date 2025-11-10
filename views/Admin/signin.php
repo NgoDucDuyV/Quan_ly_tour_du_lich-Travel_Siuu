@@ -104,7 +104,7 @@
                     Don't have an account?
                     <a href="<?= BASE_URL ?>?mode=client&act=showformsigin"
                         class="text-gray-600 font-[800] hover:text-orange-500 hover:bg-[#0000]">
-                        Sign up update
+                        Sign up
                     </a>
                 </div>
 
