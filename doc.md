@@ -25,6 +25,3 @@ Mô hình MVC
 
 
 - Cấu hình DB trong file commons/env.php
-
-
---anh yeu em 
