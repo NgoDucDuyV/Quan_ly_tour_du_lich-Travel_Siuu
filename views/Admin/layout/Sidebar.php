@@ -10,7 +10,7 @@
 
 <body>
     <!-- Sidebar -->
-    <aside style="scrollbar-width:none; -ms-overflow-style:none;" class="flex flex-col items-start bg-white border-r shadow-xl py-4 px-2 sticky top-0 min-w-[300px] overflow-hidden z-[1] transition-all duration-150 ease-in-out group
+    <aside style="scrollbar-width:none; -ms-overflow-style:none;" class="flex flex-col bg-white border-r shadow-xl py-4 px-2 sticky top-0 min-w-[300px] overflow-hidden z-[1] transition-all duration-150 ease-in-out group
         md:h-[100vh] overflow-y-auto ">
         <div class="mb-6 flex gap-3">
             <div class="w-10 min-w-10 h-10 bg-indigo-500 text-white rounded flex items-center justify-center font-bold">DT</div>
