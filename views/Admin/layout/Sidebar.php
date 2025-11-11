@@ -2,77 +2,100 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar</title>
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sidebar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <!-- Sidebar -->
-    <aside style="scrollbar-width:none; -ms-overflow-style:none;" class="flex flex-col bg-white border-r shadow-xl py-4 px-2 sticky top-0 min-w-[300px] overflow-hidden z-[1] transition-all duration-150 ease-in-out group
-        md:h-[100vh] overflow-y-auto ">
-        <div class="mb-6 flex gap-3">
-            <div class="w-10 min-w-10 h-10 bg-indigo-500 text-white rounded flex items-center justify-center font-bold">DT</div>
-            <div class="hidden md:inline hidden group-hover:inline">
-                <h1 class="text-lg font-semibold">Điều hành tour</h1>
-                <p class="text-sm text-slate-500">ADMIN dashboard</p>
+<body class="bg-slate-100">
+  <!-- Sidebar -->
+  <aside
+    class="flex flex-col bg-white border-r border-slate-200 shadow-lg py-6 px-4 sticky top-0 min-w-[280px] h-screen overflow-y-auto transition-all duration-200 ease-in-out">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3 mb-8 px-2">
+      <div
+        class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-500 text-white rounded-xl flex items-center justify-center font-bold shadow-md">
+        DT
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-slate-800">Điều hành tour</h1>
+        <p class="text-xs text-slate-500 tracking-wide">ADMIN Dashboard</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="space-y-1">
+      <a href="<?= BASE_URL ?>?mode=admin&act=addtour"
+        class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 hover:bg-indigo-100 hover:text-indigo-600 transition">
+        <span class="text-lg">📁</span>
+        <span>Danh mục tour</span>
+      </a>
+
+      <a href="<?= BASE_URL ?>?act=booking"
+        class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 hover:bg-indigo-100 hover:text-indigo-600 transition">
+        <span class="text-lg">🧾</span>
+        <span>Quản lý booking</span>
+      </a>
+
+      <a href="<?= BASE_URL ?>?act=promotion"
+        class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 hover:bg-indigo-100 hover:text-indigo-600 transition">
+        <span class="text-lg">⚙️</span>
+        <span>Phiên bản & khuyến mãi</span>
+      </a>
+
+      <a href="<?= BASE_URL ?>?act=qrlink"
+        class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 hover:bg-indigo-100 hover:text-indigo-600 transition">
+        <span class="text-lg">🔗</span>
+        <span>Mã QR / Link đặt tour</span>
+      </a>
+    </nav>
+
+    <!-- Divider -->
+    <div class="my-6 border-t border-slate-200"></div>
+
+    <!-- Category -->
+    <div>
+      <h3 class="text-xs uppercase text-slate-400 mb-3 tracking-wide font-semibold">Danh mục tour</h3>
+      <ul class="space-y-2">
+
+        <li>
+          <a href="<?= BASE_URL ?>?act=tourTrongNuoc"
+            class="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm bg-indigo-50 hover:bg-indigo-100 transition">
+            <div>
+              <div class="text-sm font-medium text-slate-800">Tour trong nước</div>
+              <div class="text-xs text-slate-500">Trải nghiệm trong nước</div>
             </div>
-        </div>
+            <div class="text-indigo-600 font-semibold text-sm">12</div>
+          </a>
+        </li>
 
-        <nav class="space-y-2 text-sm">
-            <a href="<?= BASE_URL ?>?mode=admin&act=addtour"
-                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
-                <span>📁</span>
-                <span class="">Danh mục tour</span>
-            </a>
+        <li>
+          <a href="<?= BASE_URL ?>?act=tourQuocTe"
+            class="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm bg-white hover:bg-slate-50 transition">
+            <div>
+              <div class="text-sm font-medium text-slate-800">Tour quốc tế</div>
+              <div class="text-xs text-slate-500">Khách nước ngoài</div>
+            </div>
+            <div class="text-slate-500 font-semibold text-sm">8</div>
+          </a>
+        </li>
 
-            <a href="<?= BASE_URL ?>?act=booking"
-                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
-                <span>🧾</span>
-                <span class="">Quản lý booking</span>
-            </a>
+        <li>
+          <a href="<?= BASE_URL ?>?act=tourTheoYeuCau"
+            class="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm bg-white hover:bg-slate-50 transition">
+            <div>
+              <div class="text-sm font-medium text-slate-800">Tour theo yêu cầu</div>
+              <div class="text-xs text-slate-500">Customized tour</div>
+            </div>
+            <div class="text-slate-500 font-semibold text-sm">5</div>
+          </a>
+        </li>
 
-            <a href="<?= BASE_URL ?>?act=promotion"
-                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
-                <span>⚙️</span>
-                <span class="">Phiên bản & khuyến mãi</span>
-            </a>
-
-            <a href="<?= BASE_URL ?>?act=qrlink"
-                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-indigo-50 transition">
-                <span>🔗</span>
-                <span class="hidden md:inline">Mã QR / Link đặt tour</span>
-            </a>
-        </nav>
-
-        <div class="mt-6">
-            <h3 class="text-xs uppercase text-slate-400 mb-2">Danh mục tour</h3>
-            <ul class="space-y-2">
-                <li class="flex items-center justify-between bg-indigo-50 px-3 py-2 rounded">
-                    <div>
-                        <div class="text-sm font-medium">Tour trong nước</div>
-                        <div class="text-xs text-slate-500">Trải nghiệm trong nước</div>
-                    </div>
-                    <div class="text-indigo-600 text-sm">12</div>
-                </li>
-                <li class="flex items-center justify-between bg-white px-3 py-2 rounded">
-                    <div>
-                        <div class="text-sm font-medium">Tour quốc tế</div>
-                        <div class="text-xs text-slate-500">Khách nước ngoài</div>
-                    </div>
-                    <div class="text-slate-500 text-sm">8</div>
-                </li>
-                <li class="flex items-center justify-between bg-white px-3 py-2 rounded">
-                    <div>
-                        <div class="text-sm font-medium">Tour theo yêu cầu</div>
-                        <div class="text-xs text-slate-500">Customized tour</div>
-                    </div>
-                    <div class="text-slate-500 text-sm">5</div>
-                </li>
-            </ul>
-        </div>
-    </aside>
+      </ul>
+    </div>
+  </aside>
 </body>
 
 </html>
