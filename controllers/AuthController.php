@@ -48,7 +48,7 @@ class AuthController
         if (!$checkPassword) {
             echo json_encode([
                 'success' => false,
-                'errorsignin' => "Email or Password Không Đúng or Lỗi Đăng Nhập!"
+                'errorsignin' => "Password Không Đúng or Lỗi Đăng Nhập!"
             ]);
             exit();
         }
