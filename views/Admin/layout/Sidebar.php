@@ -9,11 +9,11 @@
 </head>
 
 <body class="bg-slate-100">
-  <!-- Sidebar -->
+
   <aside
     class="flex flex-col bg-white border-r border-slate-200 shadow-lg py-6 px-4 sticky top-0 min-w-[280px] h-screen overflow-y-auto transition-all duration-200 ease-in-out">
 
-    <!-- Logo -->
+
     <div class="flex items-center gap-3 mb-8 px-2">
       <div
         class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-500 text-white rounded-xl flex items-center justify-center font-bold shadow-md">
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <!-- Navigation -->
+
     <nav class="space-y-1">
       <a href="<?= BASE_URL ?>?mode=admin&act=addtour"
         class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 hover:bg-indigo-100 hover:text-indigo-600 transition">
@@ -52,10 +52,10 @@
       </a>
     </nav>
 
-    <!-- Divider -->
+
     <div class="my-6 border-t border-slate-200"></div>
 
-    <!-- Category -->
+
     <div>
       <h3 class="text-xs uppercase text-slate-400 mb-3 tracking-wide font-semibold">Danh mục tour</h3>
       <ul class="space-y-2">
