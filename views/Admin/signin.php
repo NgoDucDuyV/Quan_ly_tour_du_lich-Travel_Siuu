@@ -9,10 +9,10 @@
 
 <body class="bg-gray-100 flex items-center justify-center">
     <section
-        class="sm:w-auto w-full sm:h-auto h-full max-w-5xl shadow-2xl rounded-xl overflow-y-auto bg-white flex flex-col m-auto md:flex-row">
+        class="sm:w-auto w-full sm:h-auto min-h-[600px] h-full max-w-5xl shadow-2xl rounded-xl overflow-y-auto bg-white flex flex-col m-auto md:flex-row">
         <!-- Left panel -->
         <div
-            class="md:flex-1 min-w-[400px] bg-orange-500 p-6 md:p-12 text-white flex flex-col md:justify-between rounded-xl relative min-h-[300px] md:block hidden">
+            class="flex-1 flex-col min-w-[400px] bg-orange-500 p-6 md:p-12 text-white overflow-hidden md:justify-between rounded-xl relative md:flex hidden">
             <h1 class="relative text-3xl md:text-5xl text-white font-bold mb-4 md:mb-6 font-[800] z-[1]">Chào mừng</h1>
             <p class="relative text-sm md:text-lg leading-relaxed mb-6 text-shadow-lg md:mb-8 z-[1]">
                 đến với <strong>Quản lý tour du lịch Travel_Siuu</strong> – hệ thống quản trị du lịch thông minh và mã
