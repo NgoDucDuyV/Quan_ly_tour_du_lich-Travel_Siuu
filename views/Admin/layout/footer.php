@@ -1,4 +1,4 @@
-<footer class="bg-gray-800 text-white mt-10">
+<footer class="bg-gray-800 text-white">
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
 
@@ -34,7 +34,7 @@
                 <ul class="space-y-3 text-sm text-gray-400">
                     <li><span class="font-bold">Địa chỉ:</span> 123 Đường Du Lịch, Quận Siuu, TP. Hồ Chí Minh.</li>
                     <li><span class="font-bold">Điện thoại:</span> <a href="tel:09xxxx9999" class="hover:text-orange-400">0344690597</a></li>
-                    <li><span class="font-bold">Email:</span> <a href="khachoandz1@gmail.com" class="hover:text-orange-400">khachoandz1@gmail.com</a></li>
+                    <li><span class="font-bold">Email:</span> <a href="khachoandz1@gmail.com" class="hover:text-orange-400">travelSiuu@gmail.com</a></li>
                     <li>
                         <div class="mt-4">
                             <p class="font-bold mb-2">Chấp nhận thanh toán:</p>

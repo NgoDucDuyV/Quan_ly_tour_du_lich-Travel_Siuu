@@ -13,7 +13,6 @@
   <aside
     class="flex flex-col bg-white border-r border-slate-200 shadow-lg py-6 px-4 sticky top-0 min-w-[280px] h-screen overflow-y-auto transition-all duration-200 ease-in-out">
 
-
     <div class="flex items-center gap-3 mb-8 px-2">
       <div
         class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-500 text-white rounded-xl flex items-center justify-center font-bold shadow-md">
