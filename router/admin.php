@@ -26,7 +26,7 @@ function checkSignin()
 ob_start();
 echo match ($act) {
     '/' => (function () {
-        header("Location: " . BASE_URL . "??mode=admin&act=showformSigninAdmin");
+        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
         exit;
     })(),
     'showformSigninAdmin' => (function () {
@@ -42,7 +42,7 @@ echo match ($act) {
     'dashboard' => (function () {
         switch ($_SESSION['admin_role']) {
             case 'admin': {
-                    header("Location: " . BASE_URL . "??mode=admin&act=booking");
+                    header("Location: " . BASE_URL . "?mode=admin&act=booking");
                     exit;
                     break;
                 }
