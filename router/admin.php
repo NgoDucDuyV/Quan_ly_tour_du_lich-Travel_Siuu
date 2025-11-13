@@ -70,9 +70,35 @@ echo match ($act) {
 
 
     // Hướng dẫn viên
+    // Trang chủ 
     'homeguide' => (function () {
         requireGuide();
         require_once "./views/Admin/homegiude.php";
+    })(),
+    // Lịch trình & Tour
+    'scheduleguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/scheduleguide.php";
+    })(),
+    // Danh sách khách
+    'listguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/listguide.php";
+    })(),
+    // Nhật ký khách
+    'diaryguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/diaryguide.php";
+    })(),
+    // Check khách
+    'checkguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/checkguide.php";
+    })(),
+    // Nhật ký khách
+    'requestguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/requestguide.php";
     })(),
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
