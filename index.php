@@ -6,10 +6,12 @@
     // admin model
     require_once __DIR__ . '/models/AdminModel.php';
     require_once __DIR__ . '/models/AuthModel.php';
+    require_once './models/CategoryModel.php';
 
     // admin Controller
     require_once __DIR__ . '/controllers//AuthController.php';
     require_once __DIR__ . '/controllers/BookingController.php';
+    require_once __DIR__ . '/controllers/CategoryController.php';
 
     require_once __DIR__ . '/controllers/AdminLayoutController.php';
     require_once __DIR__ . '/controllers/GuideLayoutController.php';
