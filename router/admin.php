@@ -63,7 +63,7 @@ echo match ($act) {
     })(),
     'categoriestour' => (function () {
         requireAdmin();
-        require_once "./views/Admin/categoriestour.php";
+        (new CategoryController)->listCategories();
     })(),
     'booking' => (function () {
         requireAdmin();
