@@ -77,6 +77,14 @@ echo match ($act) {
         // requireAdmin();
         require_once "./views/Admin/home.php";
     })(),
+    'managerguide' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/managerguide.php";
+    })(),
+    'managerclient' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/managerclient.php";
+    })(),
     '404' => (function () {
         require_once "./views/Admin/common/404.php";
     })(),

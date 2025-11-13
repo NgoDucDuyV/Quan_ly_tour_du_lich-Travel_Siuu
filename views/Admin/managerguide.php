@@ -1,0 +1,80 @@
+<!-- Header -->
+<div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-3">
+        <h1 class="text-2xl font-semibold text-slate-900">Danh sách hướng dẫn viên</h1>
+        <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">5</span>
+    </div>
+
+    <div class="flex items-center space-x-3">
+        <button class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-md text-sm text-slate-600 bg-white hover:bg-slate-50">
+            Lọc
+        </button>
+
+        <button class="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-md text-sm hover:bg-indigo-50">
+            Tạo mới
+        </button>
+    </div>
+</div>
+
+<!-- Card / Table container -->
+<div class="bg-white border border-slate-200 rounded-lg shadow-sm">
+    <!-- Header của bảng -->
+    <div class="hidden md:grid grid-cols-12 items-center gap-4 px-6 py-3 border-b border-slate-200 text-slate-600 text-sm font-medium">
+        <div class="col-span-1 flex items-center">
+            <input
+                type="checkbox"
+                class="h-4 w-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
+        </div>
+        <div class="col-span-1">ID</div>
+        <div class="col-span-4">Tên hướng dẫn viên</div>
+        <div class="col-span-4">Email hướng dẫn viên</div>
+        <div class="col-span-2 text-right">Cập nhật</div>
+    </div>
+</div>
+
+
+<!-- Table body -->
+<div class="divide-y divide-slate-100">
+    <!-- Row template (ví dụ dữ liệu) -->
+    <div class="grid grid-cols-12 items-center gap-4 px-6 py-4">
+        <div class="col-span-1">
+            <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
+        </div>
+        <div class="col-span-1 text-sm text-slate-600">1</div>
+        <div class="col-span-4 text-sm text-slate-800">Tour trong nước</div>
+        <div class="col-span-4 text-sm text-slate-700">Các tour du lịch tham quan trong nước</div>
+        <div class="col-span-2 flex items-center justify-end gap-3 text-sm text-slate-500">
+            <span>2024-08-28 17:50</span>
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-12 items-center gap-4 px-6 py-4">
+        <div class="col-span-1">
+            <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
+        </div>
+        <div class="col-span-1 text-sm text-slate-600">2</div>
+        <div class="col-span-4 text-sm text-slate-800">Tour quốc tế</div>
+        <div class="col-span-4 text-sm text-slate-700">Các tour du lịch nước ngoài</div>
+        <div class="col-span-2 flex items-center justify-end gap-3 text-sm text-slate-500">
+            <span> 2024-08-28 17:50</span>
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-12 items-center gap-4 px-6 py-4">
+    <div class="col-span-1">
+        <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
+    </div>
+    <div class="col-span-1 text-sm text-slate-600">3</div>
+    <div class="col-span-4 text-sm text-slate-800">Tour theo yêu cầu</div>
+    <div class="col-span-4 text-sm text-slate-700">Tour thiết kế riêng theo nhu cầu khách hàng</div>
+    <div class="col-span-2 flex items-center justify-end gap-3 text-sm text-slate-500">
+        <span> 2024-08-28 17:50</span>
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+    </div>
+
+</div>
+</div>
+</div>
