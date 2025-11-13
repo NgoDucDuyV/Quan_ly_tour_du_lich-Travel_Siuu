@@ -15,22 +15,22 @@
                 <div class="flex items-center justify-between h-20">
                     <!-- Trái -->
                     <div class="flex items-center space-x-8">
-                        <button class="bg-[#0000] flex items-center justify-center">
-                            <i data-lucide="menu"></i>
+                        <button class="bg-[#0000] text-[20px] font-[100] flex items-center justify-center hover:text-indigo-700">
+                            <i class="fa-solid fa-bars"></i>
                         </button>
 
                         <div class="hidden text-black md:flex space-x-8">
-                            <a href="#" class="flex items-center hover:text-blue-600 ">
+                            <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
                                 <i data-lucide="home" class="w-5 h-5 mr-2"></i>
                                 <span>Trang Chủ</span>
                             </a>
 
-                            <a href="#" class="flex items-center hover:text-blue-600 ">
+                            <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
                                 <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
                                 <span>Giới Thiệu</span>
                             </a>
 
-                            <a href="#" class="flex items-center hover:text-blue-600 ">
+                            <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
                                 <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
                                 <span>Danh Mục</span>
                             </a>
