@@ -14,3 +14,4 @@ class TourMedel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+
