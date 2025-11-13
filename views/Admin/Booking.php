@@ -8,7 +8,7 @@
                     <p class="text-sm text-slate-500">Tạo, theo dõi và quản lý đặt chỗ cho tour</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button id="btnNewBooking" class="px-4 py-2 bg-indigo-600 text-white rounded shadow">Tạo booking mới</button>
+                    <button id="btnNewBooking" class="px-4 py-2 bg-main hover:bg-hover text-white rounded shadow">Tạo booking mới</button>
                     <div class="text-sm text-slate-500">Admin</div>
                 </div>
             </header>
@@ -18,10 +18,10 @@
                 <div class="col-span-1 bg-white rounded-lg p-4 border border-gray-200 shadow-sm flex flex-col">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-gray-800">Danh sách Tour</h3>
-                        <button class="text-xs text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded transition-colors" id="btnCreateTour">+ Tạo tour</button>
+                        <button class="text-xs text-white bg-main hover:bg-hover px-3 py-1 rounded transition-colors" id="btnCreateTour">+ Tạo tour</button>
                     </div>
 
-                    <div class="space-y-3 overflow-auto max-h-[28rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    <div class="space-y-3 overflow-auto max-h-[28rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
                         <!-- tour card -->
                         <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-gray-50">
                             <div class="flex items-start gap-3">

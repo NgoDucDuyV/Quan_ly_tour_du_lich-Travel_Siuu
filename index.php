@@ -41,6 +41,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>:Quản lý tour du lịch - Travel_Siuu</title>
         <!-- Fonts + Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet" />
         <link href='https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css' rel='stylesheet'>
         <link href='https://cdn.boxicons.com/3.0.3/fonts/brands/boxicons-brands.min.css' rel='stylesheet'>
@@ -70,12 +71,16 @@
                                 body: ['Roboto, sans-serif'],
                             },
                             colors: {
-                                color: "#ffffff",
-                                main: "#ff681a",
-                                hover: "#ff6619c4",
-                                dark: "#181a1b",
-                                thea: "#37d4d9",
+                                color: "#ffffff", // chữ trắng
+                                main: "#1f55ad", // màu chính chủ đạo
+                                dark: "#0f2b57", // màu đậm, dùng cho header, sidebar, text nổi bật
+                                accent: "#5288e0", // màu điểm nhấn nhẹ hơn, button, link
+                                light: "#a8c4f0", // nền nhẹ, background section/card
+                                hover: "#0f2b90", // màu hover, nút nhấn, link
+                                thea: "#37d4d9", // nhấn đặc biệt, badges, highlights
                             },
+
+
                             backgroundImage: {
                                 hero: "url('img/banner-bg-1.png')",
                                 mau: "linear-gradient(to bottom, #ffa726, #29b6f6)",
@@ -109,6 +114,25 @@
             lucide.createIcons();
             const BASE_URL = '<?= BASE_URL ?>';
         </script>
+        <style>
+            /* Ẩn scrollbar trên Chrome, Safari, Edge */
+            .hide-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Ẩn scrollbar trên IE, Edge cũ */
+            .hide-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                /* Firefox */
+            }
+        </style>
+
+        <!-- tông màu chính -->
+        <!-- #0f2b57 -->
+        <!-- #1f55ad -->
+        <!-- #5288e0 -->
+        <!-- #a8c4f0 -->
     </head>
 
     <body class="bg-gray-100 flex flex-col w-[100wh] h-[100vh]">
