@@ -24,6 +24,7 @@ function checkSignin()
     }
 }
 ob_start();
+
 echo match ($act) {
     '/' => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
@@ -42,7 +43,7 @@ echo match ($act) {
     'dashboard' => (function () {
         switch ($_SESSION['admin_role']) {
             case 'admin': {
-                    header("Location: " . BASE_URL . "?mode=admin&act=booking");
+                    header("Location: " . BASE_URL . "?mode=admin&act=home");
                     exit;
                     break;
                 }
@@ -60,9 +61,21 @@ echo match ($act) {
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
         exit;
     })(),
+    'categoriestour' => (function () {
+        requireAdmin();
+        (new CategoryController)->listCategories();
+    })(),
     'booking' => (function () {
         requireAdmin();
-        echo (new BookingController)->BookingController();
+        echo (new BookingController)->ShowBooking();
+    })(),
+    'newBooking' => (function () {
+        requireAdmin();
+        echo (new BookingController)->ShowFromNewBooking();
+    })(),
+    'home' => (function () {
+        // requireAdmin();
+        require_once "./views/Admin/home.php";
     })(),
     '404' => (function () {
         require_once "./views/Admin/common/404.php";

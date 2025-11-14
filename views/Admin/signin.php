@@ -12,15 +12,15 @@
         class="sm:w-auto w-full sm:h-auto min-h-[600px] h-full max-w-5xl shadow-2xl rounded-xl overflow-y-auto bg-white flex flex-col m-auto md:flex-row">
         <!-- Left panel -->
         <div
-            class="flex-1 flex-col min-w-[400px] bg-orange-500 p-6 md:p-12 text-white overflow-hidden md:justify-between rounded-xl relative md:flex hidden">
+            class="flex-1 flex-col min-w-[400px] bg-main p-6 md:p-12 text-white overflow-hidden rounded-xl relative md:flex hidden">
             <h1 class="relative text-3xl md:text-5xl text-white font-bold mb-4 md:mb-6 font-[800] z-[1]">Chào mừng</h1>
-            <p class="relative text-sm md:text-lg leading-relaxed mb-6 text-shadow-lg md:mb-8 z-[1]">
+            <p class="relative text-sm md:text-lg leading-relaxed mb-6 text-shadow-xl md:mb-8 z-[1]">
                 đến với <strong>Quản lý tour du lịch Travel_Siuu</strong> – hệ thống quản trị du lịch thông minh và mã
                 nguồn mở. Hỗ trợ quản lý tour, khách hàng, lịch trình và điểm đến ở một nơi duy nhất, <strong>nhanh
                     chóng và dễ dàng</strong>.
             </p>
-            <div class="mt-auto flex justify-center md:justify-start">
-                <img src="<?= BASE_URL ?>assets/Img/imgelogin.png" alt="Travel illustration"
+            <div class="mt-auto flex justify-center absolute bottom-0 left-0 right-0 md:justify-start">
+                <img src="https://vinno.vn/sites/default/files/inline/images/1_1.png" alt="Travel illustration"
                     class="w-full md:max-w-full max-w-[300px] h-auto object-contain">
             </div>
         </div>
@@ -29,8 +29,8 @@
         <div
             class="md:flex-2 w-full sm:max-w-[550px] sm:min-h-[600px] h-full m-auto p-6 sm:p-12 flex flex-col items-center justify-center ">
             <div class="logo mb-6 md:mb-8 text-center">
-                <img src="<?= BASE_URL ?>assets/Img/logo_black.png" alt="adminVIVU Logo"
-                    class="max-w-50 w-full  mx-auto">
+                <img src="<?= BASE_URL ?>assets/Img/logo_adminBlack.png" alt="adminVIVU Logo"
+                    class="max-w-45 w-full  mx-auto">
             </div>
 
             <div id="errorsignin" class="w-full" role="alert">
@@ -64,35 +64,35 @@
                     <div class="flex items-center justify-between *:mr-2">
                         <div class="flex items-center">
                             <input type="checkbox" id="remember_me" name="remember_me"
-                                class="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded">
+                                class="h-4 w-4 text-main focus:ring-orange-500 border-gray-300 rounded">
                             <label for="remember_me" class="ml-2 block text-sm text-gray-900">
                                 Remember me
                             </label>
                         </div>
                         <a href="<?= BASE_URL ?>?mode=client&act=resetPassword"
-                            class="text-sm font-[600] text-gray-600 hover:text-orange-500 hover:underline hover:bg-[#0000]">
+                            class="text-sm font-[600] text-gray-600 hover:text-hover hover:underline hover:bg-[#0000]">
                             Forgot Password ?
                         </a>
                     </div>
                     <div class="flex items-center">
                         <input type="checkbox" id="remember_medky" name="remember_me"
-                            class="checkpasswrod h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded">
+                            class="checkpasswrod h-4 w-4 text-main focus:ring-hover border-gray-300 rounded">
                         <label for="remember_me" class="ml-2 block text-sm text-gray-900">check password</label>
                     </div>
                 </div>
 
                 <div>
                     <button type="submit"
-                        class="w-full flex justify-center py-2.5 px-4 border border-transparent text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150 ease-in-out uppercase"
+                        class="w-full flex justify-center py-2.5 px-4 border border-transparent text-base font-medium rounded-md text-white bg-main hover:bg-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition duration-150 ease-in-out uppercase"
                         data-page="auth" data-action="signin">
-                        LOG IN
+                        SIGN IN
                     </button>
                 </div>
 
                 <div class="mt-6 text-center text-sm text-gray-600">
                     Don't have an account?
                     <a href="<?= BASE_URL ?>?mode=client&act=showformsigin"
-                        class="text-gray-600 font-[800] hover:text-orange-500 hover:bg-[#0000]">
+                        class="text-gray-600 font-[800] hover:text-hover hover:bg-[#0000]">
                         Sign up
                     </a>
                 </div>
