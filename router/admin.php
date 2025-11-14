@@ -57,29 +57,49 @@ echo match ($act) {
             }
         })(),
     'logout' => (function () {
-            session_destroy();
-            header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
-            exit;
-        })(),
+        session_destroy();
+        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
+        exit;
+    })(),
+
+    // chứa năng thanh siderbar admin quản lý điều hành tour
+    'home' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/home.php";
+    })(),
     'categoriestour' => (function () {
-            requireAdmin();
-            require_once "./views/Admin/categoriestour.php";
-        })(),
+        requireAdmin();
+        (new CategoryController)->listCategories();
+    })(),
+    'admintour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->ShowAdminTour();
+    })(),
     'booking' => (function () {
             requireAdmin();
             echo (new BookingController)->ShowBooking();
         })(),
     'newBooking' => (function () {
-            requireAdmin();
-            echo (new BookingController)->ShowFromNewBooking();
-        })(),
-    'home' => (function () {
-            // requireAdmin();
-            require_once "./views/Admin/home.php";
-        })(),
+        requireAdmin();
+        echo (new BookingController)->ShowFromNewBooking();
+    })(),
+
+    // quản lý tải khoản
+    'listclient' => (function () {
+        requireAdmin();
+        echo (new AccountManagementController)->showClientList();
+    })(),
+
+    'liststaff' => (function () {
+        requireAdmin();
+        echo (new AccountManagementController)->showStaffList();
+    })(),
+
+    // show trang lỗi
     '404' => (function () {
             require_once "./views/Admin/common/404.php";
         })(),
+
 
 
     // Hướng dẫn viên
