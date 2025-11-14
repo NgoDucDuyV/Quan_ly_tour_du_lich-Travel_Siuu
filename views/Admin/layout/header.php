@@ -15,22 +15,23 @@
                 <div class="flex items-center justify-between h-20">
                     <!-- Trái -->
                     <div class="flex items-center space-x-8">
-                        <button class="bg-[#0000] text-[20px] font-[100] flex items-center justify-center hover:text-indigo-700">
+                        <button class="bg-[#0000] text-dark text-[20px] font-[100] flex items-center justify-center hover:text-hover">
                             <i class="fa-solid fa-bars"></i>
                         </button>
 
-                        <div class="hidden text-black md:flex space-x-8">
-                            <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
+                        <div class="hidden text-black md:flex space-x-8
+                        [$_a]:text-dark">
+                            <a href="#" class="flex items-center text-gray-800 hover:text-hover ">
                                 <i data-lucide="home" class="w-5 h-5 mr-2"></i>
                                 <span>Trang Chủ</span>
                             </a>
 
-                            <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
+                            <a href="#" class="flex items-center text-gray-800 hover:text-hover ">
                                 <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
                                 <span>Giới Thiệu</span>
                             </a>
 
-                            <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
+                            <a href="#" class="flex items-center text-gray-800 hover:text-hover ">
                                 <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
                                 <span>Danh Mục</span>
                             </a>
@@ -52,20 +53,21 @@
                         <!-- Avatar + menu -->
                         <div class="relative group">
                             <div class="flex items-center space-x-3 cursor-pointer select-none">
-                                <div class="">
-                                    <p class="text-sm font-semibold text-gray-900"><?= $_SESSION['admin_logged']['username'] ?></p>
-                                    <p class="text-xs text-gray-500">(<?= $_SESSION['admin_logged']['description'] ?>)</p>
+                                <div class="flex flex-col justify-center">
+                                    <h1 class="text-lg m-0 font-bold text-slate-800"><?= $_SESSION['admin_logged']['fullname'] ?></h1>
+                                    <p class="text-xs m-0 text-slate-500 tracking-wide">(<?= $_SESSION['admin_logged']['description'] ?>)</p>
                                 </div>
                                 <img
                                     class="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
-                                    src="https://via.placeholder.com/40/007bff/ffffff?text=NDD"
+                                    src="<?= BASE_URL . $_SESSION['admin_logged']['avatar'] ?>"
                                     alt="Ảnh đại diện">
                             </div>
 
                             <!-- Menu user -->
                             <div
                                 class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out z-50">
-                                <ul class="py-2 text-sm text-gray-700 list-none">
+                                <ul class="py-2 text-sm text-gray-700 list-none
+                                [&_li_a]:text-dark">
                                     <li>
                                         <a href="<?= BASE_URL ?>?mode=admin&act=logout"
                                             onclick="return confirm('Bạn có chắc muốn đăng xuất?')"
