@@ -21,7 +21,7 @@ class AuthController
         $email = trim($requestData['email']);
         $password = trim($requestData['password']);
 
-        $datauser = (new AuthModel())->getAllUser();
+        $datauser = (new UserModel())->getAllUser();
         // check emil
         $checkEmail = false;
         foreach ($datauser as $value) {
@@ -53,7 +53,7 @@ class AuthController
             exit();
         }
 
-        $auth = (new AuthModel())->signin($email, $password);
+        $auth = (new UserModel())->signin($email, $password);
 
         $_SESSION['admin_role'] = $auth['role'];
         $_SESSION['admin_logged'] = $auth;

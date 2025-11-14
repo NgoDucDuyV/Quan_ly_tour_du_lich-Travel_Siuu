@@ -3,6 +3,11 @@ class BookingController
 {
     public function ShowBooking()
     {
+        $datatour = (new TourMedel())->getall();
+        // echo '<pre>';
+        // var_dump($datatour);
+        // echo '<pre>';
+        // die;
         require_once "./views/Admin/Booking.php";
     }
 
