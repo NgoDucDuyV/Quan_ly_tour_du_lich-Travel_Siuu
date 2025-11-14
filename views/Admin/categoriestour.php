@@ -45,9 +45,9 @@
                     Lọc
                 </button>
 
-                <button class="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-md text-sm hover:bg-indigo-50">
-                    Tạo mới
-                </button>
+                <a href="?mode=admin&act=add_category" class="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-md text-sm hover:bg-indigo-50">
+    Tạo mới
+</a>
             </div>
         </div>
 
