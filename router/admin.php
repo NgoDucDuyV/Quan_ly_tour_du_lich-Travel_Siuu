@@ -74,22 +74,22 @@ echo match ($act) {
         echo (new BookingController)->ShowFromNewBooking();
     })(),
     'home' => (function () {
-        // requireAdmin();
         require_once "./views/Admin/home.php";
     })(),
     'managerguide' => (function () {
         requireAdmin();
-        require_once "./views/Admin/managerguide.php";
+        require_once "controllers/GuideLayoutController.php";
+        (new GuideLayoutController())->index();
     })(),
     'managerclient' => (function () {
         requireAdmin();
-        require_once "./views/Admin/managerclient.php";
+        require_once "controllers/GuideLayoutController.php";
+        (new GuideLayoutController())->clientList();   // ✔ chạy controller → có $clients
     })(),
+
     '404' => (function () {
         require_once "./views/Admin/common/404.php";
     })(),
-
-
     // Hướng dẫn viên
     // Trang chủ 
     'homeguide' => (function () {

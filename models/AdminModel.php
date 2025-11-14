@@ -30,4 +30,21 @@ class AdminModel
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC); // trả về mảng
     }
+
+    // Lấy hướng dẫn viên (role_id = 2)
+    public function getGuides()
+    {
+        $sql = "SELECT * FROM users WHERE role_id = 2";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Lấy hướng dẫn viên (role_id = 3)
+    public function getClients()
+    {
+        $sql = "SELECT * FROM users WHERE role_id = 3";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
