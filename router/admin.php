@@ -75,6 +75,12 @@ echo match ($act) {
         requireAdmin();
         (new AdminTourController)->ShowAdminTour();
     })(),
+    // quản lý nàh cung cấp
+    'supplier-list' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->showSupplierList();
+    })(),
+
     'booking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBooking();

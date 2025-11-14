@@ -62,7 +62,7 @@
         <span>quản lý tour</span>
       </a>
 
-      <a href="?act=admintour" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=supplier-list" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
         <i class="fa-solid fa-handshake"></i>
         <span>Đối tác & nhà cung cấp</span>
       </a>

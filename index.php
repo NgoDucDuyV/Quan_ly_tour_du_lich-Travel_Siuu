@@ -21,6 +21,7 @@
     require_once __DIR__ . '/controllers/GuideLayoutController.php';
     //quản lý danh mục tour
     require_once __DIR__ . '/controllers/AdminTourController.php';
+    require_once __DIR__ . '/controllers/AdminSupplierController.php';
 
 
 
