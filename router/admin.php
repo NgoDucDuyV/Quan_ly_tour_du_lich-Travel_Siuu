@@ -27,35 +27,35 @@ ob_start();
 
 echo match ($act) {
     '/' => (function () {
-        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
-        exit;
-    })(),
+            header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
+            exit;
+        })(),
     'showformSigninAdmin' => (function () {
-        checkSignin();
-        (new AuthController)->showformSigninAdmin();
-    })(),
+            checkSignin();
+            (new AuthController)->showformSigninAdmin();
+        })(),
     'signin' => (function () {
-        $requestData = json_decode(file_get_contents("php://input"), true);
-        (new AuthController())->signin($requestData);
-        exit;
-    })(),
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            (new AuthController())->signin($requestData);
+            exit;
+        })(),
 
     'dashboard' => (function () {
-        switch ($_SESSION['admin_role']) {
-            case 'admin': {
+            switch ($_SESSION['admin_role']) {
+                case 'admin': {
                     header("Location: " . BASE_URL . "?mode=admin&act=home");
                     exit;
                     break;
                 }
-            case 'guide': {
+                case 'guide': {
                     header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
                     exit;
                     break;
                 }
-            default:
-                break;
-        }
-    })(),
+                default:
+                    break;
+            }
+        })(),
     'logout' => (function () {
         session_destroy();
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
@@ -76,9 +76,9 @@ echo match ($act) {
         (new AdminTourController)->ShowAdminTour();
     })(),
     'booking' => (function () {
-        requireAdmin();
-        echo (new BookingController)->ShowBooking();
-    })(),
+            requireAdmin();
+            echo (new BookingController)->ShowBooking();
+        })(),
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking();
@@ -89,6 +89,17 @@ echo match ($act) {
         requireAdmin();
         echo (new AccountManagementController)->showClientList();
     })(),
+    'delete-client' => (function () {
+        requireAdmin();
+         (new AccountManagementController)->deleteClient();
+    })(),
+
+    'update-client' => (function () {
+    requireAdmin();
+    (new AccountManagementController)->updateClient();
+    exit;
+})(),
+
 
     'liststaff' => (function () {
         requireAdmin();
@@ -97,20 +108,20 @@ echo match ($act) {
 
     // show trang lỗi
     '404' => (function () {
-        require_once "./views/Admin/common/404.php";
-    })(),
+            require_once "./views/Admin/common/404.php";
+        })(),
 
 
 
     // Hướng dẫn viên
     'homeguide' => (function () {
-        requireGuide();
-        require_once "./views/Admin/homegiude.php";
-    })(),
+            requireGuide();
+            require_once "./views/Admin/homegiude.php";
+        })(),
     default => (function () {
-        header("Location: " . BASE_URL . "?mode=admin&act=404");
-        exit;
-    })(),
+            header("Location: " . BASE_URL . "?mode=admin&act=404");
+            exit;
+        })(),
 };
 $content_views = ob_get_clean();
 
