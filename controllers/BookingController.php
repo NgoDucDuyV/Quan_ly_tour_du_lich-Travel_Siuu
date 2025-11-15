@@ -3,7 +3,7 @@ class BookingController
 {
     public function ShowBooking()
     {
-        $datatour = (new TourMedel())->getall();
+        $datatour = (new TourModel())->getall();
         // echo '<pre>';
         // var_dump($datatour);
         // echo '<pre>';

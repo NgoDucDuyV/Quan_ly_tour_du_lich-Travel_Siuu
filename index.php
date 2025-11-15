@@ -6,8 +6,10 @@
     // admin model
     require_once __DIR__ . '/models/AdminModel.php';
     require_once __DIR__ . '/models/UserModel.php';
+    // chức nâng siderbar
     require_once __DIR__ . '/models/CategoryModel.php';
     require_once __DIR__ . '/models/TourModel.php';
+    require_once __DIR__ . '/models/SupplierModel.php';
     require_once __DIR__ . '/models/BookingModel.php';
 
     // admin Controller
