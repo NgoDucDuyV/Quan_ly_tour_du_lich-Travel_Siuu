@@ -101,7 +101,7 @@
                     <?php if (isset($dataTourDetai)) { ?>
                         <div id="tourDetailArea">
                             <div class="flex flex-col lg:flex-row items-start gap-4">
-                                <img id="detailThumb" src="<?= $dataOneTour['images'] ?>" alt="<?= $dataOneTour['name'] ?>" class="w-full lg:w-48 h-36 object-cover rounded shadow-sm">
+                                <img id="detailThumb" src="<?= BASE_URL . $dataOneTour['images'] ?>" alt="<?= $dataOneTour['name'] ?>" class="w-full lg:w-48 h-36 object-cover rounded shadow-sm">
                                 <div class="flex-1">
                                     <h3 id="detailTitle" class="text-xl font-semibold text-gray-800">Chọn một tour để xem chi tiết</h3>
                                     <p id="detailPrice" class="text-gray-500 mt-1">Mã Tour: - <?= $dataOneTour['code'] ?></p>
@@ -165,7 +165,12 @@
                                     <p class="text-sm text-gray-600 mt-2">Hủy sau 7 ngày trước ngày khởi hành mất 50% phí, hủy trong 3 ngày mất 100%...</p>
 
                                     <h4 class="mt-4 font-semibold text-gray-800">Nhà cung cấp</h4>
-                                    <p class="text-sm text-gray-600 mt-2">Khách sạn XYZ, Công ty vận chuyển ABC.</p>
+                                    <?php foreach ($dataTourSupplier as $value) { ?>
+                                        <div class="tour-item">
+                                            <!-- <h3 class="font-semibold text-gray-800"><?= $dataOneTour['name'] ?></h3> -->
+                                            <p class="text-sm text-gray-600 mt-2"><?= $value['role'] ?> : <?= $value['supplier_name'] ?></p>
+                                        </div>
+                                    <?php } ?>
                                 </div>
 
                                 <div id="tab-versions" class="tab-pane hidden">
@@ -191,10 +196,9 @@
                                 <div id="tab-images" class="tab-pane hidden">
                                     <h4 class="font-semibold text-gray-800">Bộ ảnh minh họa</h4>
                                     <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        <img src="https://placehold.co/200x120" class="w-full h-28 object-cover rounded">
-                                        <img src="https://placehold.co/200x120" class="w-full h-28 object-cover rounded">
-                                        <img src="https://placehold.co/200x120" class="w-full h-28 object-cover rounded">
-                                        <img src="https://placehold.co/200x120" class="w-full h-28 object-cover rounded">
+                                        <?php foreach ($dataTourImages as $value) { ?>
+                                            <img src="<?= $value['image_url'] ?>" alt="<?= $value['description'] ?>" class="w-full h-28 object-cover rounded">
+                                        <?php  } ?>
                                     </div>
                                 </div>
                             </div>

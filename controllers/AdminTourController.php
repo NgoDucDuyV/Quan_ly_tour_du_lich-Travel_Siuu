@@ -19,8 +19,12 @@ class AdminTourController
         $dataTourDetai = (new TourModel())->TourDetailItineraryModel($tour_id);
 
         $dataOneTour = (new TourModel())->getOne($tour_id);
+
+        $dataTourSupplier = (new TourModel())->TourSuppliersModel($tour_id);
+
+        $dataTourImages = (new TourModel())->TourImagesModel($tour_id);
         // echo "<pre>";
-        // var_dump($dataOneTour);
+        // var_dump($dataTourImages);
         // echo "<pre>";
         // die;
         require_once "./views/Admin/admin_tours.php";
