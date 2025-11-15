@@ -58,7 +58,7 @@
       </a>
 
       <a href="?act=admintour" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
-        <i class="fa-solid fa-route"></i>
+        <i class="fa-solid fa-map-marked-alt text-xl"></i>
         <span>quản lý tour</span>
       </a>
 
@@ -99,7 +99,7 @@
 
       <!-- Active item (Thể loại) -->
       <a href="<?= BASE_URL ?>?act=booking" class="flex items-center gap-3 px-3 py-2 rounded-md text-hover bg-indigo-50">
-        <i class="fa-solid fa-calendar-week"></i>
+        <i class="fa-solid fa-calendar-check text-xl"></i>
         <span>Quản lý booking</span>
       </a>
 

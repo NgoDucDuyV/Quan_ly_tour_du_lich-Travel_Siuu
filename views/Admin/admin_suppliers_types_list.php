@@ -3,15 +3,15 @@
     <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
         <ul class="inline-flex items-center space-x-2">
             <li>Quản trị viên</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300">Bảng điều khiển</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Danh mục Tour</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300">Đối Tác Nhà cung cấp</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Loại Dịch Vụ</li>
         </ul>
     </nav>
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-            <h1 class="text-2xl font-semibold text-slate-900">Danh mục Tour</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">Loại Dịch Vụ</h1>
             <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">
                 <?= count($dataSupplierTypes) ?>
             </span>

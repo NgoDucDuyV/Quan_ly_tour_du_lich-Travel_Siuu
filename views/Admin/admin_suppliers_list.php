@@ -11,7 +11,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-            <h1 class="text-2xl font-semibold text-slate-900">Danh mục Tour</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">Nhà Cung Cấp</h1>
             <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">
                 <?= count($dataSupplier) ?>
             </span>

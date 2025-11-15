@@ -54,14 +54,17 @@
 
                     <div class="space-y-3 overflow-auto  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
                         <!-- tour card -->
+
                         <?php foreach ($datatour as $value) { ?>
                             <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-gray-50">
                                 <div class="flex items-start gap-3">
-                                    <img src="https://placehold.co/80x60" alt="thumb" class="w-20 h-14 object-cover rounded">
+                                    <img src="<?= BASE_URL . $value['images'] ?> ?>" alt="thumb" class="w-20 h-14 object-cover rounded">
                                     <div class="flex-1">
                                         <div class="flex items-center justify-between">
                                             <h4 class="font-medium text-gray-800"><?= $value['name'] ?></h4>
-                                            <div class="text-sm text-gray-500">VN</div>
+                                            <div class="text-sm text-gray-500">
+
+                                            </div>
                                         </div>
                                         <p class="text-xs text-gray-500 mt-1">Giá từ <span class="font-semibold text-gray-800"><?= number_format($value['price']) ?> VND</span></p>
 
@@ -75,24 +78,6 @@
                             </article>
                         <?php } ?>
 
-                        <!-- <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-white">
-                        <div class="flex items-start gap-3">
-                            <img src="https://placehold.co/80x60" alt="thumb" class="w-20 h-14 object-cover rounded">
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="font-medium text-gray-800">Tour Bali 5N4Đ - Quốc tế</h4>
-                                    <div class="text-sm text-gray-500">INT</div>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">Giá từ <span class="font-semibold text-gray-800">7.800.000 đ</span></p>
-
-                                <div class="mt-2 flex flex-wrap gap-2">
-                                    <button class="text-xs px-2 py-1 border border-gray-200 rounded hover:bg-gray-100 transition" onclick="openTourDetail(this)">Chi tiết</button>
-                                    <button class="text-xs px-2 py-1 border border-gray-200 rounded hover:bg-gray-100 transition" onclick="cloneTour(this)">Clone</button>
-                                    <button class="text-xs px-2 py-1 border border-gray-200 rounded hover:bg-gray-100 transition" onclick="generateQuote(this)">Báo giá nhanh</button>
-                                </div>
-                            </div>
-                        </div>
-                    </article> -->
                     </div>
                 </div>
 
@@ -208,25 +193,7 @@
                         </div>
 
                     <?php } else { ?>
-                        <div class="max-w-md mx-auto mt-6">
-                            <div class="flex flex-col items-center justify-center border-l-4 border-main p-6 rounded-xl space-y-3">
-                                <!-- Icon -->
-                                <div class="w-12 h-12 flex items-center justify-center bg-main text-white rounded-full text-2xl">
-                                    ⚠️
-                                </div>
-
-                                <!-- Thông báo -->
-                                <p class="text-gray-800 text-center font-medium">
-                                    Chưa có dữ liệu lịch trình cho tour này.
-                                    Chọn tour để xem chi tiết
-                                </p>
-
-                                <!-- Nút xem chi tiết tour -->
-                                <button class="px-4 py-2 bg-main text-white rounded-lg hover:bg-hover transition-colors font-semibold shadow-md">
-                                    Xem chi tiết tour
-                                </button>
-                            </div>
-                        </div>
+                        <?= require_once "./views/Admin/norecord.php"  ?>
                     <?php } ?>
                 </div>
             </section>
