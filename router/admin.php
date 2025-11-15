@@ -27,35 +27,35 @@ ob_start();
 
 echo match ($act) {
     '/' => (function () {
-        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
-        exit;
-    })(),
+            header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
+            exit;
+        })(),
     'showformSigninAdmin' => (function () {
-        checkSignin();
-        (new AuthController)->showformSigninAdmin();
-    })(),
+            checkSignin();
+            (new AuthController)->showformSigninAdmin();
+        })(),
     'signin' => (function () {
-        $requestData = json_decode(file_get_contents("php://input"), true);
-        (new AuthController())->signin($requestData);
-        exit;
-    })(),
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            (new AuthController())->signin($requestData);
+            exit;
+        })(),
 
     'dashboard' => (function () {
-        switch ($_SESSION['admin_role']) {
-            case 'admin': {
+            switch ($_SESSION['admin_role']) {
+                case 'admin': {
                     header("Location: " . BASE_URL . "?mode=admin&act=home");
                     exit;
                     break;
                 }
-            case 'guide': {
+                case 'guide': {
                     header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
                     exit;
                     break;
                 }
-            default:
-                break;
-        }
-    })(),
+                default:
+                    break;
+            }
+        })(),
     'logout' => (function () {
         session_destroy();
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
@@ -73,12 +73,31 @@ echo match ($act) {
     })(),
     'admintour' => (function () {
         requireAdmin();
-        (new AdminTourController)->ShowAdminTour();
+        if (!isset($_GET['tour_id'])) {
+            (new AdminTourController)->ShowAdminTour();
+        } else {
+            (new AdminTourController())->showTourDetail($_GET['tour_id']);
+            //  (new TourMedel())->TourDetailModel();
+        }
     })(),
-    'booking' => (function () {
+    'from_add_tour' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowBooking();
+        (new AdminTourController)->showFromAddTour();
     })(),
+    // quản lý nàh cung cấp
+    'supplier-list' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->showSupplierList();
+    })(),
+    'supplier-list-types' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->showSupplierTypesList();
+    })(),
+
+    'booking' => (function () {
+            requireAdmin();
+            echo (new BookingController)->ShowBooking();
+        })(),
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking();
@@ -98,6 +117,17 @@ echo match ($act) {
         requireAdmin();
         echo (new AccountManagementController)->showClientList();
     })(),
+    'delete-client' => (function () {
+        requireAdmin();
+         (new AccountManagementController)->deleteClient();
+    })(),
+
+    'update-client' => (function () {
+    requireAdmin();
+    (new AccountManagementController)->updateClient();
+    exit;
+})(),
+
 
     'liststaff' => (function () {
         requireAdmin();
@@ -106,11 +136,20 @@ echo match ($act) {
 
     // show trang lỗi
     '404' => (function () {
+<<<<<<< HEAD
         require_once "./views/Admin/common/404.php";
     })(),
+=======
+            require_once "./views/Admin/common/404.php";
+        })(),
+
+
+
+>>>>>>> c0dc6880b0104fa0c05ad17a653657579b7caa2a
     // Hướng dẫn viên
     // Trang chủ 
     'homeguide' => (function () {
+<<<<<<< HEAD
         requireGuide();
         require_once "./views/Admin/homegiude.php";
     })(),
@@ -139,10 +178,15 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/requestguide.php";
     })(),
+=======
+            requireGuide();
+            require_once "./views/Admin/homegiude.php";
+        })(),
+>>>>>>> c0dc6880b0104fa0c05ad17a653657579b7caa2a
     default => (function () {
-        header("Location: " . BASE_URL . "?mode=admin&act=404");
-        exit;
-    })(),
+            header("Location: " . BASE_URL . "?mode=admin&act=404");
+            exit;
+        })(),
 };
 $content_views = ob_get_clean();
 

@@ -3,17 +3,17 @@
     <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
         <ul class="inline-flex items-center space-x-2">
             <li>Quản trị viên</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300">Quản lý booking</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Booking</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300">Đối Tác Nhà cung cấp</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Loại Dịch Vụ</li>
         </ul>
     </nav>
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-            <h1 class="text-2xl font-semibold text-slate-900">Danh mục Tour</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">Loại Dịch Vụ</h1>
             <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">
-                <?= count($categories) ?>
+                <?= count($dataSupplierTypes) ?>
             </span>
         </div>
 
@@ -36,32 +36,32 @@
                     <th class="px-6 py-3 text-left w-10">
                         <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                     </th>
-                    <th class="px-6 py-3 text-left w-16">ID</th>
-                    <th class="px-6 py-3 text-left">Tên danh mục</th>
-                    <th class="px-6 py-3 text-left">Mô tả</th>
-                    <th class="px-6 py-3 text-left">Số lượng tour</th>
-                    <th class="px-6 py-3 text-right w-36">Cập nhật</th>
+                    <th class="px-6 py-3 text-left w-16">ID Loại</th>
+                    <th class="px-6 py-3 text-left">Tên loại dịch vụ</th>
+                    <th class="px-6 py-3 text-left">Mô tả dịch vụ</th>
+                    <th class="px-6 py-3 text-left">Tổng nhà cung cấp</th>
+                    <th class="px-6 py-3 text-right w-36">Cập nhật lần cuối</th>
                     <th class="px-6 py-3 text-right w-36">Hành động</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
-                <?php if (empty($categories)): ?>
+                <?php if (empty($dataSupplierTypes)): ?>
                     <tr>
                         <td colspan="5" class="px-6 py-4 text-slate-500 text-center">
                             Không có danh mục nào trong hệ thống.
                         </td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($categories as $value): ?>
+                    <?php foreach ($dataSupplierTypes as $value): ?>
                         <tr class="hover:bg-slate-50 transition">
                             <td class="px-6 py-4">
                                 <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                             </td>
-                            <td class="px-6 py-4"><?= $value['id'] ?></td>
-                            <td class="px-6 py-4"><?= $value['name'] ?></td>
-                            <td class="px-6 py-4 truncate max-w-xs"><?= $value['description'] ?></td>
-                            <th class="px-6 py-3 text-left"><?= $value['total_tours'] ?></th>
-                            <td class="px-6 py-4 text-right"><?= $value['updated_at'] ?></td>
+                            <td class="px-6 py-4"><?= $value['type_id'] ?></td>
+                            <td class="px-6 py-4"><?= $value['type_name'] ?></td>
+                            <td class="px-6 py-4 truncate max-w-xs"><?= $value['type_description'] ?></td>
+                            <th class="px-6 py-3 text-left"><?= $value['total_suppliers'] ?></th>
+                            <td class="px-6 py-4 text-right"><?= $value['type_updated_at'] ?></td>
                             <th class="px-6 py-3 text-right w-36">
                                 :
                             </th>
