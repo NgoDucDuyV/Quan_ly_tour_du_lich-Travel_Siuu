@@ -40,7 +40,27 @@
         <i class="fa-solid fa-route"></i>
         <span>quản lý tour</span>
       </a>
+      <!-- Đối tác & nhà cung cấp -->
+      <details class="group">
+        <summary
+          class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 list-none cursor-pointer">
+          <i class="fa-solid fa-handshake"></i>
+          <div class="detailstext flex-1 items-center justify-between">
+            <span>Đối tác & nhà cung cấp</span>
+            <svg class="ml-auto h-4 w-4 text-slate-400 transition-transform duration-150 group-open:rotate-90"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </summary>
+        <div class="detailsitems mt-1 ml-8 flex flex-col gap-1 group-open:w-auto w-0">
+          <a href="?act=supplier-list" class="px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhà cung cấp</a>
+          <a href="?act=supplier-list-types" class="px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Loại dịch
+            vụ</a>
+        </div>
+      </details>
 
+      <!-- Quản lý tài khoản -->
       <details class="group">
         <summary
           class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-50 list-none cursor-pointer">

@@ -56,4 +56,38 @@ class UserModel
         $stmt->execute($roles);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function find($id)
+{
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$id]); 
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+public function delete($id)
+{
+    $stmt = $this->conn->prepare("DELETE FROM users WHERE id = ?");
+    return $stmt->execute([$id]);
+}
+
+// === CẬP NHẬT KHÁCH HÀNG ===
+public function update($id, $data)
+{
+    $sql = "UPDATE users SET 
+            fullname = ?,  
+            email = ?, 
+            username = ?, 
+            updated_at = NOW() 
+            WHERE id = ?";
+    
+    $stmt = $this->conn->prepare($sql);
+    return $stmt->execute([
+        $data['fullname'],
+        $data['email'],
+        $data['username'],
+        $id
+    ]);
+}
+
+
 }
