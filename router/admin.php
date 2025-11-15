@@ -61,9 +61,19 @@ echo match ($act) {
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
         exit;
     })(),
+
+    // chứa năng thanh siderbar admin quản lý điều hành tour
+    'home' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/home.php";
+    })(),
     'categoriestour' => (function () {
         requireAdmin();
         (new CategoryController)->listCategories();
+    })(),
+    'admintour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->ShowAdminTour();
     })(),
     'booking' => (function () {
         requireAdmin();
@@ -72,9 +82,6 @@ echo match ($act) {
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking();
-    })(),
-    'home' => (function () {
-        require_once "./views/Admin/home.php";
     })(),
     'managerguide' => (function () {
         requireAdmin();
@@ -86,7 +93,18 @@ echo match ($act) {
         require_once "controllers/GuideLayoutController.php";
         (new GuideLayoutController())->clientList();   // ✔ chạy controller → có $clients
     })(),
+    // quản lý tải khoản
+    'listclient' => (function () {
+        requireAdmin();
+        echo (new AccountManagementController)->showClientList();
+    })(),
 
+    'liststaff' => (function () {
+        requireAdmin();
+        echo (new AccountManagementController)->showStaffList();
+    })(),
+
+    // show trang lỗi
     '404' => (function () {
         require_once "./views/Admin/common/404.php";
     })(),

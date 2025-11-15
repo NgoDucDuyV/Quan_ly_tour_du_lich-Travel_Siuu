@@ -1,5 +1,5 @@
 <?php
-class AuthModel
+class UserModel
 {
     private $conn;
 
@@ -18,15 +18,12 @@ class AuthModel
     {
         $stmt = $this->conn->prepare("
         SELECT 
-        users.id,
-        users.username,
-        users.email,
-        users.password,
+        users.*,
         roles.name as role,
-        users.created_at,
-        users.updated_at,
         roles.description
-        FROM users LEFT JOIN roles ON users.role_id = roles.id WHERE email = :email AND password = :password
+        FROM users 
+        LEFT JOIN roles ON users.role_id = roles.id 
+        WHERE email = :email AND password = :password
         ");
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":password", $password);
@@ -40,5 +37,23 @@ class AuthModel
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC); // trả về mảng
+    }
+
+
+
+    public function getUsersByRoles(array $roles)
+    {
+        $placeholders = implode(',', array_fill(0, count($roles), '?'));
+        $sql = "
+        SELECT 
+        users.*, 
+        roles.name AS rolename
+        FROM users
+        LEFT JOIN roles ON users.role_id = roles.id
+        WHERE roles.name IN ($placeholders)
+    ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($roles);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

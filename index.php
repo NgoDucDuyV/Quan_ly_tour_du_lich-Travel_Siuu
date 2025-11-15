@@ -5,19 +5,22 @@
 
     // admin model
     require_once __DIR__ . '/models/AdminModel.php';
-    require_once __DIR__ . '/models/AuthModel.php';
+    require_once __DIR__ . '/models/UserModel.php';
     require_once __DIR__ . '/models/CategoryModel.php';
     require_once __DIR__ . '/models/TourModel.php';
     require_once __DIR__ . '/models/BookingModel.php';
 
     // admin Controller
-    require_once __DIR__ . '/controllers//AuthController.php';
+    require_once __DIR__ . '/controllers/AdminAuthController.php';
     require_once __DIR__ . '/controllers/BookingController.php';
     require_once __DIR__ . '/controllers/CategoryController.php';
 
+    require_once __DIR__ . '/controllers/AccountManagementController.php';
+
     require_once __DIR__ . '/controllers/AdminLayoutController.php';
     require_once __DIR__ . '/controllers/GuideLayoutController.php';
-    require_once __DIR__ . '/controllers/TourController.php';
+    //quản lý danh mục tour
+    require_once __DIR__ . '/controllers/AdminTourController.php';
 
 
 
@@ -140,7 +143,7 @@
         <!-- #a8c4f0 -->
     </head>
 
-    <body class="bg-gray-100 flex flex-col w-[100wh] h-[100vh]">
+    <body class="bg-gray-100 flex flex-col overflow-x-hidden w-[100wh] h-[100vh]">
         <?php echo $content_views; ?>
     </body>
 
