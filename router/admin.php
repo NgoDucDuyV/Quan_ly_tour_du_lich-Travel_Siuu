@@ -89,6 +89,17 @@ echo match ($act) {
         requireAdmin();
         echo (new AccountManagementController)->showClientList();
     })(),
+    'delete-client' => (function () {
+        requireAdmin();
+         (new AccountManagementController)->deleteClient();
+    })(),
+
+    'update-client' => (function () {
+    requireAdmin();
+    (new AccountManagementController)->updateClient();
+    exit;
+})(),
+
 
     'liststaff' => (function () {
         requireAdmin();
