@@ -73,8 +73,27 @@ echo match ($act) {
     })(),
     'admintour' => (function () {
         requireAdmin();
-        (new AdminTourController)->ShowAdminTour();
+        if (!isset($_GET['tour_id'])) {
+            (new AdminTourController)->ShowAdminTour();
+        } else {
+            (new AdminTourController())->showTourDetail($_GET['tour_id']);
+            //  (new TourMedel())->TourDetailModel();
+        }
     })(),
+    'from_add_tour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->showFromAddTour();
+    })(),
+    // quản lý nàh cung cấp
+    'supplier-list' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->showSupplierList();
+    })(),
+    'supplier-list-types' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->showSupplierTypesList();
+    })(),
+
     'booking' => (function () {
             requireAdmin();
             echo (new BookingController)->ShowBooking();
