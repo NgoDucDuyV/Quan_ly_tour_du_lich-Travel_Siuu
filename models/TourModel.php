@@ -68,4 +68,41 @@ class TourModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+    public function TourSuppliersModel($tour_id)
+    {
+        $stmt = $this->conn->prepare("
+        SELECT 
+            t.id AS tour_id,
+            t.name AS tour_name,
+            s.id AS supplier_id,
+            s.name AS supplier_name,
+            ts.role,
+            ts.notes
+        FROM tours t
+        JOIN tour_suppliers ts ON t.id = ts.tour_id
+        JOIN suppliers s ON ts.supplier_id = s.id
+        WHERE t.id = :tour_id
+        ORDER BY t.id, s.id;
+
+        ");
+        $stmt->bindParam(":tour_id", $tour_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function TourImagesModel($tour_id)
+    {
+        $stmt = $this->conn->prepare("
+        SELECT tour_images.* 
+        FROM tours 
+        LEFT JOIN tour_images ON tours.id = tour_images.tour_id
+        WHERE tours.id = :tour_id
+        ");
+        $stmt->bindParam(":tour_id", $tour_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
