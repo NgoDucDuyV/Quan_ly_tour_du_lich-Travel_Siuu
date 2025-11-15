@@ -34,9 +34,9 @@
                 <a href="#"
                         class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-50">
                         <i data-lucide="scan" class="w-5 h-5"></i>Check-in & Điểm danh</a>
-                <!-- <a href="#"
+                <a href="#"
                         class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-50">
-                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>Yêu cầu đặc biệt</a> -->
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>Yêu cầu đặc biệt</a>
         </nav>
         <button class="bg-main text-white px-6 py-2 rounded-lg shadow-md hover:bg-hover transition">
                 Đăng xuất
