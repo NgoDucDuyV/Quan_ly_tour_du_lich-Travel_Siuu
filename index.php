@@ -6,8 +6,10 @@ require_once __DIR__ . '/commons/function.php';
     // admin model
     require_once __DIR__ . '/models/AdminModel.php';
     require_once __DIR__ . '/models/UserModel.php';
+    // chức nâng siderbar
     require_once __DIR__ . '/models/CategoryModel.php';
     require_once __DIR__ . '/models/TourModel.php';
+    require_once __DIR__ . '/models/SupplierModel.php';
     require_once __DIR__ . '/models/BookingModel.php';
 
     // admin Controller
@@ -21,6 +23,7 @@ require_once __DIR__ . '/commons/function.php';
     require_once __DIR__ . '/controllers/GuideLayoutController.php';
     //quản lý danh mục tour
     require_once __DIR__ . '/controllers/AdminTourController.php';
+    require_once __DIR__ . '/controllers/AdminSupplierController.php';
 
 
 

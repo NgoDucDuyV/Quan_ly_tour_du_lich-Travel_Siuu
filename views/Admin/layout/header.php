@@ -15,7 +15,8 @@
                 <div class="flex items-center justify-between h-20">
                     <!-- Trái -->
                     <div class="flex items-center space-x-8">
-                        <button class="bg-[#0000] text-dark text-[20px] font-[100] flex items-center justify-center hover:text-hover">
+                        <button
+                            class="bg-[#0000] text-dark text-[20px] font-[100] flex items-center justify-center hover:text-hover">
                             <i class="fa-solid fa-bars"></i>
                         </button>
 
@@ -54,13 +55,13 @@
                         <div class="relative group">
                             <div class="flex items-center space-x-3 cursor-pointer select-none">
                                 <div class="flex flex-col justify-center">
-                                    <h1 class="text-lg m-0 font-bold text-slate-800"><?= $_SESSION['admin_logged']['fullname'] ?></h1>
-                                    <p class="text-xs m-0 text-slate-500 tracking-wide">(<?= $_SESSION['admin_logged']['description'] ?>)</p>
+                                    <h1 class="text-lg m-0 font-bold text-slate-800">
+                                        <?= $_SESSION['admin_logged']['fullname'] ?></h1>
+                                    <p class="text-xs m-0 text-slate-500 tracking-wide">
+                                        (<?= $_SESSION['admin_logged']['description'] ?>)</p>
                                 </div>
-                                <img
-                                    class="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
-                                    src="<?= BASE_URL . $_SESSION['admin_logged']['avatar'] ?>"
-                                    alt="Ảnh đại diện">
+                                <img class="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                    src="<?= BASE_URL . $_SESSION['admin_logged']['avatar'] ?>" alt="Ảnh đại diện">
                             </div>
 
                             <!-- Menu user -->
@@ -76,8 +77,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#"
-                                            class="flex items-center px-4 py-2 hover:bg-gray-100">
+                                        <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
                                             <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Cài Đặt
                                         </a>
                                     </li>
