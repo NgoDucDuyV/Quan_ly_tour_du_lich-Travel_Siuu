@@ -7,8 +7,9 @@ class BookingController
         // echo '<pre>';
         // var_dump($datatour);
         // echo '<pre>';
+        echo 'quản lý booking';
         // die;
-        require_once "./views/Admin/Booking.php";
+        // require_once "./views/Admin/Booking.php";
     }
 
     public function ShowFromNewBooking()
