@@ -52,7 +52,7 @@
                     </div>
 
 
-                    <div class="space-y-3 overflow-auto max-h-[28rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
+                    <div class="space-y-3 overflow-auto  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
                         <!-- tour card -->
                         <?php foreach ($datatour as $value) { ?>
                             <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-gray-50">
@@ -164,13 +164,16 @@
                                     <h4 class="mt-4 font-semibold text-gray-800">Chính sách</h4>
                                     <p class="text-sm text-gray-600 mt-2">Hủy sau 7 ngày trước ngày khởi hành mất 50% phí, hủy trong 3 ngày mất 100%...</p>
 
+                                    <!-- nhà cung cap  -->
                                     <h4 class="mt-4 font-semibold text-gray-800">Nhà cung cấp</h4>
-                                    <?php foreach ($dataTourSupplier as $value) { ?>
-                                        <div class="tour-item">
-                                            <!-- <h3 class="font-semibold text-gray-800"><?= $dataOneTour['name'] ?></h3> -->
-                                            <p class="text-sm text-gray-600 mt-2"><?= $value['role'] ?> : <?= $value['supplier_name'] ?></p>
-                                        </div>
-                                    <?php } ?>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                        <?php foreach ($dataTourSupplier as $value) { ?>
+                                            <div class="supplier-item bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                                                <span class="font-medium text-gray-800"><?= ucfirst($value['role']) ?>:</span>
+                                                <span class="text-gray-600"><?= $value['supplier_name'] ?></span>
+                                            </div>
+                                        <?php } ?>
+                                    </div>
                                 </div>
 
                                 <div id="tab-versions" class="tab-pane hidden">
@@ -321,8 +324,21 @@
                                     <th class="px-6 py-3 text-left"><?= $value['price'] ?> (VNĐ)</th>
                                     <th class="px-6 py-3 text-left">Đang diễn ra</th>
                                     <th class="px-6 py-3 text-left"><?= $value['created_at'] ?></th>
-                                    <th class="px-6 py-3 text-right w-36">
-                                        :
+                                    <th class="px-6 py-3 text-right w-40 space-x-1">
+                                        <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
+                                            class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition">
+                                            Chi tiết
+                                        </a>
+                                        <a href="#"
+                                            onclick="cloneTour(this)"
+                                            class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition">
+                                            Clone
+                                        </a>
+                                        <a href="#"
+                                            onclick="generateQuote(this)"
+                                            class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition">
+                                            Báo giá
+                                        </a>
                                     </th>
                                 </tr>
                             <?php endforeach; ?>
