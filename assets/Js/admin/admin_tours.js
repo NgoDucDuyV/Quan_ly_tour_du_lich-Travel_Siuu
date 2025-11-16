@@ -1,27 +1,23 @@
-const adminContent = document.getElementById("adminContent");
-console.log(adminContent);
+const viewsdetailtour = document.getElementById("viewsdetailtour");
+console.log(viewsdetailtour);
 // console.log(axios);
 
-const clickloadAdminPage = document.querySelectorAll(".clickloadAdminPage");
-console.log(clickloadAdminPage);
+const clickloadAdmindetailtours = document.querySelectorAll(
+  ".clickloadAdmindetailtour"
+);
+// console.log(clickloadAdmindetailtour);
 
-clickloadAdminPage.forEach((item, index) => {
+console.log(clickloadAdmindetailtours);
+
+clickloadAdmindetailtours.forEach((item, index) => {
   item.addEventListener("click", (e) => {
     e.preventDefault();
-    clickloadAdminPage.forEach((el) => {
-      // text-hover bg-indigo-50
-      el.classList.remove("text-hover", "bg-indigo-50");
-      el.classList.add("text-slate-700", "hover:bg-indigo-50");
-    });
-
-    e.currentTarget.classList.remove("text-slate-700", "hover:bg-indigo-50");
-    e.currentTarget.classList.add("text-hover", "bg-indigo-50");
     const href = e.currentTarget.getAttribute("href");
-    loadAdminPage(href);
+    loadDetailtour(href);
   });
 });
-const loadAdminPage = (href) => {
-  adminContent.innerHTML = `
+const loadDetailtour = (href) => {
+  viewsdetailtour.innerHTML = `
     <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
         <div id="spinner" class="w-16 h-16 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-6"></div>
         <p id="loadingText" class="text-gray-700 text-lg opacity-0 animate-fadeIn">Đang tải dữ liệu, vui lòng đợi...</p>
@@ -35,8 +31,8 @@ const loadAdminPage = (href) => {
   axios
     .get(`${BASE_URL}${href}&ajax=1`)
     .then(({ data }) => {
-      // console.log(data);
-      adminContent.innerHTML = data;
+      console.log(data);
+      viewsdetailtour.innerHTML = data;
     })
     .catch(() => {
       console.log("Lỗi khôg có inter net");

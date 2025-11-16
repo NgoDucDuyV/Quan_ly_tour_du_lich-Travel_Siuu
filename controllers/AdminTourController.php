@@ -27,7 +27,7 @@ class AdminTourController
         // var_dump($dataTourImages);
         // echo "<pre>";
         // die;
-        require_once "./views/Admin/admin_tours.php";
+        require_once "./views/Admin/admin_detail_tour.php";
     }
 
 

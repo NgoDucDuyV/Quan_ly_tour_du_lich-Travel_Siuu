@@ -11,9 +11,9 @@
 
   <aside
     class="flex flex-col z-[10] bg-white border-r border-slate-200 shadow-lg sticky top-0 h-screen transition-all duration-200 ease-in-out
-    md:hide-scrollbar xl:min-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4 xl:overflow-y-auto
-    md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full md:overflow-x-auto 
-    sm:max-w-[350px]
+    sm:max-w-[350px] sm:overflow-y-auto
+    md:hide-scrollbar md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full md:overflow-visible  
+    xl:min-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4 xl:overflow-y-auto
     min-w-[280px] py-6 px-4 w-0">
 
     <div class="flex items-center gap-3 mt-4 mb-8 px-2">
@@ -29,61 +29,96 @@
     <div class="xl:block md:hidden text-xs font-semibold text-slate-500 uppercase tracking-wide mb-4 ">Điều hướng</div>
     <nav class=" font-[500] w-full
     [&_a]:relative *:mb-1 
-
+    
     xl:[&_a_span]:block 
     md:[&_a_span]:hidden
-
+    
     xl:[&_a]:justify-stretch
     md:[&_a]:justify-center
 
-    xl:[&_a_i]:mt-0;
-    md:[&_a_i]:mt-5;
     <!-- details -->
-    xl:[&_details_summary]:justify-stretch
     md:[&_details_summary]:justify-center
-
-    xl:[&_details_summary_.detailstext]:flex xl:[&_details_.detailsitems]:flex xl:[&_details_.detailsitems]:static xl:[&_details_.detailsitems]:rounded-none xl:[&_details_.detailsitems]:shadow-none
-    md:[&_details_summary_.detailstext]:hidden md:[&_details_.detailsitems]:hidden
+    xl:[&_details_summary]:justify-stretch
     
-
-    md:[&_details_.detailsitems]:absolute md:[&_details_.detailsitems]:right-[-240%] md:[&_details_.detailsitems]:top-0 md:[&_details_.detailsitems]:group-open:flex md:[&_details_.detailsitems]:bg-white md:[&_details_.detailsitems]:rounded-lg md:[&_details_.detailsitems]:shadow-2xl
+    md:[&_details_summary_.detailstext]:hidden md:[&_details_.detailsitems]:hidden
+    xl:[&_details_summary_.detailstext]:flex xl:[&_details_.detailsitems]:flex 
+    
     [&_details_summary_.detailstext]:flex
+
     ">
       <!-- Nav item -->
-      <a href="?act=home" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md  text-hover bg-indigo-50">
+      <a href="?act=home" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-house"></i>
         <span>Bảng điều khiển</span>
+        <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm
+            opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+            transition-opacity duration-300">
+          Bảng điều khiển
+        </p>
       </a>
 
-      <a href="?act=categoriestour" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=categoriestour" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-list"></i>
         <span>Quản Lý Danh Mục Tour</span>
+        <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm
+            opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+            transition-opacity duration-300">
+          Quản Lý Danh Mục Tour
+        </p>
       </a>
 
-      <a href="?act=admintour" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=admintour" class="relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-map-marked-alt text-xl"></i>
-        <span>quản lý tour</span>
+        <span>Quản lý tour</span>
+        <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm
+            opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+            transition-opacity duration-300">
+          Quản lý tour
+        </p>
       </a>
-
       <!-- Đối tác & nhà cung cấp -->
       <details class="group relative">
         <summary class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 list-none cursor-pointer">
           <i class="fa-solid fa-handshake"></i>
           <div class="detailstext flex-1 items-center justify-between">
-            <span>Đối tác & nhà cung cấp</span>
-            <svg class="ml-auto h-4 w-4 text-slate-400 transition-transform duration-150 group-open:rotate-90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <span class="flex-1">Đối tác & nhà cung cấp</span>
+            <svg class="ml-auto h-4 w-4 text-slate-400 transition-transform duration-150 group-open:rotate-90"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </div>
+          <div class="mt-1 ml-6 flex flex-col gap-1 xl:group-hover:opacity-0
+              opacity-0 transform scale-0 origin-top-left transition-all duration-300 ease-in-out
+              absolute left-[80%] top-0 bg-white rounded-lg shadow-lg p-2
+              w-48 md:group-hover:scale-[1] md:group-hover:opacity-100">
+            <a href="?act=supplier-list"
+              class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition transition">
+              <i class="fa-solid fa-boxes-packing"></i>
+              Nhà cung cấp
+            </a>
+            <a href="?act=supplier-list-types"
+              class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition transition">
+              <i class="fa-brands fa-servicestack"></i>
+              Loại dịch vụ
+            </a>
+          </div>
         </summary>
-        <div class="detailsitems mt-1 ml-8 flex flex-col gap-1 group-open:w-auto w-0">
-          <a href="?act=supplier-list" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhà cung cấp</a>
-          <a href="?act=supplier-list-types" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Loại dịch vụ</a>
+        <!-- Sub-items -->
+        <div class="detailsitems mt-1 ml-6 flex flex-col gap-1 group-open:w-full w-0">
+          <a href="?act=supplier-list"
+            class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition transition">
+            <i class="fa-solid fa-boxes-packing"></i>
+            Nhà cung cấp
+          </a>
+          <a href="?act=supplier-list-types"
+            class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition transition">
+            <i class="fa-brands fa-servicestack"></i>
+            Loại dịch vụ
+          </a>
         </div>
       </details>
-
       <!-- Quản lý tài khoản -->
-      <details class="group">
+      <details class="group relative">
         <summary class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 list-none cursor-pointer">
           <i class="fa-solid fa-users"></i>
           <div class="detailstext flex-1 items-center justify-between">
@@ -92,30 +127,64 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </div>
+          <div class="mt-1 ml-6 flex flex-col gap-1 xl:group-hover:opacity-0
+              opacity-0 transform scale-0 origin-top-left transition-all duration-300 ease-in-out
+              absolute left-[80%] top-0 bg-white rounded-lg shadow-lg p-2
+              w-48 md:group-hover:scale-[1] md:group-hover:opacity-100">
+            <a href="?act=supplier-list"
+              class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition transition">
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+              khách Hàng
+            </a>
+            <a href="?act=supplier-list-types"
+              class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition transition">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              Nhân Viên
+            </a>
+          </div>
         </summary>
 
         <div class="detailsitems mt-1 ml-8 flex flex-col gap-1 group-open:w-auto w-0">
-          <a href="?act=listclient" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">khách Hàng</a>
-          <a href="?act=liststaff" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhân viên</a>
+          <a href="?act=listclient" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">
+            khách Hàng
+          </a>
+          <a href="?act=liststaff" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">
+            Nhân Viên
+          </a>
         </div>
       </details>
 
       <!-- Active item (Thể loại) -->
-      <a href="?act=booking" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=booking" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-calendar-check text-xl"></i>
         <span>Quản lý booking</span>
+        <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm
+            opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+            transition-opacity duration-300">
+          Quản lý booking
+        </p>
       </a>
 
-      <a href="?act=revenues" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=revenues" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-chart-simple"></i>
         <span>Báo cáo & thống kê</span>
+        <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm
+            opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+            transition-opacity duration-300">
+          Báo cáo & thống kê
+        </p>
       </a>
 
-      <a href="?act=revenues" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=revenues" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12h18M12 3v18" />
         </svg>
         <span>Travel_Siuu mạnh vãi chưởng</span>
+        <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm
+            opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto
+            transition-opacity duration-300">
+          Travel_Siuu mạnh vãi chưởng
+        </p>
       </a>
     </nav>
 

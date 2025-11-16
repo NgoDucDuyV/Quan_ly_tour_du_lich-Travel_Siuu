@@ -75,12 +75,14 @@ echo match ($act) {
     })(),
     'admintour' => (function () {
         requireAdmin();
-        if (!isset($_GET['tour_id'])) {
-            (new AdminTourController)->ShowAdminTour();
-        } else {
+        if (isset($_GET['tour_id'])) {
             (new AdminTourController())->showTourDetail($_GET['tour_id']);
-            //  (new TourMedel())->TourDetailModel();
+        } else {
+            (new AdminTourController)->ShowAdminTour();
         }
+    })(),
+    'admin_detail_tour' => (function () {
+        requireAdmin();
     })(),
     'from_add_tour' => (function () {
         requireAdmin();
@@ -171,7 +173,7 @@ if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
     <?= $layoutController->Header() ?>
     <main id="contentAdmin" class="contentAdmin flex flex-row relative md:p-0 z-[0]">
         <?= $layoutController->Sidebar() ?>
-        <div id="adminContent" class="flex-1">
+        <div id="adminContent" class="w-full overflow-x-hidden">
             <?= $content_views ?>
         </div>
     </main>
