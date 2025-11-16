@@ -107,7 +107,7 @@ echo match ($act) {
         echo (new BookingController)->ShowFromNewBooking();
     })(),
 
-    // quản lý tải khoản
+    // quản lý tải khoản người dùng
     'listclient' => (function () {
         requireAdmin();
         echo (new AccountManagementController)->showClientList();
@@ -122,11 +122,37 @@ echo match ($act) {
         (new AccountManagementController)->updateClient();
         exit;
     })(),
+    'create-client' => (function () {
+        requireAdmin();
+        (new AccountManagementController)->createClient();
+        exit;
+    })(),
 
 
     'liststaff' => (function () {
         requireAdmin();
         echo (new AccountManagementController)->showStaffList();
+    })(),
+
+
+   //quản lý nhân viên
+    'create-staff' => (function () {
+        requireAdmin();
+        (new AccountManagementController)->createStaff();
+        exit;
+    })(),
+
+ 
+    'update-staff' => (function () {
+        requireAdmin();
+        (new AccountManagementController)->updateStaff();
+        exit;
+    })(),
+
+    'delete-staff' => (function () {
+        requireAdmin();
+        (new AccountManagementController)->deleteStaff();
+        exit;
     })(),
 
     // show trang lỗi
@@ -136,7 +162,7 @@ echo match ($act) {
 
 
 
-    // Hướng dẫn viên
+    // hướng dẫn viên
     'homeguide' => (function () {
         requireGuide();
         require_once "./views/Admin/homegiude.php";
@@ -153,7 +179,7 @@ if ($ajax == 1) {
     exit;
 }
 
-// Xác định layout theo role
+// xác định layout theo role
 $layoutController = null;
 if (isset($_SESSION['admin_logged'])) {
     if ($_SESSION['admin_role'] === 'admin') {

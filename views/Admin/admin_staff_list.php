@@ -1,17 +1,30 @@
 <div class="max-w-[1800px] mx-auto p-6">
-    <!-- Breadcrumb -->
+    <!-- breadcrumb -->
     <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
         <ul class="inline-flex items-center space-x-2">
-            <li>Quản trị viên</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300">Quản lý Tài khoản</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Nhân Viên </li>
+            <li>quản trị viên</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300">quản lý tài khoản</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">nhân viên</li>
         </ul>
     </nav>
 
-    <!-- Header -->
+    <!-- thông báo -->
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-md border border-green-300 text-sm font-medium">
+            <?= $_SESSION['success'] ?> <?php unset($_SESSION['success']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md border border-red-300 text-sm font-medium">
+            <?= $_SESSION['error'] ?> <?php unset($_SESSION['error']); ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- header -->
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-            <h1 class="text-2xl font-semibold text-slate-900">Danh sách nhân viên</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">danh sách nhân viên</h1>
             <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">
                 <?= count($datausers) ?>
             </span>
@@ -19,16 +32,18 @@
 
         <div class="flex items-center space-x-3">
             <button class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-md text-sm text-slate-600 bg-white hover:bg-slate-50">
-                Lọc
+                lọc
             </button>
 
-            <button class="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-md text-sm hover:bg-indigo-50">
-                Tạo mới
-            </button>
+            <!-- nút tạo mới -->
+            <a href="?mode=admin&act=liststaff&create=1" 
+               class="flex items-center gap-2 px-4 py-2 bg-white border border-green-600 text-green-600 rounded-md text-sm hover:bg-green-50">
+                tạo mới
+            </a>
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- bảng -->
     <div class="overflow-x-auto bg-white border border-slate-100 rounded-lg shadow-sm">
         <table class="min-w-full divide-y divide-slate-100">
             <thead class="bg-slate-50 text-slate-500 text-sm font-medium">
@@ -36,19 +51,19 @@
                     <th class="px-6 py-3 text-left w-10">
                         <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                     </th>
-                    <th class="px-6 py-3 text-left w-16">ID</th>
-                    <th class="px-6 py-3 text-left">Họ Tên</th>
-                    <th class="px-6 py-3 text-left">Email</th>
-                    <th class="px-6 py-3 text-left">Chức Vụ</th>
-                    <th class="px-6 py-3 text-right w-36">Cập nhật</th>
-                    <th class="px-6 py-3 text-right w-36">Hành động</th>
+                    <th class="px-6 py-3 text-left w-16">id</th>
+                    <th class="px-6 py-3 text-left">họ tên</th>
+                    <th class="px-6 py-3 text-left">email</th>
+                    <th class="px-6 py-3 text-left">chức vụ</th>
+                    <th class="px-6 py-3 text-right w-36">cập nhật</th>
+                    <th class="px-6 py-3 text-right w-36">hành động</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
                 <?php if (empty($datausers)): ?>
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-slate-500 text-center">
-                            Không có danh mục nào trong hệ thống.
+                        <td colspan="7" class="px-6 py-4 text-slate-500 text-center">
+                            không có nhân viên nào trong hệ thống.
                         </td>
                     </tr>
                 <?php else: ?>
@@ -58,17 +73,127 @@
                                 <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                             </td>
                             <td class="px-6 py-4"><?= $value['id'] ?></td>
-                            <td class="px-6 py-4"><?= $value['fullname'] ?></td>
-                            <td class="px-6 py-4 truncate max-w-xs"><?= $value['email'] ?></td>
-                            <th class="px-6 py-3 text-left"><?= $value['rolename'] ?></th>
-                            <td class="px-6 py-4 text-right"><?= $value['updated_at'] ?></td>
-                            <th class="px-6 py-3 text-right w-36">
-                                :
-                            </th>
+                            <td class="px-6 py-4"><?= htmlspecialchars($value['fullname'] ?? '') ?></td>
+                            <td class="px-6 py-4 truncate max-w-xs"><?= htmlspecialchars($value['email'] ?? '') ?></td>
+                            <td class="px-6 py-4"><?= htmlspecialchars($value['rolename'] ?? '') ?></td>
+                            <td class="px-6 py-4 text-right"><?= $value['updated_at'] ?? '' ?></td>
+                            <td class="px-6 py-4 text-right w-36">
+                                <div class="flex items-center justify-end gap-2">
+
+                                    <!-- sửa -->
+                                    <a href="?mode=admin&act=liststaff&edit_id=<?= $value['id'] ?>"
+                                       class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-md transition inline-block"
+                                       title="sửa">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+
+                                    <!-- xóa -->
+                                    <form action="?mode=admin&act=delete-staff" method="POST" class="inline"
+                                          onsubmit="return confirm('xóa nhân viên này?')">
+                                        <input type="hidden" name="id" value="<?= $value['id'] ?>">
+                                        <button type="submit"
+                                                class="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition"
+                                                title="xóa">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
+
+    <!-- form tạo mới nhân viên -->
+    <?php $showCreate = isset($_GET['create']) && $_GET['create'] === '1'; ?>
+    <?php if ($showCreate): ?>
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 class="text-xl font-semibold text-slate-900 mb-4">tạo nhân viên mới</h2>
+            <form action="?mode=admin&act=create-staff" method="POST">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">họ tên *</label>
+                    <input type="text" name="fullname" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">email *</label>
+                    <input type="email" name="email" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">tên đăng nhập *</label>
+                    <input type="text" name="username" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">mật khẩu *</label>
+                    <input type="password" name="password" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">chức vụ *</label>
+                    <select name="role_id" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                        <option value="">-- chọn --</option>
+                        <option value="1">admin</option>
+                        <option value="2">hướng dẫn viên</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <a href="?mode=admin&act=liststaff" class="px-4 py-2 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50">hủy</a>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">tạo mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- form sửa nhân viên -->
+    <?php
+    $editUser = null;
+    if (isset($_GET['edit_id'])) {
+        $editId = (int)$_GET['edit_id'];
+        $userModel = new UserModel();
+        $editUser = $userModel->find($editId);
+    }
+    ?>
+    <?php if ($editUser): ?>
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 class="text-xl font-semibold text-slate-900 mb-4">sửa nhân viên</h2>
+            <form action="?mode=admin&act=update-staff" method="POST">
+                <input type="hidden" name="id" value="<?= $editUser['id'] ?>">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">họ tên</label>
+                    <input type="text" name="fullname" value="<?= htmlspecialchars($editUser['fullname']) ?>" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">email</label>
+                    <input type="email" name="email" value="<?= htmlspecialchars($editUser['email']) ?>" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">tên đăng nhập</label>
+                    <input type="text" name="username" value="<?= htmlspecialchars($editUser['username']) ?>" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">chức vụ</label>
+                    <select name="role_id" required class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-indigo-500">
+                        <option value="1" <?= $editUser['role_id'] == 1 ? 'selected' : '' ?>>admin</option>
+                        <option value="2" <?= $editUser['role_id'] == 2 ? 'selected' : '' ?>>hướng dẫn viên</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <a href="?mode=admin&act=liststaff" class="px-4 py-2 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50">hủy</a>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
+
 </div>
