@@ -10,9 +10,10 @@
 <body>
 
   <aside
-    class="flex flex-col relative bg-white border-r overflow-x-hidden border-slate-200 shadow-lg sticky top-0 h-screen overflow-y-auto transition-all duration-200 ease-in-out hide-scrollbar xl:max-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4
-    md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full  
-    sm:max-w-[350px] 
+    class="flex flex-col z-[10] bg-white border-r border-slate-200 shadow-lg sticky top-0 h-screen transition-all duration-200 ease-in-out
+    md:hide-scrollbar xl:min-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4 xl:overflow-y-auto
+    md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full md:overflow-x-auto 
+    sm:max-w-[350px]
     min-w-[280px] py-6 px-4 w-0">
 
     <div class="flex items-center gap-3 mt-4 mb-8 px-2">
@@ -26,8 +27,8 @@
       </div>
     </div>
     <div class="xl:block md:hidden text-xs font-semibold text-slate-500 uppercase tracking-wide mb-4 ">Điều hướng</div>
-    <nav class="space-y-1 font-[500] w-full
-    [&_a]:relative
+    <nav class=" font-[500] w-full
+    [&_a]:relative *:mb-1 
 
     xl:[&_a_span]:block 
     md:[&_a_span]:hidden
@@ -41,29 +42,31 @@
     xl:[&_details_summary]:justify-stretch
     md:[&_details_summary]:justify-center
 
-    xl:[&_details_summary_.detailstext]:flex xl:[&_details_.detailsitems]:flex 
+    xl:[&_details_summary_.detailstext]:flex xl:[&_details_.detailsitems]:flex xl:[&_details_.detailsitems]:static xl:[&_details_.detailsitems]:rounded-none xl:[&_details_.detailsitems]:shadow-none
     md:[&_details_summary_.detailstext]:hidden md:[&_details_.detailsitems]:hidden
     
-    [&_details_summary_.detailstext]:flex [&_details_.detailsitems]:flex
+
+    md:[&_details_.detailsitems]:absolute md:[&_details_.detailsitems]:right-[-240%] md:[&_details_.detailsitems]:top-0 md:[&_details_.detailsitems]:group-open:flex md:[&_details_.detailsitems]:bg-white md:[&_details_.detailsitems]:rounded-lg md:[&_details_.detailsitems]:shadow-2xl
+    [&_details_summary_.detailstext]:flex
     ">
       <!-- Nav item -->
-      <a href="?act=home" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=home" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md  text-hover bg-indigo-50">
         <i class="fa-solid fa-house"></i>
         <span>Bảng điều khiển</span>
       </a>
 
-      <a href="<?= BASE_URL ?>?act=categoriestour" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=categoriestour" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
         <i class="fa-solid fa-list"></i>
         <span>Quản Lý Danh Mục Tour</span>
       </a>
 
-      <a href="?act=admintour" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=admintour" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
         <i class="fa-solid fa-map-marked-alt text-xl"></i>
         <span>quản lý tour</span>
       </a>
 
       <!-- Đối tác & nhà cung cấp -->
-      <details class="group">
+      <details class="group relative">
         <summary class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 list-none cursor-pointer">
           <i class="fa-solid fa-handshake"></i>
           <div class="detailstext flex-1 items-center justify-between">
@@ -74,8 +77,8 @@
           </div>
         </summary>
         <div class="detailsitems mt-1 ml-8 flex flex-col gap-1 group-open:w-auto w-0">
-          <a href="?act=supplier-list" class="px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhà cung cấp</a>
-          <a href="?act=supplier-list-types" class="px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Loại dịch vụ</a>
+          <a href="?act=supplier-list" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhà cung cấp</a>
+          <a href="?act=supplier-list-types" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Loại dịch vụ</a>
         </div>
       </details>
 
@@ -92,23 +95,23 @@
         </summary>
 
         <div class="detailsitems mt-1 ml-8 flex flex-col gap-1 group-open:w-auto w-0">
-          <a href="?act=listclient" class="px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">khách Hàng</a>
-          <a href="?act=liststaff" class="px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhân viên</a>
+          <a href="?act=listclient" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">khách Hàng</a>
+          <a href="?act=liststaff" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">Nhân viên</a>
         </div>
       </details>
 
       <!-- Active item (Thể loại) -->
-      <a href="<?= BASE_URL ?>?act=booking" class="flex items-center gap-3 px-3 py-2 rounded-md text-hover bg-indigo-50">
+      <a href="?act=booking" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
         <i class="fa-solid fa-calendar-check text-xl"></i>
         <span>Quản lý booking</span>
       </a>
 
-      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=revenues" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
         <i class="fa-solid fa-chart-simple"></i>
         <span>Báo cáo & thống kê</span>
       </a>
 
-      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
+      <a href="?act=revenues" class="clickloadAdminPage flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12h18M12 3v18" />
         </svg>
@@ -121,8 +124,8 @@
       <h3 class="text-xs uppercase text-slate-400 mb-3 tracking-wide font-semibold">Danh mục tour</h3>
       <ul class="space-y-2 p-0">
         <li>
-          <a href="<?= BASE_URL ?>?act=tourTrongNuoc"
-            class="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm text-slate-700 bg-indigo-50 hover:bg-slate-100 transition">
+          <a href="?act=tourTrongNuoc"
+            class="clickloadAdminPage flex items-center justify-between px-4 py-3 rounded-lg shadow-sm text-slate-700 bg-indigo-50 hover:bg-slate-100 transition">
             <div>
               <div class="text-sm font-medium text-slate-800">Tour trong nước</div>
               <div class="text-xs text-slate-500">Trải nghiệm trong nước</div>
@@ -132,8 +135,8 @@
         </li>
 
         <li>
-          <a href="<?= BASE_URL ?>?act=tourQuocTe"
-            class="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm text-slate-700 bg-white hover:bg-indigo-50 transition">
+          <a href="?act=tourQuocTe"
+            class="clickloadAdminPage flex items-center justify-between px-4 py-3 rounded-lg shadow-sm text-slate-700 bg-white hover:bg-indigo-50 transition">
             <div>
               <div class="text-sm font-medium text-slate-800">Tour quốc tế</div>
               <div class="text-xs text-slate-500">Khách nước ngoài</div>
@@ -143,8 +146,8 @@
         </li>
 
         <li>
-          <a href="<?= BASE_URL ?>?act=tourTheoYeuCau"
-            class="flex items-center justify-between px-4 py-3 rounded-lg shadow-sm text-slate-700 bg-white hover:bg-indigo-50 transition">
+          <a href="?act=tourTheoYeuCau"
+            class="clickloadAdminPage flex items-center justify-between px-4 py-3 rounded-lg shadow-sm text-slate-700 bg-white hover:bg-indigo-50 transition">
             <div>
               <div class="text-sm font-medium text-slate-800">Tour theo yêu cầu</div>
               <div class="text-xs text-slate-500">Customized tour</div>
@@ -182,7 +185,6 @@
         <div class="absolute inset-x-4 bottom-4 h-20 rounded-lg" style="background: linear-gradient(180deg, transparent, rgba(99,102,241,0.06)); filter: blur(12px); opacity: 0.9;"></div>
       </div>
     </div>
-
   </aside>
 </body>
 

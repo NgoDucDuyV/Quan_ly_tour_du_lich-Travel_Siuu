@@ -3,16 +3,14 @@ class AdminLayoutController
 {
     public function Header()
     {
-        // var_dump($_SESSION['admin_logged']);
-        // die;
-        require_once "./views/Admin/layout/header.php";
+        require_once PATH_ROOT . "views/Admin/layout/header.php";
     }
     public function Sidebar()
     {
-        require_once "./views/Admin/layout/sidebar.php";
+        require_once PATH_ROOT . "views/Admin/layout/sidebar.php";
     }
     public function Footer()
     {
-        require_once "./views/Admin/layout/footer.php";
+        require_once PATH_ROOT . "views/Admin/layout/footer.php";
     }
 }

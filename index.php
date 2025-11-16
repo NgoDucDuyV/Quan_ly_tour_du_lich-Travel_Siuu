@@ -3,27 +3,27 @@ session_start();
 require_once __DIR__ . '/commons/env.php';
 require_once __DIR__ . '/commons/function.php';
 
-    // admin model
-    require_once __DIR__ . '/models/AdminModel.php';
-    require_once __DIR__ . '/models/UserModel.php';
-    // chức nâng siderbar
-    require_once __DIR__ . '/models/CategoryModel.php';
-    require_once __DIR__ . '/models/TourModel.php';
-    require_once __DIR__ . '/models/SupplierModel.php';
-    require_once __DIR__ . '/models/BookingModel.php';
+// admin model
+require_once __DIR__ . '/models/AdminModel.php';
+require_once __DIR__ . '/models/UserModel.php';
+// chức nâng siderbar
+require_once __DIR__ . '/models/CategoryModel.php';
+require_once __DIR__ . '/models/TourModel.php';
+require_once __DIR__ . '/models/SupplierModel.php';
+require_once __DIR__ . '/models/BookingModel.php';
 
-    // admin Controller
-    require_once __DIR__ . '/controllers/AdminAuthController.php';
-    require_once __DIR__ . '/controllers/BookingController.php';
-    require_once __DIR__ . '/controllers/CategoryController.php';
+// admin Controller
+require_once __DIR__ . '/controllers/AdminAuthController.php';
+require_once __DIR__ . '/controllers/BookingController.php';
+require_once __DIR__ . '/controllers/CategoryController.php';
 
-    require_once __DIR__ . '/controllers/AccountManagementController.php';
+require_once __DIR__ . '/controllers/AccountManagementController.php';
 
-    require_once __DIR__ . '/controllers/AdminLayoutController.php';
-    require_once __DIR__ . '/controllers/GuideLayoutController.php';
-    //quản lý danh mục tour
-    require_once __DIR__ . '/controllers/AdminTourController.php';
-    require_once __DIR__ . '/controllers/AdminSupplierController.php';
+require_once __DIR__ . '/controllers/AdminLayoutController.php';
+require_once __DIR__ . '/controllers/GuideLayoutController.php';
+//quản lý danh mục tour
+require_once __DIR__ . '/controllers/AdminTourController.php';
+require_once __DIR__ . '/controllers/AdminSupplierController.php';
 
 
 
@@ -31,13 +31,13 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : 'admin';
 ob_start();
 switch ($mode) {
     case 'client': {
-        require_once Views_Router . "client.php";
-        break;
-    }
+            require_once Views_Router . "client.php";
+            break;
+        }
     case 'admin': {
-        require_once Views_Router . "admin.php";
-        break;
-    }
+            require_once Views_Router . "admin.php";
+            break;
+        }
     default:
         require_once Views_Router . "client.php";
         break;
@@ -148,8 +148,9 @@ $content_views = ob_get_clean();
     <!-- #a8c4f0 -->
 </head>
 
-    <body class="bg-gray-100 flex flex-col overflow-x-hidden w-[100wh] h-[100vh]">
-        <?php echo $content_views; ?>
-    </body>
+<body class="bg-gray-100 flex flex-col overflow-x-hidden w-[100wh] h-[100vh]">
+    <?php echo $content_views; ?>
+</body>
+<script src="<?= BASE_URL ?>assets\Js\admin\siderbar.js"></script>
 
 </html>
