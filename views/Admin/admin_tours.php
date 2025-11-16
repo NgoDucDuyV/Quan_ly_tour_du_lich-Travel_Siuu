@@ -29,22 +29,20 @@
     </div>
     <div class="min-h-screen flex mb-10">
         <!-- Main -->
-        <main class="flex-1">
+        <main class="w-full">
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <!-- Left: tour list / quick actions -->
                 <div class="col-span-1 bg-white rounded-lg p-4 border border-gray-200 shadow-sm flex flex-col">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-gray-800">Danh sách Tour</h3>
                         <div class="flex items-center gap-2">
-                            <!-- Input tìm kiếm -->
                             <input
                                 type="text"
                                 id="searchTour"
                                 placeholder="Tìm kiếm tour..."
                                 class="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-main" />
-                            <!-- Button tạo tour -->
                         </div>
-                        <a href="?act=from_add_tour"
+                        <a href="?act=from_add_tour ml-5"
                             class="text-xs text-white bg-main hover:bg-hover px-3 py-1 rounded transition-colors"
                             id="btnCreateTour">
                             + Tạo tour
@@ -52,9 +50,8 @@
                     </div>
 
 
-                    <div class="space-y-3 overflow-auto  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
+                    <div class="space-y-3 overflow-y-auto max-h-[800px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
                         <!-- tour card -->
-
                         <?php foreach ($datatour as $value) { ?>
                             <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-gray-50">
                                 <div class="flex items-start gap-3">
@@ -313,7 +310,6 @@
                     </tbody>
                 </table>
             </div>
-
         </main>
     </div>
 
@@ -345,11 +341,6 @@
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
         document.getElementById('tab-' + name).classList.remove('hidden');
     }
-
-    document.getElementById('btnNewBooking').addEventListener('click', () => {
-        document.getElementById('modalNewBooking').classList.remove('hidden');
-        document.getElementById('modalNewBooking').classList.add('flex');
-    });
 
     function closeModal(id) {
         const el = document.getElementById(id);
