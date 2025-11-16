@@ -1,14 +1,11 @@
 const viewsdetailtour = document.getElementById("viewsdetailtour");
-console.log(viewsdetailtour);
+// console.log(viewsdetailtour);
 // console.log(axios);
-
 const clickloadAdmindetailtours = document.querySelectorAll(
   ".clickloadAdmindetailtour"
 );
 // console.log(clickloadAdmindetailtour);
-
-console.log(clickloadAdmindetailtours);
-
+// console.log(clickloadAdmindetailtours);
 clickloadAdmindetailtours.forEach((item, index) => {
   item.addEventListener("click", (e) => {
     e.preventDefault();

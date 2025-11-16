@@ -10,10 +10,11 @@
 <body>
 
   <aside
-    class="flex flex-col z-[10] bg-white border-r border-slate-200 shadow-lg sticky top-0 h-screen transition-all duration-200 ease-in-out
-    sm:max-w-[350px] sm:overflow-y-auto
+    id="siderbaradmin"
+    class="flex flex-col z-[10] bg-white border-r border-slate-200 shadow-lg top-0 transition-all duration-200 ease-in-out absolute top-0 bottom-0 h-full min-w-[300px]
+    sm:min-w-[350px] sm:overflow-y-auto sm:overflow-x-hidden
     md:hide-scrollbar md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full md:overflow-visible  
-    xl:min-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4 xl:overflow-y-auto
+    xl:min-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4 xl:overflow-y-auto xl:overflow-x-hidden sm:sticky
     min-w-[280px] py-6 px-4 w-0">
 
     <div class="flex items-center gap-3 mt-4 mb-8 px-2">

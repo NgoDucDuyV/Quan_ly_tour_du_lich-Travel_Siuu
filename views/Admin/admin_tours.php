@@ -90,9 +90,32 @@
                                             <p class="text-xs text-gray-500 mt-1">Giá từ <span class="font-semibold text-gray-800"><?= number_format($value['price']) ?> VND</span></p>
 
                                             <div class="mt-2 flex flex-wrap gap-2">
-                                                <a href="?act=admintour&tour_id=<?= $value['id'] ?>" class="clickloadAdmindetailtour text-xs px-2 py-1 border border-gray-200 rounded hover:bg-gray-100 transition">Chi tiết</a>
-                                                <a href="#" class="text-xs px-2 py-1 border border-gray-200 rounded hover:bg-gray-100 transition" onclick="cloneTour(this)">Clone</a>
-                                                <a href="#" class="text-xs px-2 py-1 border border-gray-200 rounded hover:bg-gray-100 transition" onclick="generateQuote(this)">Báo giá nhanh</a>
+                                                <!-- Chi tiết -->
+                                                <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
+                                                    class="clickloadAdmindetailtour text-xs px-2 py-1 rounded font-medium transition"
+                                                    style="background-color:#1f55ad; color:#ffffff;"
+                                                    onmouseover="this.style.backgroundColor='#0f2b90';"
+                                                    onmouseout="this.style.backgroundColor='#1f55ad';">
+                                                    Chi tiết
+                                                </a>
+
+                                                <!-- Clone -->
+                                                <a href="#" onclick="cloneTour(this)"
+                                                    class="text-xs px-2 py-1 rounded font-medium transition"
+                                                    style="background-color:#5288e0; color:#ffffff;"
+                                                    onmouseover="this.style.backgroundColor='#0f2b90';"
+                                                    onmouseout="this.style.backgroundColor='#5288e0';">
+                                                    Clone
+                                                </a>
+
+                                                <!-- Báo giá nhanh -->
+                                                <a href="#" onclick="generateQuote(this)"
+                                                    class="text-xs px-2 py-1 rounded font-medium transition"
+                                                    style="background-color:#0f2b57; color:#ffffff;"
+                                                    onmouseover="this.style.backgroundColor='#1f55ad';"
+                                                    onmouseout="this.style.backgroundColor='#0f2b57';">
+                                                    Báo giá nhanh
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -168,10 +191,12 @@
                                                 class="inline-flex items-center px-2 py-1 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition">
                                                 Chi tiết
                                             </a>
+
                                             <a href="#" onclick="cloneTour(this)"
                                                 class="inline-flex items-center px-2 py-1 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition">
                                                 Clone
                                             </a>
+
                                             <a href="#" onclick="generateQuote(this)"
                                                 class="inline-flex items-center px-2 py-1 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition">
                                                 Báo giá

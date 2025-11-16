@@ -1,9 +1,9 @@
 const adminContent = document.getElementById("adminContent");
-console.log(adminContent);
+// console.log(adminContent);
 // console.log(axios);
 
 const clickloadAdminPage = document.querySelectorAll(".clickloadAdminPage");
-console.log(clickloadAdminPage);
+// console.log(clickloadAdminPage);
 
 clickloadAdminPage.forEach((item, index) => {
   item.addEventListener("click", (e) => {
@@ -42,3 +42,12 @@ const loadAdminPage = (href) => {
       console.log("Lỗi khôg có inter net");
     });
 };
+
+// bật tắt sider bar
+const siderbaradmin = document.getElementById("siderbaradmin");
+function toggleSidebar() {
+  const screenWidth = window.innerWidth;
+  if (screenWidth <= 640) {
+    siderbaradmin.classList.toggle("-translate-x-full"); // chỉ trượt
+  }
+}
