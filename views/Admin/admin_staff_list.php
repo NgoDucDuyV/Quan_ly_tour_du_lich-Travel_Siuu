@@ -4,14 +4,14 @@
         <ul class="inline-flex items-center space-x-2">
             <li>Quản trị viên</li>
             <li class="before:content-['/'] before:px-2 before:text-slate-300">Quản lý Tài khoản</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Khách hàng</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Nhân Viên </li>
         </ul>
     </nav>
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-            <h1 class="text-2xl font-semibold text-slate-900">Danh mục Tour</h1>
+            <h1 class="text-2xl font-semibold text-slate-900">Danh sách nhân viên</h1>
             <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">
                 <?= count($datausers) ?>
             </span>

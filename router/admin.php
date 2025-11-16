@@ -1,5 +1,6 @@
 <?php
 $act = isset($_GET['act']) ? $_GET['act'] : 'showformSigninAdmin';
+$ajax = $_GET['ajax'] ?? "";
 function requireAdmin()
 {
     if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_role'] !== 'admin') {
@@ -27,35 +28,36 @@ ob_start();
 
 echo match ($act) {
     '/' => (function () {
-            header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
-            exit;
-        })(),
+        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
+        exit;
+    })(),
     'showformSigninAdmin' => (function () {
-            checkSignin();
-            (new AuthController)->showformSigninAdmin();
-        })(),
+        checkSignin();
+        (new AuthController)->showformSigninAdmin();
+    })(),
     'signin' => (function () {
-            $requestData = json_decode(file_get_contents("php://input"), true);
-            (new AuthController())->signin($requestData);
-            exit;
-        })(),
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        (new AuthController())->signin($requestData);
+        exit;
+    })(),
 
     'dashboard' => (function () {
-            switch ($_SESSION['admin_role']) {
-                case 'admin': {
+        switch (isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : "") {
+            case 'admin': {
                     header("Location: " . BASE_URL . "?mode=admin&act=home");
                     exit;
                     break;
                 }
-                case 'guide': {
+            case 'guide': {
                     header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
                     exit;
                     break;
                 }
-                default:
-                    break;
-            }
-        })(),
+            default:
+                require_once "./views/Admin/common/404.php";
+                break;
+        }
+    })(),
     'logout' => (function () {
         session_destroy();
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
@@ -73,12 +75,14 @@ echo match ($act) {
     })(),
     'admintour' => (function () {
         requireAdmin();
-        if (!isset($_GET['tour_id'])) {
-            (new AdminTourController)->ShowAdminTour();
-        } else {
+        if (isset($_GET['tour_id'])) {
             (new AdminTourController())->showTourDetail($_GET['tour_id']);
-            //  (new TourMedel())->TourDetailModel();
+        } else {
+            (new AdminTourController)->ShowAdminTour();
         }
+    })(),
+    'admin_detail_tour' => (function () {
+        requireAdmin();
     })(),
     'from_add_tour' => (function () {
         requireAdmin();
@@ -95,9 +99,9 @@ echo match ($act) {
     })(),
 
     'booking' => (function () {
-            requireAdmin();
-            echo (new BookingController)->ShowBooking();
-        })(),
+        requireAdmin();
+        echo (new BookingController)->ShowBooking();
+    })(),
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking();
@@ -110,14 +114,14 @@ echo match ($act) {
     })(),
     'delete-client' => (function () {
         requireAdmin();
-         (new AccountManagementController)->deleteClient();
+        (new AccountManagementController)->deleteClient();
     })(),
 
     'update-client' => (function () {
-    requireAdmin();
-    (new AccountManagementController)->updateClient();
-    exit;
-})(),
+        requireAdmin();
+        (new AccountManagementController)->updateClient();
+        exit;
+    })(),
 
 
     'liststaff' => (function () {
@@ -127,22 +131,27 @@ echo match ($act) {
 
     // show trang lỗi
     '404' => (function () {
-            require_once "./views/Admin/common/404.php";
-        })(),
+        require_once "./views/Admin/common/404.php";
+    })(),
 
 
 
     // Hướng dẫn viên
     'homeguide' => (function () {
-            requireGuide();
-            require_once "./views/Admin/homegiude.php";
-        })(),
+        requireGuide();
+        require_once "./views/Admin/homegiude.php";
+    })(),
     default => (function () {
-            header("Location: " . BASE_URL . "?mode=admin&act=404");
-            exit;
-        })(),
+        header("Location: " . BASE_URL . "?mode=admin&act=404");
+        exit;
+    })(),
 };
 $content_views = ob_get_clean();
+
+if ($ajax == 1) {
+    echo $content_views;
+    exit;
+}
 
 // Xác định layout theo role
 $layoutController = null;
@@ -162,9 +171,9 @@ if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
 ?>
 <?php if ($layoutController): ?>
     <?= $layoutController->Header() ?>
-    <main class="contentAdmin flex flex-row relative md:p-0 z-[0]">
+    <main id="contentAdmin" class="contentAdmin flex flex-row relative md:p-0 z-[0]">
         <?= $layoutController->Sidebar() ?>
-        <div class="flex-1">
+        <div id="adminContent" class="w-full overflow-x-hidden">
             <?= $content_views ?>
         </div>
     </main>

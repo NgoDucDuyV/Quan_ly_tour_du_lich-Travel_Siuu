@@ -1,0 +1,37 @@
+const viewsdetailtour = document.getElementById("viewsdetailtour");
+// console.log(viewsdetailtour);
+// console.log(axios);
+const clickloadAdmindetailtours = document.querySelectorAll(
+  ".clickloadAdmindetailtour"
+);
+// console.log(clickloadAdmindetailtour);
+// console.log(clickloadAdmindetailtours);
+clickloadAdmindetailtours.forEach((item, index) => {
+  item.addEventListener("click", (e) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute("href");
+    loadDetailtour(href);
+  });
+});
+const loadDetailtour = (href) => {
+  viewsdetailtour.innerHTML = `
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+        <div id="spinner" class="w-16 h-16 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-6"></div>
+        <p id="loadingText" class="text-gray-700 text-lg opacity-0 animate-fadeIn">Đang tải dữ liệu, vui lòng đợi...</p>
+            <button id="loadBtn" class="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
+            Load dữ liệu
+        </button>
+        <div id="dataContainer" class="mt-8 p-4 w-full max-w-md bg-white rounded shadow opacity-0"></div>
+    </div>
+    `;
+  //   console.log(`${BASE_URL}${href}`);
+  axios
+    .get(`${BASE_URL}${href}&ajax=1`)
+    .then(({ data }) => {
+      console.log(data);
+      viewsdetailtour.innerHTML = data;
+    })
+    .catch(() => {
+      console.log("Lỗi khôg có inter net");
+    });
+};
