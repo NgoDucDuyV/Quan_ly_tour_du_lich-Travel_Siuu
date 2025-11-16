@@ -8,8 +8,6 @@
 </head>
 
 <body>
-
-<<<<<<< HEAD
     <aside
         class="flex flex-col relative bg-white border-r border-slate-200 shadow-lg py-6 px-4 sticky top-0 min-w-[280px] h-screen overflow-y-auto transition-all duration-200 ease-in-out hide-scrollbar lg:flex hidden">
 
@@ -22,7 +20,6 @@
                 <h1 class="text-lg font-bold text-slate-800">Điều hành tour</h1>
                 <p class="text-xs text-slate-500 tracking-wide">ADMIN Dashboard</p>
             </div>
-=======
   <aside
     class="flex flex-col relative bg-white border-r overflow-x-hidden border-slate-200 shadow-lg sticky top-0 h-screen overflow-y-auto transition-all duration-200 ease-in-out hide-scrollbar xl:max-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4
     md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full  
@@ -199,7 +196,6 @@
                 </li>
 
             </ul>
-=======
       <!-- Active item (Thể loại) -->
       <a href="<?= BASE_URL ?>?act=booking" class="flex items-center gap-3 px-3 py-2 rounded-md text-hover bg-indigo-50">
         <i class="fa-solid fa-calendar-check text-xl"></i>
@@ -267,7 +263,6 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-main" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.45a1 1 0 00-.364 1.118l1.286 3.955c.3.921-.755 1.688-1.54 1.118l-3.37-2.45a1 1 0 00-1.176 0l-3.37 2.45c-.784.57-1.84-.197-1.54-1.118l1.286-3.955a1 1 0 00-.364-1.118L2.063 9.382c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.955z" />
           </svg>
->>>>>>> 60b1a3f5035ca77797c199341e3c2246c550c955
         </div>
 
 
