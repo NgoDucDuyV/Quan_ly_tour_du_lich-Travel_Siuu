@@ -37,6 +37,14 @@ const loadAdminPage = (href) => {
     .then(({ data }) => {
       // console.log(data);
       adminContent.innerHTML = data;
+      function reloadAdminScript() {
+        const module = import(
+          `${BASE_URL}assets/Js/admin/admin_tours.js?ts=${Date.now()}`
+        );
+      }
+      if (href == "?act=admintour") {
+        reloadAdminScript();
+      }
     })
     .catch(() => {
       console.log("Lỗi khôg có inter net");

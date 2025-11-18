@@ -90,32 +90,32 @@
                                             <p class="text-xs text-gray-500 mt-1">Giá từ <span class="font-semibold text-gray-800"><?= number_format($value['price']) ?> VND</span></p>
 
                                             <div class="mt-2 flex flex-wrap gap-2">
-                                                <!-- Chi tiết -->
-                                                <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
+                                                <!-- chi tiét -->
+                                                <button href="?act=admintour&tour_id=<?= $value['id'] ?>"
                                                     class="clickloadAdmindetailtour text-xs px-2 py-1 rounded font-medium transition"
                                                     style="background-color:#1f55ad; color:#ffffff;"
                                                     onmouseover="this.style.backgroundColor='#0f2b90';"
                                                     onmouseout="this.style.backgroundColor='#1f55ad';">
                                                     Chi tiết
-                                                </a>
+                                                </button>
 
-                                                <!-- Clone -->
-                                                <a href="#" onclick="cloneTour(this)"
+                                                <!-- clone -->
+                                                <button href="#" onclick="cloneTour(this)"
                                                     class="text-xs px-2 py-1 rounded font-medium transition"
                                                     style="background-color:#5288e0; color:#ffffff;"
                                                     onmouseover="this.style.backgroundColor='#0f2b90';"
                                                     onmouseout="this.style.backgroundColor='#5288e0';">
                                                     Clone
-                                                </a>
+                                                </button>
 
-                                                <!-- Báo giá nhanh -->
-                                                <a href="#" onclick="generateQuote(this)"
+                                                <!-- báo gia tao bôking-->
+                                                <button href="#" onclick="generateQuote(this)"
                                                     class="text-xs px-2 py-1 rounded font-medium transition"
                                                     style="background-color:#0f2b57; color:#ffffff;"
                                                     onmouseover="this.style.backgroundColor='#1f55ad';"
                                                     onmouseout="this.style.backgroundColor='#0f2b57';">
                                                     Báo giá nhanh
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <div id="viewsdetailtour" class="flex-1 col-span-1 lg:col-span-2 bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                    <div id="viewsdetailtour" class="mt-5 md:mt-0 flex-1 col-span-1 lg:col-span-2 bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                         <div class="mx-auto bg-white p-6 text-center py-auto">
                             <img
                                 src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800"
