@@ -15,6 +15,14 @@
                 <div class="flex items-center justify-between h-20">
                     <!-- Trái -->
                     <div class="flex items-center space-x-8">
+
+                        <button class="bg-[#0000] flex items-center justify-center">
+                            <i data-lucide="menu"></i>
+                        </button>
+
+                        <div class="hidden text-black md:flex space-x-8">
+                            <a href="?mode=admin&act=homeguide" class="flex items-center hover:text-blue-600 ">
+
                         <button
                             class="bg-[#0000] text-[20px] font-[100] flex items-center justify-center hover:text-indigo-700">
                             <i class="fa-solid fa-bars"></i>
@@ -22,16 +30,25 @@
 
                         <div class="hidden text-black md:flex space-x-8">
                             <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
+
                                 <i data-lucide="home" class="w-5 h-5 mr-2"></i>
                                 <span>Trang Chủ</span>
                             </a>
 
+
+                            <a href="?mode=admin&act=scheduleguide" class="flex items-center hover:text-blue-600 ">
+
                             <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
+
                                 <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
                                 <span>Giới Thiệu</span>
                             </a>
 
+
+                            <a href="?mode=admin&act=listguide" class="flex items-center hover:text-blue-600 ">
+
                             <a href="#" class="flex items-center text-gray-800 hover:text-indigo-700 ">
+
                                 <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
                                 <span>Danh Mục</span>
                             </a>
@@ -54,6 +71,15 @@
                         <div class="relative group">
                             <div class="flex items-center space-x-3 cursor-pointer select-none">
                                 <div class="">
+
+                                    <p class="text-sm font-semibold text-gray-900"><?= $_SESSION['admin_logged']['username'] ?></p>
+                                    <p class="text-xs text-gray-500">(<?= $_SESSION['admin_logged']['description'] ?>)</p>
+                                </div>
+                                <img
+                                    class="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                    src="https://via.placeholder.com/40/007bff/ffffff?text=NDD"
+                                    alt="Ảnh đại diện">
+
                                     <p class="text-sm font-semibold text-gray-900">
                                         <?= $_SESSION['admin_logged']['username'] ?></p>
                                     <p class="text-xs text-gray-500">(<?= $_SESSION['admin_logged']['description'] ?>)
@@ -61,6 +87,7 @@
                                 </div>
                                 <img class="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
                                     src="https://via.placeholder.com/40/007bff/ffffff?text=NDD" alt="Ảnh đại diện">
+
                             </div>
 
                             <!-- Menu user -->
@@ -75,7 +102,12 @@
                                         </a>
                                     </li>
                                     <li>
+
+                                        <a href="#"
+                                            class="flex items-center px-4 py-2 hover:bg-gray-100">
+
                                         <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+
                                             <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Cài Đặt
                                         </a>
                                     </li>

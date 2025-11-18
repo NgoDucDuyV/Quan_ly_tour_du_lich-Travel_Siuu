@@ -1,6 +1,7 @@
 <?php
 $act = isset($_GET['act']) ? $_GET['act'] : 'showformSigninAdmin';
 $ajax = $_GET['ajax'] ?? "";
+
 function requireAdmin()
 {
     if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_role'] !== 'admin') {
@@ -24,6 +25,7 @@ function checkSignin()
         exit;
     }
 }
+
 ob_start();
 
 echo match ($act) {
@@ -31,10 +33,12 @@ echo match ($act) {
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
         exit;
     })(),
+
     'showformSigninAdmin' => (function () {
         checkSignin();
         (new AuthController)->showformSigninAdmin();
     })(),
+
     'signin' => (function () {
         $requestData = json_decode(file_get_contents("php://input"), true);
         (new AuthController())->signin($requestData);
@@ -42,37 +46,33 @@ echo match ($act) {
     })(),
 
     'dashboard' => (function () {
-        switch (isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : "") {
-            case 'admin': {
-                    header("Location: " . BASE_URL . "?mode=admin&act=home");
-                    exit;
-                    break;
-                }
-            case 'guide': {
-                    header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
-                    exit;
-                    break;
-                }
-            default:
-                require_once "./views/Admin/common/404.php";
-                break;
+        switch ($_SESSION['admin_role']) {
+            case 'admin':
+                header("Location: " . BASE_URL . "?mode=admin&act=home");
+                exit;
+            case 'guide':
+                header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
+                exit;
         }
     })(),
+
     'logout' => (function () {
         session_destroy();
         header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
         exit;
     })(),
 
-    // chứa năng thanh siderbar admin quản lý điều hành tour
+    // --- ADMIN ---
     'home' => (function () {
         requireAdmin();
         require_once "./views/Admin/home.php";
     })(),
+
     'categoriestour' => (function () {
         requireAdmin();
         (new CategoryController)->listCategories();
     })(),
+
     'admintour' => (function () {
         requireAdmin();
         if (isset($_GET['tour_id'])) {
@@ -81,18 +81,17 @@ echo match ($act) {
             (new AdminTourController)->ShowAdminTour();
         }
     })(),
-    'admin_detail_tour' => (function () {
-        requireAdmin();
-    })(),
+
     'from_add_tour' => (function () {
         requireAdmin();
         (new AdminTourController)->showFromAddTour();
     })(),
-    // quản lý nàh cung cấp
+
     'supplier-list' => (function () {
         requireAdmin();
         (new AdminSupplierController)->showSupplierList();
     })(),
+
     'supplier-list-types' => (function () {
         requireAdmin();
         (new AdminSupplierController)->showSupplierTypesList();
@@ -102,16 +101,29 @@ echo match ($act) {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
+
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking();
     })(),
 
     // quản lý tải khoản người dùng
+    'managerguide' => (function () {
+        requireAdmin();
+        (new GuideLayoutController())->index();
+    })(),
+
+    'managerclient' => (function () {
+        requireAdmin();
+        (new GuideLayoutController())->clientList();
+    })(),
+
+    // Tài khoản
     'listclient' => (function () {
         requireAdmin();
         echo (new AccountManagementController)->showClientList();
     })(),
+
     'delete-client' => (function () {
         requireAdmin();
         (new AccountManagementController)->deleteClient();
@@ -160,26 +172,47 @@ echo match ($act) {
         require_once "./views/Admin/common/404.php";
     })(),
 
-
-
-    // hướng dẫn viên
+    // --- GUIDE ---
     'homeguide' => (function () {
         requireGuide();
         require_once "./views/Admin/homegiude.php";
     })(),
+
+    'scheduleguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/scheduleguide.php";
+    })(),
+
+    'listguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/listguide.php";
+    })(),
+
+    'diaryguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/diaryguide.php";
+    })(),
+
+    'checkguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/checkguide.php";
+    })(),
+
+    'requestguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/requestguide.php";
+    })(),
+
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
         exit;
     })(),
 };
+
 $content_views = ob_get_clean();
 
-if ($ajax == 1) {
-    echo $content_views;
-    exit;
-}
 
-// xác định layout theo role
+// Layout
 $layoutController = null;
 if (isset($_SESSION['admin_logged'])) {
     if ($_SESSION['admin_role'] === 'admin') {
@@ -188,7 +221,7 @@ if (isset($_SESSION['admin_logged'])) {
         $layoutController = new GuideLayoutController();
     }
 }
-// chuyển hướng đến trang 404
+
 if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
     echo $content_views;
     return;
