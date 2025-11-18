@@ -2,7 +2,7 @@
     <div class="space-y-6">
 
         <!-- Header -->
-        <div class="flex flex-col lg:flex-row items-start gap-5 p-4 bg-white border rounded-xl shadow-sm">
+        <div class="flex flex-col lg:flex-row items-start gap-5 p-4 bg-white border rounded-xl shadow-xl">
             <img id="detailThumb"
                 src="<?= BASE_URL . $dataOneTour['images'] ?>"
                 alt="<?= $dataOneTour['name'] ?>"
@@ -35,77 +35,96 @@
         </div>
 
         <!-- Body -->
-        <div id="tabs" class="bg-white p-4 border rounded-xl shadow-sm">
+        <div id="tabs" class="bg-white p-4 border rounded-xl shadow-xl">
 
             <!-- Tab 1: Thông tin -->
             <div id="tab-info" class="tab-pane">
                 <h4 class="text-lg font-semibold text-gray-800">Lịch trình - <?= $dataOneTour['name'] ?></h4>
 
-                <div class="mt-3">
+                <div class="mt-4 space-y-8">
+
+                    <!-- Timeline lịch trình -->
                     <?php if (!empty($dataTourDetai)) : ?>
-                        <ul class="relative border-l border-gray-300 pl-4 space-y-8">
+                        <div class="bg-white rounded-xl border shadow-sm p-5">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Lịch trình tour</h3>
 
-                            <?php
-                            $currentDay = null;
-                            foreach ($dataTourDetai as $item):
-                                if ($currentDay !== $item['day_number']):
-                                    if ($currentDay !== null) echo "</ul></div></li>";
-                                    $currentDay = $item['day_number'];
-                            ?>
-                                    <li class="relative">
-                                        <span class="absolute -left-5 top-0 bg-main text-white w-8 h-8 rounded-full flex items-center justify-center font-semibold shadow">
-                                            <?= $currentDay ?>
-                                        </span>
+                            <ul class="relative border-l-2 border-main/40 pl-6 space-y-10">
 
-                                        <div class="bg-gray-50 border rounded-lg p-4 shadow-sm">
-                                            <h5 class="text-gray-800 font-medium mb-2">
-                                                Ngày <?= $currentDay ?> – <?= htmlspecialchars($item['itinerary_title']) ?>
-                                            </h5>
+                                <?php
+                                $currentDay = null;
+                                foreach ($dataTourDetai as $item):
+                                    if ($currentDay !== $item['day_number']):
+                                        if ($currentDay !== null) echo "</ul></div></li>";
+                                        $currentDay = $item['day_number'];
+                                ?>
 
-                                            <p class="text-gray-600 text-sm mb-3">
-                                                <?= htmlspecialchars($item['itinerary_description']) ?>
-                                            </p>
+                                        <li class="relative">
+                                            <span class="absolute -left-4 top-0 bg-main text-white w-10 h-10 rounded-full 
+                                flex items-center justify-center font-bold shadow-md text-sm">
+                                                <?= $currentDay ?>
+                                            </span>
 
-                                            <ul class="space-y-1 text-sm text-gray-700">
-                                            <?php endif; ?>
+                                            <div class="bg-gray-50 border rounded-xl p-5 shadow-sm">
+                                                <h5 class="text-gray-800 font-semibold text-base mb-1">
+                                                    Ngày <?= $currentDay ?> – <?= htmlspecialchars($item['itinerary_title']) ?>
+                                                </h5>
 
-                                            <li>
-                                                <span class="font-medium"><?= htmlspecialchars($item['activity_time']) ?></span> –
-                                                <?= htmlspecialchars($item['activity']) ?>
-                                                (<?= htmlspecialchars($item['location']) ?>):
-                                                <?= htmlspecialchars($item['activity_description']) ?>
-                                            </li>
+                                                <p class="text-gray-600 text-sm mb-3 leading-relaxed">
+                                                    <?= htmlspecialchars($item['itinerary_description']) ?>
+                                                </p>
 
-                                        <?php endforeach; ?>
-                                            </ul>
-                                        </div>
-                                    </li>
-                        </ul>
+                                                <ul class="space-y-2 text-sm text-gray-700">
+                                                <?php endif; ?>
+
+                                                <li class="flex items-start gap-2">
+                                                    <span class="font-medium text-main"><?= htmlspecialchars($item['activity_time']) ?></span>
+                                                    <div>
+                                                        <span class="font-medium"><?= htmlspecialchars($item['activity']) ?></span>
+                                                        — <span class="text-gray-700"><?= htmlspecialchars($item['location']) ?></span>
+                                                        <div class="text-gray-600"><?= htmlspecialchars($item['activity_description']) ?></div>
+                                                    </div>
+                                                </li>
+
+                                            <?php endforeach; ?>
+                                                </ul>
+                                            </div>
+                                        </li>
+                            </ul>
+                        </div>
+
                     <?php else: ?>
-                        <div class="text-center bg-gray-50 p-5 rounded-xl border">
+                        <div class="text-center bg-gray-50 p-6 rounded-xl border shadow-sm">
                             <p class="text-gray-600">Chưa có dữ liệu lịch trình.</p>
-                            <button class="mt-2 px-3 py-1.5 bg-main text-white rounded-lg hover:bg-hover transition">
+                            <button class="mt-3 px-4 py-2 bg-main text-white rounded-lg hover:bg-hover transition">
                                 Xem chi tiết tour
                             </button>
                         </div>
                     <?php endif; ?>
-                </div>
 
-                <h4 class="mt-6 font-semibold text-gray-800">Chính sách</h4>
-                <p class="text-gray-600 text-sm mt-2">
-                    Hủy sau 7 ngày trước ngày khởi hành mất 50%, hủy trong 3 ngày mất 100%...
-                </p>
 
-                <!-- Supplier -->
-                <h4 class="mt-6 font-semibold text-gray-800">Nhà cung cấp</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
-                    <?php foreach ($dataTourSupplier as $value) { ?>
-                        <div class="p-3 bg-gray-50 border rounded-lg hover:bg-gray-100 transition text-sm">
-                            <div class="font-medium text-gray-800"><?= ucfirst($value['role']) ?>:</div>
-                            <div class="text-gray-600"><?= $value['supplier_name'] ?></div>
+                    <!-- Chính sách -->
+                    <div class="bg-white rounded-xl border shadow-sm p-5">
+                        <h4 class="text-lg font-semibold text-gray-800">Chính sách</h4>
+                        <p class="text-gray-600 text-sm mt-2 leading-relaxed">
+                            Hủy sau 7 ngày trước ngày khởi hành mất 50%, hủy trong 3 ngày mất 100%...
+                        </p>
+                    </div>
+
+                    <!-- Nhà cung cấp -->
+                    <div class="bg-white rounded-xl border shadow-sm p-5">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Nhà cung cấp</h4>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <?php foreach ($dataTourSupplier as $value) { ?>
+                                <div class="p-4 bg-gray-50 border rounded-xl shadow-sm hover:shadow-md transition text-sm">
+                                    <div class="font-semibold text-gray-800"><?= ucfirst($value['role']) ?>:</div>
+                                    <div class="text-gray-600 mt-1"><?= $value['supplier_name'] ?></div>
+                                </div>
+                            <?php } ?>
                         </div>
-                    <?php } ?>
+                    </div>
                 </div>
+
             </div>
 
             <!-- Tab 2: Phiên bản -->
@@ -143,45 +162,6 @@
                     <?php } ?>
                 </div>
             </div>
-
         </div>
     </div>
 <?php } ?>
-<script>
-    // Simple UI interactions (demo purposes)
-    function openTourDetail(btn) {
-        // find the closest article and extract data (demo static)
-        const article = btn.closest('article');
-        document.getElementById('detailTitle').innerText = article.querySelector('h4').innerText;
-        document.getElementById('detailPrice').innerText = 'Giá cơ bản: ' + (article.querySelector('.font-semibold')?.innerText || '-');
-        document.getElementById('detailThumb').src = article.querySelector('img').src.replace('80x60', '400x300');
-        showTab('info');
-    }
-
-    function cloneTour(btn) {
-        alert('Clone tour: chức năng demo — sẽ sao chép tour để tạo tour mới (thực hiện ở backend).');
-    }
-
-    function generateQuote(btn) {
-        alert('Báo giá nhanh: mở form chọn số khách và xuất PDF/Email (demo).');
-    }
-
-    function showTab(name) {
-        document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-        document.getElementById('tab-' + name).classList.remove('hidden');
-    }
-
-    function closeModal(id) {
-        const el = document.getElementById(id);
-        el.classList.add('hidden');
-        el.classList.remove('flex');
-    }
-
-    function openEditBooking(id) {
-        alert('Mở form chỉnh sửa cho ' + id + ' (demo).');
-    }
-
-    function changeStatus(id, status) {
-        alert('Thay đổi trạng thái ' + id + ' -> ' + status + ' (demo).');
-    }
-</script>

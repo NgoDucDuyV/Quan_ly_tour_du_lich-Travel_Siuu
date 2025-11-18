@@ -28,10 +28,41 @@ const loadDetailtour = (href) => {
   axios
     .get(`${BASE_URL}${href}&ajax=1`)
     .then(({ data }) => {
-      console.log(data);
+      // console.log(data);
       viewsdetailtour.innerHTML = data;
     })
     .catch(() => {
       console.log("Lỗi khôg có inter net");
     });
 };
+
+// ui hreader nhỏ xem chi tiét
+function openTourDetail(btn) {
+  const article = btn.closest("article");
+  document.getElementById("detailTitle").innerText =
+    article.querySelector("h4").innerText;
+  document.getElementById("detailPrice").innerText =
+    "Giá cơ bản: " +
+    (article.querySelector(".font-semibold")?.innerText || "-");
+  document.getElementById("detailThumb").src = article
+    .querySelector("img")
+    .src.replace("80x60", "400x300");
+  showTab("info");
+}
+
+function cloneTour(btn) {
+  alert(
+    "Clone tour: chức năng demo — sẽ sao chép tour để tạo tour mới (thực hiện ở backend)."
+  );
+}
+
+function generateQuote(btn) {
+  alert("Báo giá nhanh: mở form chọn số khách và xuất PDF/Email (demo).");
+}
+
+function showTab(name) {
+  // console.log(1);
+  const tabpanes = document.querySelectorAll(".tab-pane");
+  tabpanes.forEach((p) => p.classList.add("hidden"));
+  document.getElementById("tab-" + name).classList.remove("hidden");
+}

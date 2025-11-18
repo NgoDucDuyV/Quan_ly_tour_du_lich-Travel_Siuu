@@ -47,7 +47,7 @@
                     <th class="px-6 py-3 text-left">Mô tả</th>
                     <th class="px-6 py-3 text-left">Số tour</th>
                     <th class="px-6 py-3 text-right">Cập nhật</th>
-                    <th class="px-6 py-3 text-right">Hành động</th>
+                    <th class="px-6 py-3 text-right w-5">Hành động</th>
                 </tr>
             </thead>
 
