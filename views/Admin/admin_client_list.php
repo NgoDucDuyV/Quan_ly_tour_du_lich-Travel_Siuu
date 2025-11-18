@@ -37,9 +37,11 @@
                 Lọc
             </button>
 
-            <button class="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-md text-sm hover:bg-indigo-50">
+            <!-- NÚT TẠO MỚI: DÙNG LINK GET -->
+            <a href="?mode=admin&act=listclient&create=1" 
+               class="flex items-center gap-2 px-4 py-2 bg-white border border-green-600 text-green-600 rounded-md text-sm hover:bg-green-50">
                 Tạo mới
-            </button>
+            </a>
         </div>
     </div>
 
@@ -80,26 +82,23 @@
                             <td class="px-6 py-4 text-right w-36">
                                 <div class="flex items-center justify-end gap-2">
 
-                                    <!-- NÚT SỬA: DÙNG LINK GET -->
+                                    <!-- NÚT SỬA -->
                                     <a href="?mode=admin&act=listclient&edit_id=<?= $value['id'] ?>"
-                                        class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-md transition inline-block"
-                                        title="Sửa">
+                                       class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-md transition inline-block"
+                                       title="Sửa">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </a>
 
-                                    <!-- NÚT XÓA: DÙNG FORM + PHP THUẦN -->
-                                    <form
-                                        action="?mode=admin&act=delete-client"
-                                        method="POST"
-                                        class="inline"
-                                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">
+                                    <!-- NÚT XÓA -->
+                                    <form action="?mode=admin&act=delete-client" method="POST" class="inline"
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">
                                         <input type="hidden" name="id" value="<?= $value['id'] ?>">
                                         <button type="submit"
-                                            class="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition"
-                                            title="Xóa">
+                                                class="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition"
+                                                title="Xóa">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -116,6 +115,60 @@
         </table>
     </div>
 
+    <!-- === FORM TẠO MỚI KHÁCH HÀNG (Modal) === -->
+    <?php 
+    $showCreateForm = isset($_GET['create']) && $_GET['create'] === '1';
+    ?>
+
+    <?php if ($showCreateForm): ?>
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 class="text-xl font-semibold text-slate-900 mb-4">Tạo khách hàng mới</h2>
+
+            <form action="?mode=admin&act=create-client" method="POST">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Họ tên *</label>
+                    <input type="text" name="fullname" 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                           required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+                    <input type="email" name="email" 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                           required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Tên đăng nhập *</label>
+                    <input type="text" name="username" 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                           required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Mật khẩu *</label>
+                    <input type="password" name="password" 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                           required>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <a href="?mode=admin&act=listclient" 
+                       class="px-4 py-2 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50">
+                        Hủy
+                    </a>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Tạo mới
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- === FORM SỬA KHÁCH HÀNG (Modal) === -->
     <?php
     $editUser = null;
@@ -127,7 +180,7 @@
     ?>
 
     <?php if ($editUser): ?>
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
                 <h2 class="text-xl font-semibold text-slate-900 mb-4">Sửa khách hàng</h2>
 
