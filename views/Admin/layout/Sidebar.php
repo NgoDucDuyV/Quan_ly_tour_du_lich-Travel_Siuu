@@ -147,9 +147,11 @@
 
         <div class="detailsitems mt-1 ml-8 flex flex-col gap-1 group-open:w-auto w-0">
           <a href="?act=listclient" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">
+            <i class="fa-solid fa-user" aria-hidden="true"></i>
             khách Hàng
           </a>
           <a href="?act=liststaff" class="clickloadAdminPage px-3 py-2 rounded-md text-slate-600 hover:bg-indigo-50">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
             Nhân Viên
           </a>
         </div>

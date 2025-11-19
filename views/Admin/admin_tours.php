@@ -20,21 +20,25 @@
 
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center space-x-3">
-                <h1 class="text-2xl font-semibold text-slate-900">Danh mục Tour</h1>
-                <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 text-sm rounded-full">
+            <div class="flex items-center space-x-3 bg-">
+                <h1 class="text-3xl font-[500] text-slate-900 m-0">Quản lý tour</h1>
+                <span class="inline-flex items-center justify-center font-[500] text-white px-2 py-0.5 rounded-full bg-main">
                     <?= count($datatour) ?>
                 </span>
             </div>
 
             <div class="flex items-center space-x-3">
-                <button class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-md text-sm text-slate-600 bg-white hover:bg-slate-50">
-                    Lọc
+
+                <button class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
+                    <i class="fa-solid fa-plus"></i>
+                    Tạo mới
                 </button>
 
-                <a href="?act=from_add_tour" class="flex items-center gap-2 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-md text-sm hover:bg-indigo-50">
-                    Tạo mới
-                </a>
+                <button class="flex items-center gap-2 px-4 py-2 border rounded-md
+                text-sm text-dark hover:bg-main hover:text-white transition-all duration-200 ease-out">
+                    <i class="fa-solid fa-filter"></i>
+                    Lọc
+                </button>
             </div>
         </div>
         <div class="w-full mb-10">
@@ -153,54 +157,80 @@
                 </section>
 
                 <!-- Table -->
-                <div class="overflow-x-auto bg-white border border-slate-200 rounded-lg shadow-sm">
-                    <table class="min-w-full divide-y divide-slate-200">
-                        <thead class="bg-gray-50 text-gray-600 text-sm font-medium">
+                <div class="overflow-x-auto bg-white border border-slate-100 rounded-lg shadow-sm">
+                    <table class="min-w-full divide-y divide-slate-100">
+                        <thead class="bg-slate-50 text-slate-500 text-sm font-medium">
                             <tr>
-                                <th class="px-4 py-2 text-left w-10">
-                                    <input type="checkbox" class="h-4 w-4 border-gray-300 rounded" />
+                                <th class="px-6 py-3 text-left w-10">
+                                    <input type="checkbox" id="selectAllTours" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                                 </th>
-                                <th class="px-4 py-2 text-left w-12">ID</th>
-                                <th class="px-4 py-2 text-left">Tên Tour</th>
-                                <th class="px-4 py-2 text-left w-24">Mã Tour</th>
-                                <th class="px-4 py-2 text-left w-28">Giá</th>
-                                <th class="px-4 py-2 text-left w-28">Trạng thái</th>
-                                <th class="px-4 py-2 text-right w-40">Hành động</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Tên Tour</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mã Tour</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Giá</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Trạng thái</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase w-5">Hành động</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200 text-sm text-gray-700">
+
+                        <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
                             <?php if (empty($datatour)): ?>
                                 <tr>
-                                    <td colspan="7" class="px-4 py-4 text-center text-gray-500">
+                                    <td colspan="7" class="px-6 py-4 text-center text-xs font-medium text-slate-500 uppercase">
                                         Không có tour nào trong hệ thống.
                                     </td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($datatour as $value): ?>
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="h-4 w-4 border-gray-300 rounded" />
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="px-6 py-3 text-left w-10">
+                                            <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                                         </td>
-                                        <td class="px-4 py-2 font-medium"><?= $value['id'] ?></td>
-                                        <td class="px-4 py-2"><?= $value['name'] ?></td>
-                                        <td class="px-4 py-2"><?= $value['code'] ?></td>
-                                        <td class="px-4 py-2"><?= number_format($value['price']) ?> VND</td>
-                                        <td class="px-4 py-2"><?= $value['status'] == 'active' ? 'Đang diễn ra' : 'Đã kết thúc' ?></td>
-                                        <td class="px-4 py-2 text-right space-x-1">
-                                            <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
-                                                class="inline-flex items-center px-2 py-1 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition">
-                                                Chi tiết
-                                            </a>
 
-                                            <a href="#" onclick="cloneTour(this)"
-                                                class="inline-flex items-center px-2 py-1 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition">
-                                                Clone
-                                            </a>
+                                        <td class="px-6 py-4 font-medium text-slate-900">#<?= $value['id'] ?></td>
 
-                                            <a href="#" onclick="generateQuote(this)"
-                                                class="inline-flex items-center px-2 py-1 text-xs font-medium border border-gray-300 rounded hover:bg-gray-100 transition">
-                                                Báo giá
-                                            </a>
+                                        <td class="px-6 py-4 font-medium text-slate-900">
+                                            <?= htmlspecialchars($value['name']) ?>
+                                        </td>
+
+                                        <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($value['code']) ?></td>
+
+                                        <td class="px-6 py-4 text-slate-600"><?= number_format($value['price']) ?> VND</td>
+
+                                        <td class="px-6 py-4 text-slate-500">
+                                            <?= $value['status'] == 'active' ? 'Đang diễn ra' : 'Đã kết thúc' ?>
+                                        </td>
+
+                                        <td class="px-6 py-4 text-center relative flex justify-end group">
+
+                                            <button class="py-1 px-2 flex items-center justify-center rounded-lg text-slate-600 
+                                                hover:bg-slate-200 transition duration-150 focus:outline-none">
+                                                <i class="fa-solid fa-ellipsis-vertical text-lg"></i>
+                                            </button>
+
+                                            <div class="absolute right-0 top-0 mt-2 w-40 bg-white border border-slate-200 
+                                                rounded-md shadow-lg text-sm py-1 
+                                                opacity-0 invisible 
+                                                group-hover:opacity-100 group-hover:visible 
+                                                transition-all duration-200 z-20 overflow-hidden">
+
+                                                <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
+                                                    class="clickloadAdmindetailtour flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
+                                                    <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
+                                                </a>
+
+                                                <a href="?act=edittour&id=<?= $value['id'] ?>"
+                                                    class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
+                                                    <i class="fa-regular fa-pen-to-square w-5 mr-3"></i> Edit
+                                                </a>
+
+                                                <a href="?act=deletetour&id=<?= $value['id'] ?>"
+                                                    onclick=" return confirm('Bạn có chắc chắn muốn xóa ?')"
+                                                    class=" flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
+                                                    <i class="fa-regular fa-trash-can w-5 mr-3"></i> Xóa bỏ
+                                                </a>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -208,6 +238,14 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- JS chọn tất cả tour -->
+                <script>
+                    document.getElementById('selectAllTours').addEventListener('change', function() {
+                        document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => cb.checked = this.checked);
+                    });
+                </script>
+
 
             </main>
         </div>

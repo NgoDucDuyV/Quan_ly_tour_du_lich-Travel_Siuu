@@ -105,4 +105,14 @@ class TourModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function getToursByCategory($category_id, $pdo)
+    {
+        $sql = "
+        SELECT * FROM tours WHERE category_id = :category_id ORDER BY created_at DESC
+        ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['category_id' => $category_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
