@@ -92,6 +92,19 @@ class TourModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function TourPoliciesModel($tour_id)
+    {
+        $stmt = $this->conn->prepare("
+        SELECT *
+        FROM tour_policies
+        WHERE tour_id = :tour_id
+        ORDER BY id ASC
+        ");
+        $stmt->bindParam(":tour_id", $tour_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public function TourImagesModel($tour_id)
     {

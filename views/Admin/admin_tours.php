@@ -29,10 +29,10 @@
 
             <div class="flex items-center space-x-3">
 
-                <button class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
+                <a href="?act=admin_createTourfrom" class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
                     <i class="fa-solid fa-plus"></i>
                     Tạo mới
-                </button>
+                </a>
 
                 <button class="flex items-center gap-2 px-4 py-2 border rounded-md
                 text-sm text-dark hover:bg-main hover:text-white transition-all duration-200 ease-out">
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
 
-                            <a href="?act=from_add_tour"
+                            <a href="?act=admin_createTourfrom"
                                 class="px-4 py-2 bg-main text-white text-sm rounded-lg shadow 
                                 hover:bg-hover transition flex items-center gap-1">
                                 <i class="fa fa-plus text-xs"></i>

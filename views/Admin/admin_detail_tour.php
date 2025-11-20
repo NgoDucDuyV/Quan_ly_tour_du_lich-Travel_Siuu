@@ -18,16 +18,16 @@
 
                 <!-- Tabs -->
                 <div class="flex gap-2 pt-2">
-                    <button onclick="showTab('info')"
-                        class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 transition">
+                    <button data-tab="info"
+                        class="btnshow_tab px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 transition">
                         Thông tin
                     </button>
-                    <button onclick="showTab('versions')"
-                        class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 transition">
+                    <button data-tab="versions"
+                        class="btnshow_tab px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 transition">
                         Phiên bản
                     </button>
-                    <button onclick="showTab('images')"
-                        class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 transition">
+                    <button data-tab="images"
+                        class="btnshow_tab px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-100 transition">
                         Hình ảnh
                     </button>
                 </div>
@@ -37,78 +37,114 @@
         <!-- Body -->
         <div id="tabs" class="bg-white p-4 border rounded-xl shadow-xl">
 
-            <!-- Tab 1: Thông tin -->
             <div id="tab-info" class="tab-pane">
                 <h4 class="text-lg font-semibold text-gray-800">Lịch trình - <?= $dataOneTour['name'] ?></h4>
 
                 <div class="mt-4 space-y-8">
 
                     <!-- Timeline lịch trình -->
-                    <?php if (!empty($dataTourDetai)) : ?>
-                        <div class="bg-white rounded-xl border shadow-sm p-5">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Lịch trình tour</h3>
+                    <div class="bg-white rounded-xl border shadow-sm p-6 mt-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Lịch trình tour</h3>
 
-                            <ul class="relative border-l-2 border-main/40 pl-6 space-y-10">
+                        <?php if (!empty($dataTourDetai)) : ?>
+                            <?php
+                            $groupedData = [];
+                            // Nhóm dữ liệu theo day_number
+                            foreach ($dataTourDetai as $item) {
+                                $day = $item['day_number'];
+                                $groupedData[$day][] = $item;
+                            }
+                            ?>
 
-                                <?php
-                                $currentDay = null;
-                                foreach ($dataTourDetai as $item):
-                                    if ($currentDay !== $item['day_number']):
-                                        if ($currentDay !== null) echo "</ul></div></li>";
-                                        $currentDay = $item['day_number'];
-                                ?>
-
-                                        <li class="relative">
-                                            <span class="absolute -left-4 top-0 bg-main text-white w-10 h-10 rounded-full 
-                                flex items-center justify-center font-bold shadow-md text-sm">
-                                                <?= $currentDay ?>
+                            <?php foreach ($groupedData as $dayNumber => $activities) :
+                                $firstItem = $activities[0]; // Lấy thông tin title, description chung của ngày
+                            ?>
+                                <div class="border border-gray-200 rounded-xl overflow-hidden mb-4">
+                                    <button type="button"
+                                        class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition focus:outline-none"
+                                        onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');">
+                                        <div class="flex items-center gap-4">
+                                            <span class="bg-main text-white w-10 h-10 flex items-center justify-center rounded-full font-bold shadow-md">
+                                                <?= $dayNumber ?>
                                             </span>
+                                            <span class="text-gray-800 font-medium text-base">
+                                                <?= htmlspecialchars($firstItem['itinerary_title']) ?>
+                                            </span>
+                                        </div>
+                                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
 
-                                            <div class="bg-gray-50 border rounded-xl p-5 shadow-sm">
-                                                <h5 class="text-gray-800 font-semibold text-base mb-1">
-                                                    Ngày <?= $currentDay ?> – <?= htmlspecialchars($item['itinerary_title']) ?>
-                                                </h5>
+                                    <!-- Nội dung ngày -->
+                                    <div class="p-4 text-gray-600 text-sm sm:text-base hidden">
+                                        <?php if (!empty($firstItem['itinerary_description'])): ?>
+                                            <p class="mb-4"><?= htmlspecialchars($firstItem['itinerary_description']) ?></p>
+                                        <?php endif; ?>
 
-                                                <p class="text-gray-600 text-sm mb-3 leading-relaxed">
-                                                    <?= htmlspecialchars($item['itinerary_description']) ?>
-                                                </p>
-
-                                                <ul class="space-y-2 text-sm text-gray-700">
-                                                <?php endif; ?>
-
-                                                <li class="flex items-start gap-2">
-                                                    <span class="font-medium text-main"><?= htmlspecialchars($item['activity_time']) ?></span>
+                                        <ul class="space-y-3">
+                                            <?php foreach ($activities as $act): ?>
+                                                <li class="flex items-start gap-3">
+                                                    <span class="flex-shrink-0 text-main font-medium w-16">
+                                                        <?= htmlspecialchars($act['activity_time']) ?>
+                                                    </span>
                                                     <div>
-                                                        <span class="font-medium"><?= htmlspecialchars($item['activity']) ?></span>
-                                                        — <span class="text-gray-700"><?= htmlspecialchars($item['location']) ?></span>
-                                                        <div class="text-gray-600"><?= htmlspecialchars($item['activity_description']) ?></div>
+                                                        <span class="font-medium text-gray-800"><?= htmlspecialchars($act['activity']) ?></span>
+                                                        <?php if (!empty($act['location'])): ?>
+                                                            — <span class="text-gray-600"><?= htmlspecialchars($act['location']) ?></span>
+                                                        <?php endif; ?>
+                                                        <?php if (!empty($act['activity_description'])): ?>
+                                                            <div class="text-gray-500 text-sm mt-1"><?= htmlspecialchars($act['activity_description']) ?></div>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </li>
-
                                             <?php endforeach; ?>
-                                                </ul>
-                                            </div>
-                                        </li>
-                            </ul>
-                        </div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
 
-                    <?php else: ?>
-                        <div class="text-center bg-gray-50 p-6 rounded-xl border shadow-sm">
-                            <p class="text-gray-600">Chưa có dữ liệu lịch trình.</p>
-                            <button class="mt-3 px-4 py-2 bg-main text-white rounded-lg hover:bg-hover transition">
-                                Xem chi tiết tour
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
-
-                    <!-- Chính sách -->
-                    <div class="bg-white rounded-xl border shadow-sm p-5">
-                        <h4 class="text-lg font-semibold text-gray-800">Chính sách</h4>
-                        <p class="text-gray-600 text-sm mt-2 leading-relaxed">
-                            Hủy sau 7 ngày trước ngày khởi hành mất 50%, hủy trong 3 ngày mất 100%...
-                        </p>
+                        <?php else: ?>
+                            <div class="text-center bg-gray-50 p-6 rounded-xl border shadow-sm mt-6">
+                                <p class="text-gray-600">Chưa có dữ liệu lịch trình.</p>
+                                <button class="mt-3 px-5 py-2 bg-main text-white rounded-lg hover:bg-hover transition">
+                                    Xem chi tiết tour
+                                </button>
+                            </div>
+                        <?php endif; ?>
                     </div>
+
+                    <!-- Chính sách Tour -->
+                    <div class="bg-white rounded-xl border shadow-sm p-5 mt-6">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-5">Chính sách tour</h4>
+
+                        <?php if (!empty($dataTourPolicies)): ?>
+                            <div class="space-y-3">
+                                <?php foreach ($dataTourPolicies as $policy): ?>
+                                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                        <!-- Header clickable -->
+                                        <button type="button"
+                                            class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition focus:outline-none"
+                                            onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');">
+                                            <span class="text-gray-800 font-medium text-sm sm:text-base">
+                                                <?= htmlspecialchars($policy['policy_type']) ?>
+                                            </span>
+                                            <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <!-- Nội dung -->
+                                        <div class="p-4 text-gray-600 text-sm sm:text-base hidden">
+                                            <?= htmlspecialchars($policy['description']) ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <p class="text-gray-500 text-sm">Chưa có chính sách cho tour này.</p>
+                        <?php endif; ?>
+                    </div>
+
 
                     <!-- Nhà cung cấp -->
                     <div class="bg-white rounded-xl border shadow-sm p-5">
