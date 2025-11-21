@@ -162,10 +162,34 @@ echo match ($act) {
 
 
 
-    // hướng dẫn viên
+    // Hướng dẫn viên
+    'guide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/homeguide.php";
+    })(),
     'homeguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/homegiude.php";
+        require_once "./views/Admin/homeguide.php";
+    })(),
+    'scheduleguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/scheduleguide.php";
+    })(),
+    'listguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/listguide.php";
+    })(),
+    'diaryguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/diaryguide.php";
+    })(),
+    'checkguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/checkguide.php";
+    })(),
+    'requestguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/requestguide.php";
     })(),
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
