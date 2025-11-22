@@ -55,7 +55,8 @@
                             <div class="flex items-center space-x-3 cursor-pointer select-none">
                                 <div class="">
                                     <p class="text-sm font-semibold text-gray-900">
-                                        <?= $_SESSION['admin_logged']['username'] ?></p>
+                                        <?= $_SESSION['admin_logged']['username'] ?>
+                                    </p>
                                     <p class="text-xs text-gray-500">(<?= $_SESSION['admin_logged']['description'] ?>)
                                     </p>
                                 </div>
