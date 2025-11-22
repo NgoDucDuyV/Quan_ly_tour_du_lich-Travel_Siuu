@@ -177,16 +177,24 @@ echo match ($act) {
     })(),
     'listguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/listguide.php";
+
+        $ctrl = new GuideLayoutController();
+        $ctrl->listGuide();
     })(),
+
     'diaryguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/diaryguide.php";
+
+        $ctrl = new GuideLayoutController();
+        $ctrl->diaryGuide();
     })(),
+
     'checkguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/checkguide.php";
+        $ctrl = new GuideLayoutController();
+        $ctrl->checkGuide();
     })(),
+
     'requestguide' => (function () {
         requireGuide();
         require_once "./views/Admin/requestguide.php";
