@@ -119,13 +119,51 @@ class TourModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function getToursByCategory($category_id, $pdo)
+    public function getToursByCategory($category_id, $pdo)
     {
         $sql = "
         SELECT * FROM tours WHERE category_id = :category_id ORDER BY created_at DESC
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['category_id' => $category_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getAllLogsByGuide($guide_id)
+    {
+        $sql = "SELECT * FROM tour_logs WHERE guide_id = :guide_id ORDER BY log_date DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['guide_id' => $guide_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getTodayTour($guide_id)
+    {
+        $sql = "
+        SELECT s.id AS schedule_id, t.name AS tour_name, 
+               s.start_date AS start_time, COUNT(a.customer_id) AS total_customers
+        FROM schedules s
+        JOIN tours t ON s.tour_id = t.id
+        LEFT JOIN attendance a ON a.schedule_id = s.id
+        WHERE s.guide_id = :guide_id
+          AND DATE(s.start_date) = CURDATE()
+        GROUP BY s.id
+        LIMIT 1
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['guide_id' => $guide_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCustomersBySchedule($schedule_id)
+    {
+        $sql = "
+        SELECT c.name AS customer_name, a.status, a.id AS attendance_id
+        FROM attendance a
+        JOIN customers c ON c.id = a.customer_id
+        WHERE a.schedule_id = :schedule_id
+    ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['schedule_id' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
