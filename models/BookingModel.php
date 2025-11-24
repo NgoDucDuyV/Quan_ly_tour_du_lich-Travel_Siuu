@@ -8,12 +8,30 @@ class BookingModel
         $this->conn = connectDB();
     }
 
-    // Lấy toàn bộ booking (đúng như ảnh bạn chụp)
+    // Lấy toàn bộ booking
     public function getAllBookings()
     {
+        
         $sql = "SELECT * FROM bookings ORDER BY created_at DESC";
         $stmt = $this->conn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Giao diện Guide
+    public function getBookings($keyword = '')
+    {
+        if ($keyword !== '') {
+            $sql = "SELECT * FROM bookings 
+                WHERE customer_name LIKE :keyword
+                ORDER BY created_at DESC";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':keyword' => "%$keyword%"]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // Không tìm kiếm → lấy tất cả
+        $sql = "SELECT * FROM bookings ORDER BY created_at DESC";
+        return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Tạo booking mới
@@ -21,7 +39,7 @@ class BookingModel
     {
         $sql = "INSERT INTO bookings 
                 (tour_id, tour_version_id, customer_name, customer_phone, customer_email, 
-                 group_type, number_of_people, note, status, created_at, updated_at) 
+                group_type, number_of_people, note, status, created_at, updated_at) 
                 VALUES 
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 

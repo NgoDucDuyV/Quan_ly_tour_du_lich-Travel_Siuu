@@ -84,9 +84,17 @@ echo match ($act) {
     'admin_detail_tour' => (function () {
         requireAdmin();
     })(),
-    'from_add_tour' => (function () {
+    'admin_createTourfrom' => (function () {
         requireAdmin();
-        (new AdminTourController)->showFromAddTour();
+        (new AdminTourController)->showFromCreateTour();
+    })(),
+    'admin_createTour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->CreateTour();
+    })(),
+    'admin_deleteTour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->DeleteTourController($_GET['tour_id']);
     })(),
     // quản lý nàh cung cấp
     'supplier-list' => (function () {
@@ -135,14 +143,14 @@ echo match ($act) {
     })(),
 
 
-   //quản lý nhân viên
+    //quản lý nhân viên
     'create-staff' => (function () {
         requireAdmin();
         (new AccountManagementController)->createStaff();
         exit;
     })(),
 
- 
+
     'update-staff' => (function () {
         requireAdmin();
         (new AccountManagementController)->updateStaff();
@@ -162,10 +170,41 @@ echo match ($act) {
 
 
 
-    // hướng dẫn viên
+    // Hướng dẫn viên
+    'guide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/homeguide.php";
+    })(),
     'homeguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/homegiude.php";
+        require_once "./views/Admin/homeguide.php";
+    })(),
+    'scheduleguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/scheduleguide.php";
+    })(),
+    'listguide' => (function () {
+        requireGuide();
+
+        $ctrl = new GuideLayoutController();
+        $ctrl->listGuide();
+    })(),
+
+    'diaryguide' => (function () {
+        requireGuide();
+        $ctrl = new GuideLayoutController();
+        $ctrl->diaryGuide();
+    })(),
+
+    'checkguide' => (function () {
+        requireGuide();
+        $ctrl = new GuideLayoutController();
+        $ctrl->checkGuide();
+    })(),
+
+    'requestguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/requestguide.php";
     })(),
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
@@ -199,7 +238,7 @@ if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
     <?= $layoutController->Header() ?>
     <main id="contentAdmin" class="contentAdmin flex flex-row relative md:p-0 z-[0]">
         <?= $layoutController->Sidebar() ?>
-        <div id="adminContent" class="w-full overflow-x-hidden">
+        <div id="adminContent" class="w-full overflow-x-clip">
             <?= $content_views ?>
         </div>
     </main>

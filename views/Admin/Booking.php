@@ -1,15 +1,34 @@
-<?php
-// $bookings được truyền từ BookingController
-?>
-
 <div class="max-w-[1900px] mx-auto p-6">
     <!-- breadcrumb -->
-    <nav class="text-sm text-slate-500 mb-4">
+    <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
         <ul class="inline-flex items-center space-x-2">
             <li>Quản trị viên</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300">Quản lý booking</li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Quản lý booking</li>
         </ul>
     </nav>
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-3 bg-">
+            <h1 class="text-3xl font-[500] text-slate-900 m-0">Danh Sách Booking</h1>
+            <span class="inline-flex items-center justify-center font-[500] text-white px-2 py-0.5 rounded-full bg-main">
+                <?= count($bookings) ?>
+            </span>
+        </div>
+
+        <div class="flex items-center space-x-3">
+
+            <a href="?mode=admin&act=newBooking" class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
+                <i class="fa-solid fa-plus"></i>
+                Tạo mới Booking
+            </a>
+
+            <button class="flex items-center gap-2 px-4 py-2 border rounded-md
+                text-sm text-dark hover:bg-main hover:text-white transition-all duration-200 ease-out">
+                <i class="fa-solid fa-filter"></i>
+                Lọc
+            </button>
+        </div>
+    </div>
 
     <!-- thông báo -->
     <?php if (isset($_SESSION['success'])): ?>
@@ -24,21 +43,6 @@
             unset($_SESSION['error']); ?>
         </div>
     <?php endif; ?>
-
-
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-semibold text-slate-900">Danh sách booking</h1>
-            <span class="text-sm text-slate-600"><?= count($bookings) ?> Booking trong hệ thống</span>
-        </div>
-        <a href="?mode=admin&act=newBooking"
-            class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm font-medium">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Tạo booking mới
-        </a>
-    </div>
 
     <!-- ghi chú trạng thái -->
     <div class="mt-6 flex gap-4 text-xs mb-5">
@@ -64,7 +68,11 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">id</th>
+                        <th class="px-6 py-3 text-left w-10">
+                            <input type="checkbox"
+                                class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ID</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">tour id</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">tên khách hàng</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">số điện thoại</th>
@@ -87,6 +95,9 @@
                         </tr>
                         <?php else: foreach ($bookings as $b): ?>
                             <tr class="hover:bg-slate-50 transition">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
+                                </td>
                                 <td class="px-4 py-4 font-medium text-slate-900">#<?= $b['id'] ?></td>
                                 <td class="px-4 py-4"><?= $b['tour_id'] ?> <small class="text-slate-500">(v<?= $b['tour_version_id'] ?? '-' ?>)</small></td>
                                 <td class="px-4 py-4 font-medium"><?= htmlspecialchars($b['customer_name']) ?></td>

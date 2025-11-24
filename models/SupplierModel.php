@@ -55,4 +55,12 @@ class SupplierModel
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function supplier_types()
+    {
+        $stmt = $this->conn->query("
+        SELECT * FROM `supplier_types` 
+        ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

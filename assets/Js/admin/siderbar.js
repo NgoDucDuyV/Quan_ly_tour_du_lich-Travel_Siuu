@@ -52,8 +52,8 @@ const loadAdminPage = (href) => {
 };
 
 // bật tắt sider bar
-const siderbaradmin = document.getElementById("siderbaradmin");
-function toggleSidebar() {
+function toggleSidebar(id) {
+  const siderbaradmin = document.getElementById(`${id}`);
   const screenWidth = window.innerWidth;
   if (screenWidth <= 640) {
     siderbaradmin.classList.toggle("-translate-x-full"); // chỉ trượt

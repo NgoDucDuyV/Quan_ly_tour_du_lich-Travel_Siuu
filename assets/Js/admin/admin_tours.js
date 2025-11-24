@@ -30,6 +30,15 @@ const loadDetailtour = (href) => {
     .then(({ data }) => {
       // console.log(data);
       viewsdetailtour.innerHTML = data;
+      const btnshow_tabs = document.querySelectorAll(".btnshow_tab");
+      console.log(btnshow_tabs);
+      btnshow_tabs.forEach((item) => {
+        item.addEventListener("click", (el) => {
+          el.preventDefault();
+          // console.log(item.dataset.tab);
+          showTab(item.dataset.tab);
+        });
+      });
     })
     .catch(() => {
       console.log("Lỗi khôg có inter net");
@@ -59,6 +68,9 @@ function cloneTour(btn) {
 function generateQuote(btn) {
   alert("Báo giá nhanh: mở form chọn số khách và xuất PDF/Email (demo).");
 }
+
+const btnshow_tabs = document.querySelectorAll(".btnshow_tab");
+console.log(btnshow_tabs);
 
 function showTab(name) {
   // console.log(1);
