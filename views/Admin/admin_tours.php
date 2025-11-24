@@ -224,7 +224,7 @@
                                                     <i class="fa-regular fa-pen-to-square w-5 mr-3"></i> Edit
                                                 </a>
 
-                                                <a href="?act=deletetour&id=<?= $value['id'] ?>"
+                                                <a href="?act=admin_deleteTour&tour_id=<?= $value['id'] ?>"
                                                     onclick=" return confirm('Bạn có chắc chắn muốn xóa ?')"
                                                     class=" flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
                                                     <i class="fa-regular fa-trash-can w-5 mr-3"></i> Xóa bỏ

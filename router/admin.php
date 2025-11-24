@@ -88,6 +88,14 @@ echo match ($act) {
         requireAdmin();
         (new AdminTourController)->showFromCreateTour();
     })(),
+    'admin_createTour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->CreateTour();
+    })(),
+    'admin_deleteTour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->DeleteTourController($_GET['tour_id']);
+    })(),
     // quản lý nàh cung cấp
     'supplier-list' => (function () {
         requireAdmin();
