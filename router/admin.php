@@ -192,7 +192,6 @@ echo match ($act) {
 
     'diaryguide' => (function () {
         requireGuide();
-
         $ctrl = new GuideLayoutController();
         $ctrl->diaryGuide();
     })(),
