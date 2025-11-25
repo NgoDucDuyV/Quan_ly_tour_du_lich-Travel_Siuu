@@ -62,6 +62,9 @@ $content_views = ob_get_clean();
     <!-- CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./assets/Css/style.css" />
+    <!-- ApexCharts phải trước script custom -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
+    <script src="custom.js"></script>
 
     <!-- icon  -->
     <script src="https://unpkg.com/lucide@latest"></script>
