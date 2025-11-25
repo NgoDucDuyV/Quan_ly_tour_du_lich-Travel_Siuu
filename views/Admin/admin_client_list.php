@@ -177,7 +177,7 @@
                             Hủy
                         </a>
                         <button type="submit"
-                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                            class="px-4 py-2  bg-hover text-white rounded-md hover:bg-dark">
                             Tạo mới
                         </button>
                     </div>
@@ -228,7 +228,7 @@
                             Hủy
                         </a>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            class="px-4 py-2  bg-hover text-white rounded-md hover:bg-dark">
                             Cập nhật
                         </button>
                     </div>

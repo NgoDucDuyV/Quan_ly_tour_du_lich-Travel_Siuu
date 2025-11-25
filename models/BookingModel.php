@@ -39,7 +39,7 @@ class BookingModel
     {
         $sql = "INSERT INTO bookings 
                 (tour_id, tour_version_id, customer_name, customer_phone, customer_email, 
-                 group_type, number_of_people, note, status, created_at, updated_at) 
+                group_type, number_of_people, note, status, created_at, updated_at) 
                 VALUES 
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 

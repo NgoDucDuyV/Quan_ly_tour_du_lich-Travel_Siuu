@@ -34,6 +34,22 @@ class TourModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getByName($tour_name)
+    {
+        $stmt = $this->conn->prepare("
+        SELECT *
+        FROM tours
+        WHERE name LIKE CONCAT('%', :name, '%')
+        AND status = 'active'
+        ORDER BY created_at DESC
+    ");
+        $stmt->bindParam(':name', $tour_name, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
     public function TourDetailItineraryModel($tour_id)
     {
         $stmt = $this->conn->prepare("
@@ -73,19 +89,19 @@ class TourModel
     public function TourSuppliersModel($tour_id)
     {
         $stmt = $this->conn->prepare("
-        SELECT 
+        SELECT
             t.id AS tour_id,
             t.name AS tour_name,
             s.id AS supplier_id,
             s.name AS supplier_name,
-            ts.role,
+            st.name  as role,
             ts.notes
         FROM tours t
         JOIN tour_suppliers ts ON t.id = ts.tour_id
         JOIN suppliers s ON ts.supplier_id = s.id
+        JOIN supplier_types st ON s.supplier_types_id = st.id
         WHERE t.id = :tour_id
         ORDER BY t.id, s.id;
-
         ");
         $stmt->bindParam(":tour_id", $tour_id);
         $stmt->execute();
@@ -119,51 +135,261 @@ class TourModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getToursByCategory($category_id, $pdo)
+    public function TourVersionsModel($tour_id)
     {
-        $sql = "
-        SELECT * FROM tours WHERE category_id = :category_id ORDER BY created_at DESC
-        ";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['category_id' => $category_id]);
+        $stmt = $this->conn->prepare("
+        SELECT * FROM tour_versions
+        WHERE tour_id = :tour_id
+        ");
+        $stmt->bindParam(":tour_id", $tour_id);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getAllLogsByGuide($guide_id)
-    {
-        $sql = "SELECT * FROM tour_logs WHERE guide_id = :guide_id ORDER BY log_date DESC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getTodayTour($guide_id)
-    {
-        $sql = "
-        SELECT s.id AS schedule_id, t.name AS tour_name, 
-               s.start_date AS start_time, COUNT(a.customer_id) AS total_customers
-        FROM schedules s
-        JOIN tours t ON s.tour_id = t.id
-        LEFT JOIN attendance a ON a.schedule_id = s.id
-        WHERE s.guide_id = :guide_id
-          AND DATE(s.start_date) = CURDATE()
-        GROUP BY s.id
-        LIMIT 1
-    ";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getCustomersBySchedule($schedule_id)
+    // function getToursByCategory($category_id, $pdo)
+    // {
+    //     $stmt = $pdo->prepare("
+    //     SELECT * FROM tours WHERE category_id = :category_id ORDER BY created_at DESC");
+    //     $stmt->execute(['category_id' => $category_id]);
+    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // }
+
+    public function CreateTourModel($datatour)
     {
-        $sql = "
-        SELECT c.name AS customer_name, a.status, a.id AS attendance_id
-        FROM attendance a
-        JOIN customers c ON c.id = a.customer_id
-        WHERE a.schedule_id = :schedule_id
-    ";
+        // echo "<pre>";
+        // var_dump($datatour);
+        // echo "<pre>";
+        $sql = "INSERT INTO tours
+        (category_id, name, code, days, nights, description, itinerary, images, price, policy, status, created_at, updated_at)
+        VALUES
+        (:category_id, :name, :code, :days, :nights, :description, :itinerary, :images, :price, :policy, :status, :created_at, :updated_at)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['schedule_id' => $schedule_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = [
+            ':category_id' => $datatour['category_id'],
+            ':name' => $datatour['name'],
+            ':code' => $datatour['code'],
+            ':days' => $datatour['days'],
+            ':nights' => $datatour['nights'],
+            // ':duration'    => $datatour['days'] . ' ngày ' . $datatour['nights'] . ' đêm', // Ví dụ nối days + nights
+            ':description' => $datatour['description'],
+            ':itinerary' => $datatour['itinerary'], // Nếu chưa có dữ liệu chi tiết hành trình
+            ':images' => $datatour['image'], // đường dẫn ảnh upload
+            ':price' => $datatour['price'],
+            ':policy' => $datatour['policy'],
+            ':status' => $datatour['status'],
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            print_r($stmt->errorInfo());
+        }
+    }
+
+    public function CreateTourItineraries($datatouritineraries, $tour_id)
+    {
+        $sql = "INSERT INTO tour_itineraries 
+                (tour_id, day_number, title, description, created_at, updated_at)
+                VALUES 
+                (:tour_id, :day_number, :title, :description, :created_at, :updated_at)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        // Chuẩn bị dữ liệu bind
+        $data = [
+            ':tour_id' => $tour_id,
+            ':day_number' => $datatouritineraries['day'],
+            ':title' => $datatouritineraries['title'],
+            ':description' => $datatouritineraries['desc'],
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            print_r($stmt->errorInfo());
+            return false;
+        }
+    }
+
+    public function CreateTourActivities($datatouractivities, $tour_itineraries_id)
+    {
+        // echo "<pre>";
+        // var_dump($datatouractivities);
+        // var_dump($tour_itineraries_id);
+        // echo "</pre>";
+        // die;
+        $sql = "INSERT INTO tour_activities 
+            (itinerary_id, time, activity, location, description, created_at, updated_at)
+            VALUES 
+            (:itinerary_id, :time, :activity, :location, :description, :created_at, :updated_at)";
+
+        $stmt = $this->conn->prepare($sql);
+        $data = [
+            ':itinerary_id' => $tour_itineraries_id,
+            ':time' => $datatouractivities['time'] ?? '',
+            ':activity' => $datatouractivities['name'] ?? '',
+            ':location' => $datatouractivities['location'] ?? '',
+            ':description' => $datatouractivities['description'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            print_r($stmt->errorInfo());
+            return false;
+        }
+    }
+
+    public function CreateTourImages($datatourimages, $tour_id = null, $itinerary_id = null, $activity_id = null)
+    {
+        // echo "<pre>";
+        // echo "Dữ liệu ảnh: ";
+        // var_dump($datatourimages, "idtour$tour_id");
+        // echo "<pre>";
+        // die;
+
+        $sql = "INSERT INTO tour_images
+        (tour_id, activity_id, itinerary_id, image_url, description, created_at, updated_at)
+        VALUES
+        (:tour_id, :activity_id, :itinerary_id, :image_url, :description, :created_at, :updated_at)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $data = [
+            ':tour_id' => $tour_id,
+            ':activity_id' => $activity_id,
+            ':itinerary_id' => $itinerary_id,
+            ':image_url' => $datatourimages['image'] ?? '',
+            ':description' => $datatourimages['desc'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            print_r($stmt->errorInfo());
+            return false;
+        }
+    }
+
+    public function CreateTourSuppliers($datatoursuppliers, $tour_id = null)
+    {
+        // echo "<pre>";
+        // echo "Dữ liệu ảnh: ";
+        // var_dump($datatoursuppliers, "idtour : $tour_id");
+        // echo "<pre>";
+        // die;
+
+        $sql = "INSERT INTO tour_suppliers
+        (tour_id, supplier_id, notes, created_at, updated_at)
+        VALUES
+        (:tour_id, :supplier_id, :notes, :created_at, :updated_at)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $data = [
+            ':tour_id' => $tour_id,
+            ':supplier_id' => $datatoursuppliers['supplier_id'],
+            ':notes' => $datatoursuppliers['note'],
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            print_r($stmt->errorInfo());
+            return false;
+        }
+    }
+
+    public function CreateTourVersions($datatourversions, $tour_id = null)
+    {
+        echo "<pre>";
+        echo "Dữ liệu ảnh: ";
+        var_dump($datatourversions, "idtour : $tour_id");
+        echo "<pre>";
+        // die;
+        $sql = "INSERT INTO tour_versions
+        (tour_id, name, season, price, start_date, end_date, status, created_at, updated_at)
+        VALUES
+        (:tour_id, :name, :season, :price, :start_date, :end_date, :status, :created_at, :updated_at)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $data = [
+            ':tour_id' => $tour_id,
+            ':name' => $datatourversions['name'] ?? '',
+            ':season' => $datatourversions['season'] ?? '',
+            ':price' => $datatourversions['price'] ?? 0,
+            ':start_date' => $datatourversions['start_date'] ?? null,
+            ':end_date' => $datatourversions['end_date'] ?? null,
+            ':status' => $datatourversions['status'] ?? 1,
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            echo "<pre>";
+            print_r($stmt->errorInfo());
+            echo "</pre>";
+            return false;
+        }
+    }
+
+    public function CreateTourPolicies($datatourpolicies, $tour_id = null)
+    {
+        echo "<pre>";
+        var_dump($datatourpolicies, "idtour : $tour_id");
+        echo "</pre>";
+        // die;
+
+        $sql = "INSERT INTO tour_policies
+        (tour_id, policy_type, description, created_at, updated_at)
+        VALUES
+        (:tour_id, :policy_type, :description, :created_at, :updated_at)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $data = [
+            ':tour_id' => $tour_id,
+            ':policy_type' => $datatourpolicies['type'] ?? '',
+            ':description' => $datatourpolicies['description'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($stmt->execute($data)) {
+            return $this->conn->lastInsertId();
+        } else {
+            echo "<pre>";
+            print_r($stmt->errorInfo());
+            echo "</pre>";
+            return false;
+        }
+    }
+
+
+
+
+    public function DeleteTourModel($tour_id)
+    {
+        // echo "<pre>";
+        // var_dump($tour_id);
+        // echo "<pre>";
+        // die;
+        $stmt = $this->conn->prepare("
+        DELETE FROM `tours` WHERE tours.id = :tour_id
+        ");
+        $stmt->bindParam(':tour_id', $tour_id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }
