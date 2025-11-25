@@ -34,6 +34,22 @@ class TourModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getByName($tour_name)
+    {
+        $stmt = $this->conn->prepare("
+        SELECT *
+        FROM tours
+        WHERE name LIKE CONCAT('%', :name, '%')
+        AND status = 'active'
+        ORDER BY created_at DESC
+    ");
+        $stmt->bindParam(':name', $tour_name, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
     public function TourDetailItineraryModel($tour_id)
     {
         $stmt = $this->conn->prepare("

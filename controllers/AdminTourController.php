@@ -2,9 +2,13 @@
 class AdminTourController
 {
 
-    public function ShowAdminTour()
+    public function ShowAdminTour($tour_name = null)
     {
-        $datatour = (new TourModel())->getAll();
+        if (!empty($tour_name)) {
+            $datatour = (new TourModel())->getByName($tour_name);
+        } else {
+            $datatour = (new TourModel())->getAll();
+        }
         // echo '<pre>';
         // var_dump($datatour);
         // echo '<pre>';

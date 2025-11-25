@@ -112,7 +112,7 @@ echo match ($act) {
     })(),
     'newBooking' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowFromNewBooking();
+        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
     })(),
 
     // quản lý tải khoản người dùng
