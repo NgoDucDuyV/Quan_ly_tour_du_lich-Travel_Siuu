@@ -1,258 +1,204 @@
-<!-- Main content -->
-<main class="flex-1 p-6 overflow-auto">
-    <!-- Dashboard -->
-    <section id="dashboard" class="mb-10">
-        <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded shadow">Tổng tour: <span class="font-bold">12</span></div>
-            <div class="bg-white p-6 rounded shadow">Tổng khách: <span class="font-bold">120</span></div>
-            <div class="bg-white p-6 rounded shadow">Doanh thu: <span class="font-bold">1.200.000.000₫</span></div>
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Booking Tour Đa Bước</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Thiết lập font Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9;
+        }
+
+        .step-content {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+    <script>
+        // Cấu hình Tailwind cho màu sắc tùy chỉnh
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'main': '#3b82f6',
+                        /* blue-500 */
+                        'hover': '#2563eb',
+                        /* blue-600 */
+                        'success': '#10b981',
+                        /* emerald-500 */
+                        'warning': '#f59e0b',
+                        /* amber-500 */
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="app" class="max-w-[1800px] mx-auto  p-6 md:p-10">
+        <!-- Breadcrumb -->
+        <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
+            <ul class="inline-flex items-center space-x-2">
+                <li>Quản trị viên</li>
+                <li class="before:content-['/'] before:px-2 before:text-slate-300">Đối Tác Nhà cung cấp</li>
+                <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-500">Tạo Booking</li>
+            </ul>
+        </nav>
+        <!-- Step Indicator -->
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold text-[#0f2b57]">
+                Bước <span id="step-display">1</span>/3: <span id="step-title">Lựa chọn Tour & Thông tin cơ bản</span>
+            </h3>
+            <div class="w-full h-3 mt-2 bg-[#a8c4f0] rounded-full">
+                <div id="progress-bar" class="h-3 rounded-full transition-all duration-500" style="background: linear-gradient(to right, #1f55ad, #5288e0); width: 33%;"></div>
+            </div>
         </div>
-    </section>
 
-    <!-- Danh mục tour -->
-    <section id="categories" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Danh mục tour</h2>
-        <div class="mb-4 flex justify-between">
-            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Thêm danh mục</button>
-            <input type="text" placeholder="Tìm kiếm..." class="border rounded px-2 py-1">
+        <!-- Thông báo -->
+        <div id="message-container" class="mb-4 hidden p-3 rounded-lg text-white font-medium bg-[#37d4d9]"></div>
+
+        <!-- Form -->
+        <form id="multi-step-booking-form" onsubmit="event.preventDefault(); handleFormSubmit();" class="space-y-10">
+
+            <input type="hidden" name="booking_id" id="booking-id-input" value="">
+
+            <!-- STEP 1 -->
+            <div id="step-1-content" class="step-content">
+                <div class="p-6 rounded-2xl border border-[#5288e0] shadow-md space-y-6 bg-[#ffffff]">
+                    <h4 class="text-xl font-bold text-[#1f55ad]">1. Thông Tin Tour & Liên Hệ</h4>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="tour_id" class="block text-sm font-medium text-[#0f2b57] mb-1">
+                                Chọn Tour Gốc <span class="text-[#37d4d9]">*</span>
+                            </label>
+                            <select id="tour_id" name="tour_id" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                                <option value="">-- Chọn Tour --</option>
+                                <option value="1">Tour Hà Nội - Sapa 4N3Đ (Trong nước)</option>
+                                <option value="2">Tour Thái Lan: Bangkok - Pattaya 5N4Đ (Quốc tế)</option>
+                                <option value="3">Tour CEO Team Building 3 Ngày (Theo yêu cầu)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="tour_version_id" class="block text-sm font-medium text-[#0f2b57] mb-1">
+                                Chọn Phiên bản Tour/Ngày khởi hành <span class="text-[#37d4d9]">*</span>
+                            </label>
+                            <select id="tour_version_id" name="tour_version_id" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                                <option value="">-- Chọn Phiên bản (Ngày/Giá) --</option>
+                                <option value="101" data-price="8500000">01/12/2025 - 8.500.000 VND</option>
+                                <option value="102" data-price="9000000">15/12/2025 - 9.000.000 VND (Mùa cao điểm)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="customer_name" class="block text-sm font-medium text-[#0f2b57] mb-1">
+                                    Tên Khách hàng <span class="text-[#37d4d9]">*</span>
+                                </label>
+                                <input type="text" id="customer_name" name="customer_name" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                            </div>
+                            <div>
+                                <label for="customer_phone" class="block text-sm font-medium text-[#0f2b57] mb-1">
+                                    Số điện thoại <span class="text-[#37d4d9]">*</span>
+                                </label>
+                                <input type="tel" id="customer_phone" name="customer_phone" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="customer_email" class="block text-sm font-medium text-[#0f2b57] mb-1">
+                                Email Khách hàng <span class="text-[#37d4d9]">*</span>
+                            </label>
+                            <input type="email" id="customer_email" name="customer_email" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button" onclick="handleStep1Submit()" class="px-8 py-3 bg-[#1f55ad] text-white font-semibold rounded-2xl shadow-lg hover:bg-[#0f2b90] transition">
+                            Tiếp theo (Bước 2)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div id="step-2-content" class="step-content hidden">
+                <div class="p-6 rounded-2xl border border-[#5288e0] shadow-md space-y-6 bg-[#ffffff]">
+                    <h4 class="text-xl font-bold text-[#1f55ad]">2. Số Lượng & Trạng Thái</h4>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="number_of_people" class="block text-sm font-medium text-[#0f2b57] mb-1">Số lượng khách <span class="text-[#37d4d9]">*</span></label>
+                            <input type="number" id="number_of_people" name="number_of_people" min="1" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                        </div>
+                        <div>
+                            <label for="group_type" class="block text-sm font-medium text-[#0f2b57] mb-1">Loại nhóm <span class="text-[#37d4d9]">*</span></label>
+                            <select id="group_type" name="group_type" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                                <option value="le">Khách lẻ</option>
+                                <option value="doan">Khách đoàn</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="initial_status" class="block text-sm font-medium text-[#0f2b57] mb-1">Trạng thái Khởi tạo <span class="text-[#37d4d9]">*</span></label>
+                            <select id="initial_status" name="initial_status" required class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition">
+                                <option value="cho_xac_nhan" selected>Chờ xác nhận</option>
+                                <option value="da_coc">Đã cọc</option>
+                                <option value="hoan_tat">Hoàn tất</option>
+                                <option value="huy">Hủy</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="total-price-display" class="bg-[#a8c4f0] p-4 rounded-xl text-[#0f2b57] font-bold hidden">
+                        Tổng Giá Tạm Tính: <span id="calculated-price" class="text-[#1f55ad]">0 VND</span>
+                    </div>
+
+                    <div>
+                        <label for="note" class="block text-sm font-medium text-[#0f2b57] mb-1">Ghi chú / Yêu cầu đặc biệt</label>
+                        <textarea id="note" name="note" rows="3" placeholder="Ví dụ: Yêu cầu phòng đôi, ăn chay, khách VIP..." class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#1f55ad] focus:border-[#1f55ad] transition"></textarea>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button type="button" onclick="handleStep2Submit('prev')" class="px-6 py-3 bg-[#5288e0] text-white rounded-2xl hover:bg-[#0f2b90] transition">Quay lại</button>
+                        <button type="button" onclick="handleStep2Submit('next')" class="px-8 py-3 bg-[#1f55ad] text-white rounded-2xl shadow-lg hover:bg-[#0f2b90] transition">Tiếp theo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div id="step-3-content" class="step-content hidden">
+                <div class="p-6 rounded-2xl border border-[#37d4d9] shadow-md space-y-6 bg-[#ffffff]">
+                    <h4 class="text-xl font-bold text-[#1f55ad]">3. Thông tin bổ sung & Hoàn tất</h4>
+                    <div id="dynamic-step-3-content" class="p-4 rounded-xl border border-[#a8c4f0] bg-[#f9faff] text-[#0f2b57]"></div>
+
+                    <div class="flex justify-between">
+                        <button type="button" onclick="handleStep3Submit('prev')" class="px-6 py-3 bg-[#5288e0] text-white rounded-2xl hover:bg-[#0f2b90] transition">Quay lại</button>
+                        <button type="button" onclick="handleStep3Submit('finish')" class="px-8 py-3 bg-[#37d4d9] text-white rounded-2xl shadow-lg hover:bg-[#0fa2a5] transition">HOÀN TẤT</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS VIEW -->
+        <div id="success-view" class="hidden text-center p-10 bg-[#37d4d9]/10 border border-[#37d4d9] rounded-2xl">
+            <svg class="mx-auto h-12 w-12 text-[#37d4d9]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 class="text-3xl font-bold text-[#0f2b57] mt-4">Tạo Booking Thành Công!</h2>
+            <p class="mt-2 text-[#0f2b57]">Booking <span id="final-booking-id" class="font-bold"></span> đã được lưu và chuyển trạng thái sang <span id="final-status" class="font-bold"></span>.</p>
+            <p class="mt-4 text-sm text-[#0f2b57]/70">Dữ liệu Booking tạm thời được lưu trong phiên làm việc.</p>
+            <button onclick="window.location.reload();" class="mt-6 px-8 py-3 bg-[#1f55ad] text-white rounded-2xl shadow-lg hover:bg-[#0f2b90] transition">Tạo Booking Mới</button>
         </div>
-        <table class="min-w-full bg-white rounded shadow overflow-hidden">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 text-left">ID</th>
-                    <th class="p-3 text-left">Tên danh mục</th>
-                    <th class="p-3 text-left">Mô tả</th>
-                    <th class="p-3 text-left">Ngày tạo</th>
-                    <th class="p-3 text-left">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3">1</td>
-                    <td class="p-3">Tour trong nước</td>
-                    <td class="p-3">Tour tham quan trong nước</td>
-                    <td class="p-3">2025-01-01</td>
-                    <td class="p-3">
-                        <button class="text-blue-600 hover:underline">Sửa</button>
-                        <button class="text-red-600 hover:underline ml-2">Xóa</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+    </div>
+    <script src="<?= BASE_URL . "assets/Js/admin/admin_booking.js" ?>"></script>
+</body>
 
-    <!-- Quản lý Tour -->
-    <section id="tours" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Quản lý Tour</h2>
-        <form class="bg-white p-6 rounded shadow space-y-4">
-            <div>
-                <label class="block mb-1 font-medium">Tên tour</label>
-                <input type="text" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Danh mục tour</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Tour trong nước</option>
-                    <option>Tour quốc tế</option>
-                    <option>Theo yêu cầu</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Mã tour</label>
-                <input type="text" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Giá cơ bản</label>
-                <input type="number" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Lịch trình tour (JSON)</label>
-                <textarea class="w-full border rounded px-3 py-2" rows="4"></textarea>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Hình ảnh tour</label>
-                <input type="file" multiple class="w-full">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Chính sách tour</label>
-                <textarea class="w-full border rounded px-3 py-2" rows="3"></textarea>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Nhà cung cấp</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Khách sạn ABC</option>
-                    <option>Nhà hàng XYZ</option>
-                </select>
-            </div>
-            <div class="flex justify-end">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Lưu Tour</button>
-            </div>
-        </form>
-    </section>
-
-    <!-- Booking -->
-    <section id="bookings" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Tạo Booking mới</h2>
-        <form class="bg-white p-6 rounded shadow space-y-4">
-            <div>
-                <label class="block mb-1 font-medium">Tour</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Tour Hạ Long</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Phiên bản tour</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Mùa hè 2025</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Tên khách hàng</label>
-                <input type="text" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Số điện thoại</label>
-                <input type="text" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Email</label>
-                <input type="email" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Nhóm/loại</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Lẻ</option>
-                    <option>Đoàn</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Số lượng khách</label>
-                <input type="number" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Dịch vụ kèm theo</label>
-                <select multiple class="w-full border rounded px-3 py-2">
-                    <option>Xe đưa đón</option>
-                    <option>Khách sạn 4 sao</option>
-                    <option>Nhà hàng 3 bữa</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Ghi chú/ yêu cầu đặc biệt</label>
-                <textarea class="w-full border rounded px-3 py-2" rows="3"></textarea>
-            </div>
-            <div class="flex justify-end">
-                <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Tạo Booking</button>
-            </div>
-        </form>
-    </section>
-
-    <!-- Guides -->
-    <section id="guides" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Quản lý Hướng dẫn viên</h2>
-        <table class="min-w-full bg-white rounded shadow overflow-hidden">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 text-left">Tên HDV</th>
-                    <th class="p-3 text-left">Ngôn ngữ</th>
-                    <th class="p-3 text-left">Kinh nghiệm</th>
-                    <th class="p-3 text-left">Trạng thái</th>
-                    <th class="p-3 text-left">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3">Nguyễn Văn A</td>
-                    <td class="p-3">Việt, Anh</td>
-                    <td class="p-3">5 năm</td>
-                    <td class="p-3">Available</td>
-                    <td class="p-3">
-                        <button class="text-blue-600 hover:underline">Sửa</button>
-                        <button class="text-red-600 hover:underline ml-2">Xóa</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- Schedules -->
-    <section id="schedules" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Lịch khởi hành & Phân bổ dịch vụ</h2>
-        <form class="bg-white p-6 rounded shadow space-y-4">
-            <div>
-                <label class="block mb-1 font-medium">Tour</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Tour Hạ Long</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">HDV</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Nguyễn Văn A</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Ngày khởi hành</label>
-                <input type="date" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Ngày kết thúc</label>
-                <input type="date" class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Điểm tập trung</label>
-                <input type="text" class="w-full border rounded px-3 py-2">
-            </div>
-            <div class="flex justify-end">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Lưu lịch khởi hành</button>
-            </div>
-        </form>
-    </section>
-
-    <!-- Notes -->
-    <section id="notes" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Nhật ký & Ghi chú</h2>
-        <form class="bg-white p-6 rounded shadow space-y-4">
-            <div>
-                <label class="block mb-1 font-medium">Loại ghi chú</label>
-                <select class="w-full border rounded px-3 py-2">
-                    <option>Yêu cầu khác</option>
-                    <option>Ăn chay</option>
-                    <option>Bệnh lý</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 font-medium">Nội dung</label>
-                <textarea class="w-full border rounded px-3 py-2" rows="4"></textarea>
-            </div>
-            <div class="flex justify-end">
-                <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ghi chú</button>
-            </div>
-        </form>
-    </section>
-
-    <!-- Revenues -->
-    <section id="revenues" class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Báo cáo & Doanh thu</h2>
-        <table class="min-w-full bg-white rounded shadow overflow-hidden">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 text-left">Tour</th>
-                    <th class="p-3 text-left">Doanh thu</th>
-                    <th class="p-3 text-left">Chi phí</th>
-                    <th class="p-3 text-left">Lợi nhuận</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3">Tour Hạ Long</td>
-                    <td class="p-3">500.000.000₫</td>
-                    <td class="p-3">300.000.000₫</td>
-                    <td class="p-3">200.000.000₫</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-</main>
+</html>
