@@ -1,31 +1,60 @@
 <?php
 class BookingController
 {
-    
+
     public function ShowBooking()
     {
-        
-        $bookingModel = new BookingModel();
-        $bookings = $bookingModel->getAllBookings(); 
 
-      
+        $bookingModel = new BookingModel();
+        $bookings = $bookingModel->getAllBookings();
+
+
         require_once "./views/Admin/booking.php";
     }
 
 
-    public function ShowFromNewBooking()
+    public function ShowFromNewBooking($tour_id = null)
     {
-        
-        $tourModel = new TourModel();
-        $tours = $tourModel->getall();
+        $datatour = (new TourModel())->getAll();
 
-        // Lấy danh sách version tour nếu cần (tùy bạn có bảng tour_versions không)
-        // $versions = (new TourVersionModel())->getAll();
+        // echo "<pre>";
+        // var_dump($datatour);
+        // echo "<pre>";
+        // die;
 
+        if (!empty($tour_id)) {
+
+            $dataTourDetai = (new TourModel())->TourDetailItineraryModel($tour_id);
+
+            $dataOneTour = (new TourModel())->getOne($tour_id);
+
+            $dataTourSupplier = (new TourModel())->TourSuppliersModel($tour_id);
+
+            $dataTourVersions = (new TourModel())->TourVersionsModel($tour_id);
+
+            $dataTourImages = (new TourModel())->TourImagesModel($tour_id);
+
+            $dataTourPolicies = (new TourModel())->TourPoliciesModel($tour_id);
+
+            $tourFullData = [
+                'tourDetail'    => $dataTourDetai ?? [],
+                'oneTour'       => $dataOneTour ?? [],
+                'suppliers'     => $dataTourSupplier ?? [],
+                'versions'      => $dataTourVersions ?? [],
+                'images'        => $dataTourImages ?? [],
+                'policies'      => $dataTourPolicies ?? [],
+            ];
+        }
+        // if (isset($tourFullData)) {
+        //     echo "<pre>";
+        //     var_dump($tourFullData);
+        //     echo "<pre>";
+        //     die;
+        // }
         require_once "./views/Admin/newBooking.php";
     }
 
- 
+
     public function createBooking()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();

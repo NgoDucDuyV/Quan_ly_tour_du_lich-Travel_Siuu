@@ -162,7 +162,7 @@
                     </div>
                     <div class="flex justify-end gap-3">
                         <a href="?mode=admin&act=liststaff" class="px-4 py-2 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50">hủy</a>
-                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">tạo mới</button>
+                        <button type="submit" class="px-4 py-2  bg-hover text-white rounded-md hover:bg-dark">tạo mới</button>
                     </div>
                 </form>
             </div>
@@ -205,7 +205,7 @@
                     </div>
                     <div class="flex justify-end gap-3">
                         <a href="?mode=admin&act=liststaff" class="px-4 py-2 border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50">hủy</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">cập nhật</button>
+                        <button type="submit" class="px-4 py-2  bg-hover text-white rounded-md hover:bg-dark">cập nhật</button>
                     </div>
                 </form>
             </div>

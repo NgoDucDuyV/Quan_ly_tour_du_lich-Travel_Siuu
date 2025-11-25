@@ -66,6 +66,10 @@ $content_views = ob_get_clean();
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
     <script src="custom.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
     <!-- icon  -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- JS Libraries -->

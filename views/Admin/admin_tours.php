@@ -61,9 +61,9 @@
                                         type="text"
                                         id="searchTour"
                                         placeholder="Tìm kiếm tour..."
+                                        name="tour_name"
                                         class="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg text-sm
                                         focus:outline-none focus:ring-2 focus:ring-main transition" />
-
                                     <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-xs"></i>
                                 </div>
                             </div>
@@ -102,10 +102,10 @@
                                                     class="text-xs px-3 py-1.5 rounded-md bg-accent text-white hover:bg-hover transition">
                                                     Clone
                                                 </button>
-                                                <button onclick="generateQuote(this)"
+                                                <a href="?act=newBooking&tour_id=<?= $value['id'] ?>" onclick="generateQuote(this)"
                                                     class="text-xs px-3 py-1.5 rounded-md bg-dark text-white hover:bg-hover transition">
                                                     Báo giá nhanh
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
                                         <!-- Dropdown -->
@@ -120,6 +120,12 @@
                                                     class="clickloadAdmindetailtour flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
                                                     <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
                                                 </a>
+
+                                                <a href="?act=newBooking&tour_id=<?= $value['id'] ?>"
+                                                    class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
+                                                    <i class="fa-solid fa-plus w-5 mr-3"></i> tạo booking
+                                                </a>
+
                                                 <a href="?act=edittour&id=<?= $value['id'] ?>"
                                                     class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
                                                     <i class="fa-regular fa-pen-to-square w-5 mr-3"></i> Edit
@@ -266,6 +272,11 @@
                                                 <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
                                                     class="clickloadAdmindetailtour flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
                                                     <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
+                                                </a>
+
+                                                <a href="?act=newBooking&tour_id=<?= $value['id'] ?>"
+                                                    class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
+                                                    <i class="fa-solid fa-plus w-5 mr-3"></i> tạo booking
                                                 </a>
 
                                                 <a href="?act=edittour&id=<?= $value['id'] ?>"

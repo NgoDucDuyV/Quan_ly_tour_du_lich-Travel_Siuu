@@ -296,7 +296,6 @@
                 content.classList.remove("hidden");
             };
         });
-
         let day = 1;
 
         // Thêm ngày
