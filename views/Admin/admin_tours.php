@@ -93,33 +93,42 @@
                                             </div>
                                             <p class="text-xs text-gray-500 mt-1">Giá từ <span class="font-semibold text-gray-800"><?= number_format($value['price']) ?> VND</span></p>
 
-                                            <div class="mt-2 flex flex-wrap gap-2">
-                                                <!-- chi tiét -->
+                                            <div class="flex flex-wrap gap-2 pt-1">
                                                 <button href="?act=admintour&tour_id=<?= $value['id'] ?>"
-                                                    class="clickloadAdmindetailtour text-xs px-2 py-1 rounded font-medium transition"
-                                                    style="background-color:#1f55ad; color:#ffffff;"
-                                                    onmouseover="this.style.backgroundColor='#0f2b90';"
-                                                    onmouseout="this.style.backgroundColor='#1f55ad';">
+                                                    class="clickloadAdmindetailtour text-xs px-3 py-1.5 rounded-md bg-main text-white hover:bg-hover transition">
                                                     Chi tiết
                                                 </button>
-
-                                                <!-- clone -->
-                                                <button href="#" onclick="cloneTour(this)"
-                                                    class="text-xs px-2 py-1 rounded font-medium transition"
-                                                    style="background-color:#5288e0; color:#ffffff;"
-                                                    onmouseover="this.style.backgroundColor='#0f2b90';"
-                                                    onmouseout="this.style.backgroundColor='#5288e0';">
+                                                <button onclick="cloneTour(this)"
+                                                    class="text-xs px-3 py-1.5 rounded-md bg-accent text-white hover:bg-hover transition">
                                                     Clone
                                                 </button>
-
-                                                <!-- báo gia tao bôking-->
-                                                <button href="#" onclick="generateQuote(this)"
-                                                    class="text-xs px-2 py-1 rounded font-medium transition"
-                                                    style="background-color:#0f2b57; color:#ffffff;"
-                                                    onmouseover="this.style.backgroundColor='#1f55ad';"
-                                                    onmouseout="this.style.backgroundColor='#0f2b57';">
+                                                <button onclick="generateQuote(this)"
+                                                    class="text-xs px-3 py-1.5 rounded-md bg-dark text-white hover:bg-hover transition">
                                                     Báo giá nhanh
                                                 </button>
+                                            </div>
+                                        </div>
+                                        <!-- Dropdown -->
+                                        <div class="relative group">
+                                            <button class="py-1 px-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">
+                                                <i class="fa-solid fa-ellipsis-vertical text-lg"></i>
+                                            </button>
+                                            <div class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg text-sm py-1
+                                                    opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                                                    transition-all duration-200 z-20 overflow-hidden">
+                                                <a href="?act=admintour&tour_id=<?= $value['id'] ?>"
+                                                    class="clickloadAdmindetailtour flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
+                                                    <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
+                                                </a>
+                                                <a href="?act=edittour&id=<?= $value['id'] ?>"
+                                                    class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
+                                                    <i class="fa-regular fa-pen-to-square w-5 mr-3"></i> Edit
+                                                </a>
+                                                <a href="?act=admin_deleteTour&tour_id=<?= $value['id'] ?>"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa ?')"
+                                                    class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
+                                                    <i class="fa-regular fa-trash-can w-5 mr-3"></i> Xóa bỏ
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -129,31 +138,71 @@
                         </div>
                     </div>
 
-                    <div id="viewsdetailtour" class="mt-5 md:mt-0 flex-1 col-span-1 lg:col-span-2 bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                        <div class="mx-auto bg-white p-6 text-center py-auto">
-                            <img
-                                src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800"
-                                alt="Tour Placeholder"
-                                class="w-full max-w-md h-60 object-cover rounded-lg mx-auto shadow-sm mb-5">
+                    <div id="viewsdetailtour"
+                        class="mt-5 md:mt-0 flex-1 col-span-1 lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-md">
 
-                            <h2 class="text-2xl font-semibold text-gray-800">Xem chi tiết tour</h2>
+                        <div class="mx-auto bg-white text-center">
 
-                            <p class="text-gray-600 mt-3 max-w-xl mx-auto">
-                                Đây là khu vực hiển thị <b>nội dung chi tiết của từng tour</b> như lịch trình, hình ảnh, nhà cung cấp,
-                                giá, phiên bản,...
-                                Vui lòng chọn một tour ở danh sách bên trái để xem chi tiết tại đây.
+                            <!-- Header image with gradient overlay -->
+                            <div class="relative w-full max-w-3xl mx-auto">
+                                <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800"
+                                    alt="Tour Placeholder"
+                                    class="w-full h-64 object-cover rounded-2xl shadow">
+
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-2xl"></div>
+
+                                <h2 class="absolute bottom-4 left-4 text-3xl font-bold text-white drop-shadow">
+                                    Chi tiết Tour
+                                </h2>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-gray-600 mt-6 max-w-2xl mx-auto leading-relaxed">
+                                Đây là khu vực hiển thị <b>toàn bộ nội dung chi tiết của tour du lịch</b> như:
+                                <span class="text-main font-semibold">lịch trình – hình ảnh – nhà cung cấp – giá – chính sách – phiên bản</span>.
+                                Vui lòng chọn một tour trong danh sách để bắt đầu xem chi tiết.
                             </p>
 
-                            <div class="mt-6">
+                            <!-- Modern Icon Highlight Section -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8">
+
+                                <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
+                                    <div class="text-main text-3xl mb-2">
+                                        <i class="fa-solid fa-map-marked-alt text-xl"></i>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800">Lịch trình rõ ràng</h3>
+                                    <p class="text-gray-500 text-sm mt-1">Xem chi tiết từng ngày trong tour.</p>
+                                </div>
+
+                                <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
+                                    <div class="text-main text-3xl mb-2">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800">Hình ảnh trực quan</h3>
+                                    <p class="text-gray-500 text-sm mt-1">Xem ảnh thực tế hoặc ảnh minh hoạ.</p>
+                                </div>
+
+                                <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
+                                    <div class="text-main text-3xl mb-2">
+                                        <i class="fa-solid fa-boxes-packing"></i>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800">Nhà cung cấp uy tín</h3>
+                                    <p class="text-gray-500 text-sm mt-1">Thông tin đơn vị tổ chức tour.</p>
+                                </div>
+
+                            </div>
+
+                            <!-- Button -->
+                            <div class="mt-8">
                                 <button
-                                    class="px-4 py-2 bg-main text-white rounded-lg shadow hover:bg-hover transition">
-                                    Chọn một tour để xem
+                                    class="px-6 py-3 bg-main text-white rounded-xl shadow hover:bg-hover transition font-semibold">
+                                    Chọn một tour để xem chi tiết
                                 </button>
                             </div>
 
                         </div>
-
                     </div>
+
                 </section>
 
                 <!-- Table -->
