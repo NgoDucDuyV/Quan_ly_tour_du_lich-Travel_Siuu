@@ -105,7 +105,6 @@ class TourModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     public function TourImagesModel($tour_id)
     {
         $stmt = $this->conn->prepare("
@@ -128,13 +127,50 @@ class TourModel
         $stmt->execute(['category_id' => $category_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getAllLogsByGuide($guide_id)
+
+    // Thêm nhật ký mới
+    public function insertLog($schedule_id, $guide_id, $content, $images)
     {
-        $sql = "SELECT * FROM tour_logs WHERE guide_id = :guide_id ORDER BY log_date DESC";
+        $sql = "INSERT INTO tour_logs (schedule_id, guide_id, log_date, content, images)
+            VALUES (:schedule_id, :guide_id, CURDATE(), :content, :images)";
+
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute([
+            'schedule_id' => $schedule_id,
+            'guide_id' => $guide_id,
+            'content' => $content,
+            'images' => json_encode($images)
+        ]);
+        return $this->conn->lastInsertId();
     }
+    // Xóa nhật ký theo ID
+    public function deleteLog($id)
+    {
+        $stmt = $this->conn->prepare("DELETE FROM tour_logs WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
+    }
+    // Lấy nhật ký theo ID
+    public function getLogById($id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM tour_logs WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    // Cập nhật nội dung nhật ký
+    public function updateLog($id, $content)
+    {
+        $stmt = $this->conn->prepare("
+        UPDATE tour_logs 
+        SET content = :content, updated_at = NOW()
+        WHERE id = :id
+    ");
+
+        return $stmt->execute([
+            'id' => $id,
+            'content' => $content
+        ]);
+    }
+
     public function getTodayTour($guide_id)
     {
         $sql = "
@@ -164,6 +200,35 @@ class TourModel
     ";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['schedule_id' => $schedule_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Lấy danh sách lịch trình của từng hdv
+    public function getSchedulesByGuide($guide_id)
+    {
+        $sql = "
+        SELECT s.id AS schedule_id, t.name AS tour_name, s.start_date
+        FROM schedules s
+        JOIN tours t ON s.tour_id = t.id
+        WHERE s.guide_id = :guide_id
+        ORDER BY s.start_date DESC
+    ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['guide_id' => $guide_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Lấy nhật ký của từng hdv
+    public function getLogsByGuide($guide_id)
+    {
+        $sql = "
+        SELECT tl.*, s.tour_id, t.name AS tour_name
+        FROM tour_logs tl
+        JOIN schedules s ON tl.schedule_id = s.id
+        JOIN tours t ON s.tour_id = t.id
+        WHERE tl.guide_id = :guide_id
+        ORDER BY tl.log_date DESC
+    ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
