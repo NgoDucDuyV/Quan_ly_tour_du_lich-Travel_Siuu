@@ -168,7 +168,7 @@
         </p>
       </a>
 
-      <a href="?act=revenues" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
+      <a href="?act=dashboarthongke" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-chart-simple"></i>
         <span>Báo cáo & thống kê</span>
         <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm

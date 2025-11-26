@@ -157,6 +157,7 @@ $content_views = ob_get_clean();
 
 <body class="bg-gray-100 flex flex-col overflow-x-hidden w-[100wh] h-[100vh]">
     <?php echo $content_views; ?>
+
 </body>
 <script src="<?= BASE_URL ?>assets\Js\admin\siderbar.js"></script>
 
