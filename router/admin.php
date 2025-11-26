@@ -163,6 +163,13 @@ echo match ($act) {
         exit;
     })(),
 
+    'dashboarthongke' => (function () {
+        requireAdmin();
+        echo "bao cao thong ke";
+        require_once "./views/Admin/dashboard.php";
+        exit;
+    })(),
+
     // show trang lỗi
     '404' => (function () {
         require_once "./views/Admin/common/404.php";
