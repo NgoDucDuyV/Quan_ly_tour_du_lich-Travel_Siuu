@@ -23,7 +23,7 @@
             </div>
         <?php endif; ?>
         <!-- TABS HEADER -->
-        <div class="sticky top-0 z-5">
+        <div class="sticky top-0 z-10">
             <nav class="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2 border-b border-slate-200
                 bg-transparent transition-colors duration-300
                 [@supports(position:sticky)]:backdrop-blur-sm
@@ -42,7 +42,7 @@
                     Ảnh Tour
                 </button>
                 <button type="button" data-tab="tab-supplier" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
-                    Nhà cung cấp
+                    Loại dịch vụ
                 </button>
                 <button type="button" data-tab="tab-version" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
                     Phiên bản Giá
@@ -228,13 +228,13 @@
         <div id="tab-supplier" class="tab-content hidden">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-4">
-                <h3 class="text-xl font-bold text-dark mb-4">Thêm Nhà Cung Cấp Cho Tour</h3>
+                <h3 class="text-xl font-bold text-dark mb-4">Chọn loại dịch vụ</h3>
 
                 <div id="supplierWrap" class="space-y-4"></div>
 
                 <button type="button" onclick="addSupplier()"
                     class="px-4 py-2 bg-main mt-5 text-white rounded-lg hover:bg-hover">
-                    + Thêm nhà cung cấp
+                    + Thêm loại dịch vụ
                 </button>
             </div>
 
@@ -254,7 +254,6 @@
                     + Thêm phiên bản giá
                 </button>
             </div>
-
         </div>
 
         <!-- Chính sách tour -->
@@ -304,7 +303,7 @@
             const dayNumber = day;
 
             wrap.insertAdjacentHTML("beforeend", `
-                <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group" data-day="${dayNumber}">
+                <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group" data-day="${dayNumber}">
                     <button 
                         class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                         onclick="this.parentElement.remove()" 
@@ -315,6 +314,7 @@
                     <h3 class="text-xl font-bold text-dark mb-4 flex items-center gap-2">
                         <span>Ngày</span>
                         <input
+                            onchange=""
                             type="number"
                             name="day_number[]" 
                             value="${dayNumber}"
@@ -353,7 +353,7 @@
         function addActivity(dayNumber) {
             const wrap = document.getElementById(`activityWrap-${dayNumber}`);
             wrap.insertAdjacentHTML("beforeend", `
-                <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+                <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
                     <button 
                         class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                         onclick="this.parentElement.remove()" 
@@ -400,7 +400,7 @@
             const wrap = document.getElementById("imageWrap");
             console.log(wrap);
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+            <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
                 <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                     onclick="this.parentElement.remove()" 
@@ -433,10 +433,12 @@
 
         let supplier = 1;
 
+        const supplierTypes = <?php echo json_encode($datasupplier_types); ?>;
+
         function addSupplier() {
             const wrap = document.getElementById("supplierWrap");
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+            <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
                 <!-- Nút Xóa -->
                 <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
@@ -445,30 +447,56 @@
                     <i class="fas fa-times"></i>
                 </button>
 
-                <h3 class="text-xl font-bold text-dark mb-4">Nhà cung cấp ${supplier}</h3>
+                <h3 class="text-xl font-bold text-dark mb-4">Dịch vụ ${supplier}</h3>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Chọn nhà cung cấp -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Chọn nhà cung cấp</label>
-                        <select name="supplier_id[]" class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                            <option value="">-- Chọn nhà cung cấp --</option>
-                            <?php foreach ($datasupplier as $item): ?>
-                                <option value="<?= $item['supplier_id'] ?>"><?= $item['supplier_name'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                <!-- Chọn loại dịch vụ -->
+                <div>
+                    <label class="font-semibold text-gray-700">Chọn loại dịch vụ</label>
+                    <select name="supplier_types_id[]" class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required onchange="showServiceDetail(this)">
+                        <option value="">-- Chọn loại dịch vụ --</option>
+                        <?php foreach ($datasupplier_types as $type): ?>
+                            <option value="<?= $type['id'] ?>"><?= htmlspecialchars($type['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-                    <!-- Ghi chú -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Ghi chú</label>
-                        <input type="text" name="supplier_notes[]" placeholder="Nhập ghi chú nếu có"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition">
+                <!-- Chi tiết dịch vụ -->
+                <div class="service-detail mt-3 p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-blue-200 shadow-sm hidden">
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">Thông tin chi tiết</h4>
+                    <div class="space-y-1">
+                        <p><span class="font-semibold text-gray-700">Mô tả:</span> <span class="desc text-gray-600"></span></p>
+                        <p><span class="font-semibold text-gray-700">Số sao:</span> 
+                            <span class="stars text-yellow-500"></span> ⭐
+                        </p>
+                        <p><span class="font-semibold text-gray-700">Chất lượng:</span> <span class="quality text-green-600 font-medium"></span></p>
                     </div>
                 </div>
+
+                <!-- Ghi chú -->
+                <div class="mt-3">
+                    <label class="font-semibold text-gray-700">Ghi chú</label>
+                    <input type="text" name="notes[]" placeholder="Nhập ghi chú nếu có"
+                        class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition">
+                </div>
             </div>
-        `);
+    `);
             supplier++;
+        }
+
+        function showServiceDetail(select) {
+            const detailDiv = select.closest('div').nextElementSibling; // Lấy div chi tiết đúng
+            const typeId = select.value;
+            if (!typeId) {
+                detailDiv.classList.add('hidden');
+                return;
+            }
+            const type = supplierTypes.find(t => t.id == typeId);
+            if (type) {
+                detailDiv.querySelector('.desc').innerText = type.description;
+                detailDiv.querySelector('.stars').innerText = type.stars;
+                detailDiv.querySelector('.quality').innerText = type.quality;
+                detailDiv.classList.remove('hidden');
+            }
         }
 
 
@@ -477,7 +505,7 @@
         function addVersion() {
             const wrap = document.getElementById("versionWrap");
             wrap.insertAdjacentHTML("beforeend", `
-        <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+        <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
             <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                     onclick="this.parentElement.remove()" 
@@ -547,7 +575,7 @@
         function addPolicy() {
             const wrap = document.getElementById("policyWrap");
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+            <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
                 <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                     onclick="this.parentElement.remove()" 
@@ -576,14 +604,15 @@
             policyCount++;
         }
         addItinerary();
-        // // function onchangeInputItinerary(el) {
-        // //     day = 1;
-        // //     console.log(el.value);
-        // //     for (let i = 1; i <= Number(el.value); i++) {
-        // //         addItinerary();
-        // //     }
-        // // }
-        // addActivity();
+
+        // function onchangeInputItinerary(el) {
+        //     day = 1;
+        //     console.log(el.value);
+        //     for (let i = 1; i <= Number(el.value); i++) {
+        //         addItinerary();
+        //     }
+        // }
+        addActivity(1);
         addImage();
         addSupplier();
         addVersion();

@@ -146,19 +146,46 @@
                     </div>
 
 
-                    <!-- Nhà cung cấp -->
+                    <!-- Nhà cung cấp / Dịch vụ Tour -->
                     <div class="bg-white rounded-xl border shadow-sm p-5">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Nhà cung cấp</h4>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Nhà cung cấp / Dịch vụ</h4>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             <?php foreach ($dataTourSupplier as $value) { ?>
                                 <div class="p-4 bg-gray-50 border rounded-xl shadow-sm hover:shadow-md transition text-sm">
-                                    <div class="font-semibold text-gray-800"><?= ucfirst($value['role']) ?>:</div>
-                                    <div class="text-gray-600 mt-1"><?= $value['supplier_name'] ?></div>
+
+                                    <!-- Tên dịch vụ -->
+                                    <div class="font-semibold text-gray-800 mb-1"><?= htmlspecialchars($value['name']) ?></div>
+
+                                    <!-- Mô tả -->
+                                    <div class="text-gray-600 mb-2"><?= htmlspecialchars($value['description']) ?></div>
+
+                                    <!-- Stars -->
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-yellow-500 mr-2">
+                                            <?php for ($i = 0; $i < $value['stars']; $i++) { ?>
+                                                ★
+                                            <?php } ?>
+                                            <?php for ($i = $value['stars']; $i < 5; $i++) { ?>
+                                                ☆
+                                            <?php } ?>
+                                        </span>
+                                        <span class="text-gray-500 text-xs"><?= $value['stars'] ?>/5</span>
+                                    </div>
+
+                                    <!-- Chất lượng -->
+                                    <div class="text-gray-700 text-sm mb-1"><strong>Chất lượng:</strong> <?= htmlspecialchars($value['quality']) ?></div>
+
+                                    <!-- Thời gian tạo / cập nhật -->
+                                    <div class="text-gray-400 text-xs">
+                                        <div>Ngày tạo: <?= $value['created_at'] ?></div>
+                                        <div>Cập nhật: <?= $value['updated_at'] ?></div>
+                                    </div>
                                 </div>
                             <?php } ?>
                         </div>
                     </div>
+
                 </div>
 
             </div>

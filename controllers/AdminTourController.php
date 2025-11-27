@@ -32,7 +32,7 @@ class AdminTourController
 
         $dataTourPolicies = (new TourModel())->TourPoliciesModel($tour_id);
         // echo "<pre>";
-        // var_dump($dataTourVersions);
+        // var_dump($dataTourSupplier);
         // echo "<pre>";
         // die;
         require_once "./views/Admin/admin_detail_tour.php";
@@ -164,29 +164,28 @@ class AdminTourController
             // die;
         }
 
-        // chon nha cung câp
-        if (!empty($_POST['supplier_id'])) {
-            $supplier_id = $_POST['supplier_id'];      // mảng ID các nhà cung cấp
-            $supplier_notes = $_POST['supplier_notes']; // mảng ghi chú tương ứng
+        // chon loai dịch vụ
+        if (!empty($_POST['supplier_types_id'])) {
+            $supplier_types_id = $_POST['supplier_types_id']; // mảng ID loại dịch vụ
+            $notes = $_POST['notes']; // mảng ghi chú tương ứng
 
-            $suppliers = []; // mảng gom dữ liệu
-
-            $count = count($supplier_id);
+            $datasupplierstypes = []; // mảng gom dữ liệu
+            $count = count($supplier_types_id);
 
             for ($i = 0; $i < $count; $i++) {
-                $suppliers[] = [
-                    'supplier_id' => $supplier_id[$i],
-                    'note' => $supplier_notes[$i]
+                $datasupplierstypes[] = [
+                    'supplier_types_id' => $supplier_types_id[$i],
+                    'note' => $notes[$i]
                 ];
             }
 
             // echo '<pre>';
-            // print_r($suppliers);
+            // print_r($datasupplierstypes);
             // echo '</pre>';
             // die;
 
-            foreach ($suppliers as $item) {
-                (new TourModel())->CreateTourSuppliers($item, $tour_id);
+            foreach ($datasupplierstypes as $item) {
+                (new TourModel())->CreateTourSuppliersTypes($item, $tour_id);
             }
             // die;
         }
@@ -265,7 +264,7 @@ class AdminTourController
 
         $datasupplier_types = (new SupplierModel())->supplier_types();
         // echo "<pre>";
-        // var_dump($datasupplier);
+        // var_dump($datasupplier_types);
         // echo "<pre>";
         // die;
         require_once "./views/Admin/admin_createTour.php";
