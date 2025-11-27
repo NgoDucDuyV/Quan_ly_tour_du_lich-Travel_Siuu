@@ -59,7 +59,7 @@
                                 <div class="relative w-full max-w-xs">
                                     <input
                                         type="text"
-                                        id="searchTour"
+                                        id="searchTourListContainer"
                                         placeholder="Tìm kiếm tour..."
                                         name="tour_name"
                                         class="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg text-sm
@@ -78,7 +78,7 @@
                         </div>
 
 
-                        <div class="space-y-3 overflow-y-auto max-h-[800px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
+                        <div id="tourListContainer" class="space-y-3 overflow-y-auto max-h-[800px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
                             <!-- danh sacsh tour -->
                             <?php foreach ($datatour as $value) { ?>
                                 <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-gray-50">

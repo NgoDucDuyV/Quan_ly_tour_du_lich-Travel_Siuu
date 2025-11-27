@@ -270,6 +270,27 @@ class AdminTourController
         require_once "./views/Admin/admin_createTour.php";
     }
 
+    public function getByNameController($requestData)
+    {
+        header('Content-Type: application/json');
+        if ($requestData['valueSearch'] == "") {
+            $datatour = (new TourModel())->getAll();
+            echo json_encode($datatour);
+            exit;
+        }
+
+        $dataTourByName = (new TourModel())->getByName($requestData['valueSearch']);
+
+        if (!empty($dataTourByName)) {
+            echo json_encode($dataTourByName);
+        } else {
+            echo json_encode([]);
+        }
+
+        exit;
+    }
+
+
     public function DeleteTourController($tour_id)
     {
         (new TourModel())->DeleteTourModel($tour_id);

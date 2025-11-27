@@ -37,16 +37,25 @@ class TourModel
     public function getByName($tour_name)
     {
         $stmt = $this->conn->prepare("
-        SELECT *
+        SELECT 
+        tours.*,
+        categories.name as categoriesname,
+        categories.description as categoriesdescription
         FROM tours
-        WHERE name LIKE CONCAT('%', :name, '%')
+        LEFT JOIN categories on tours.category_id = categories.id
+        WHERE REPLACE(LOWER(tours.name), ' ', '') LIKE :tour_name
         AND status = 'active'
         ORDER BY created_at DESC
     ");
-        $stmt->bindParam(':name', $tour_name, PDO::PARAM_STR);
+
+        $search = '%' . str_replace(' ', '', strtolower($tour_name)) . '%';
+        $stmt->bindParam(':tour_name', $search, PDO::PARAM_STR);
+
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // trả về tất cả kết quả
     }
+
+
 
 
 
