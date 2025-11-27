@@ -62,6 +62,13 @@ $content_views = ob_get_clean();
     <!-- CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./assets/Css/style.css" />
+    <!-- ApexCharts phải trước script custom -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
+    <script src="custom.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <!-- icon  -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -150,6 +157,7 @@ $content_views = ob_get_clean();
 
 <body class="bg-gray-100 flex flex-col overflow-x-hidden w-[100wh] h-[100vh]">
     <?php echo $content_views; ?>
+
 </body>
 <script src="<?= BASE_URL ?>assets\Js\admin\siderbar.js"></script>
 

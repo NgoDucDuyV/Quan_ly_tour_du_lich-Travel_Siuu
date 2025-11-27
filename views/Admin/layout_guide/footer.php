@@ -1,4 +1,4 @@
-<footer class="bg-[#0f2b57] border-t border-[#1f3a70] mt-auto text-[#a8c4f0]">
+<footer class="bg-[#0f2b57] border-t border-[#1f3a70]  text-[#a8c4f0]">
     <div class="max-w-7xl mx-auto px-4 md:px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3">
         <!-- Left: Info -->
         <div class="text-sm text-center md:text-left">
