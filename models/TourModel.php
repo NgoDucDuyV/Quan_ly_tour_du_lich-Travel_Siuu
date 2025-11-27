@@ -37,16 +37,25 @@ class TourModel
     public function getByName($tour_name)
     {
         $stmt = $this->conn->prepare("
-        SELECT *
+        SELECT 
+        tours.*,
+        categories.name as categoriesname,
+        categories.description as categoriesdescription
         FROM tours
-        WHERE name LIKE CONCAT('%', :name, '%')
+        LEFT JOIN categories on tours.category_id = categories.id
+        WHERE REPLACE(LOWER(tours.name), ' ', '') LIKE :tour_name
         AND status = 'active'
         ORDER BY created_at DESC
     ");
-        $stmt->bindParam(':name', $tour_name, PDO::PARAM_STR);
+
+        $search = '%' . str_replace(' ', '', strtolower($tour_name)) . '%';
+        $stmt->bindParam(':tour_name', $search, PDO::PARAM_STR);
+
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // trả về tất cả kết quả
     }
+
+
 
 
 
@@ -92,16 +101,12 @@ class TourModel
         SELECT
             t.id AS tour_id,
             t.name AS tour_name,
-            s.id AS supplier_id,
-            s.name AS supplier_name,
-            st.name  as role,
-            ts.notes
+            st.*
         FROM tours t
-        JOIN tour_suppliers ts ON t.id = ts.tour_id
-        JOIN suppliers s ON ts.supplier_id = s.id
-        JOIN supplier_types st ON s.supplier_types_id = st.id
+        JOIN tour_suppliers_types tst ON t.id = tst.tour_id
+        JOIN supplier_types st ON tst.supplier_types_id = st.id
         WHERE t.id = :tour_id
-        ORDER BY t.id, s.id;
+        ORDER BY t.id, tst.id;
         ");
         $stmt->bindParam(":tour_id", $tour_id);
         $stmt->execute();
@@ -278,27 +283,27 @@ class TourModel
         }
     }
 
-    public function CreateTourSuppliers($datatoursuppliers, $tour_id = null)
+    public function CreateTourSuppliersTypes($datasupplierstype, $tour_id = null)
     {
         // echo "<pre>";
         // echo "Dữ liệu ảnh: ";
-        // var_dump($datatoursuppliers, "idtour : $tour_id");
+        // var_dump($datasupplierstype, "idtour$tour_id");
         // echo "<pre>";
         // die;
 
-        $sql = "INSERT INTO tour_suppliers
-        (tour_id, supplier_id, notes, created_at, updated_at)
-        VALUES
-        (:tour_id, :supplier_id, :notes, :created_at, :updated_at)";
+        $sql = "INSERT INTO tour_suppliers_types
+            (tour_id, supplier_types_id, notes, created_at, updated_at)
+            VALUES
+            (:tour_id, :supplier_types_id, :notes, :created_at, :updated_at)";
 
         $stmt = $this->conn->prepare($sql);
 
         $data = [
-            ':tour_id'      => $tour_id,
-            ':supplier_id'  => $datatoursuppliers['supplier_id'],
-            ':notes' => $datatoursuppliers['note'],
-            ':created_at'   => date('Y-m-d H:i:s'),
-            ':updated_at'   => date('Y-m-d H:i:s')
+            ':tour_id' => $tour_id,
+            ':supplier_types_id' => $datasupplierstype['supplier_types_id'] ?? null,
+            ':notes' => $datasupplierstype['note'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
         ];
 
         if ($stmt->execute($data)) {
@@ -309,12 +314,14 @@ class TourModel
         }
     }
 
+
+
     public function CreateTourVersions($datatourversions, $tour_id = null)
     {
-        echo "<pre>";
-        echo "Dữ liệu ảnh: ";
-        var_dump($datatourversions, "idtour : $tour_id");
-        echo "<pre>";
+        // echo "<pre>";
+        // echo "Dữ liệu ảnh: ";
+        // var_dump($datatourversions, "idtour : $tour_id");
+        // echo "<pre>";
         // die;
         $sql = "INSERT INTO tour_versions
         (tour_id, name, season, price, start_date, end_date, status, created_at, updated_at)
@@ -347,9 +354,9 @@ class TourModel
 
     public function CreateTourPolicies($datatourpolicies, $tour_id = null)
     {
-        echo "<pre>";
-        var_dump($datatourpolicies, "idtour : $tour_id");
-        echo "</pre>";
+        // echo "<pre>";
+        // var_dump($datatourpolicies, "idtour : $tour_id");
+        // echo "</pre>";
         // die;
 
         $sql = "INSERT INTO tour_policies

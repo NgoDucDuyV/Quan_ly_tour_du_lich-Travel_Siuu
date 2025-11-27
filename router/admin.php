@@ -96,6 +96,11 @@ echo match ($act) {
         requireAdmin();
         (new AdminTourController)->DeleteTourController($_GET['tour_id']);
     })(),
+    'admin_searchtour' => (function () {
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        requireAdmin();
+        (new AdminTourController)->getByNameController($requestData);
+    })(),
     // quản lý nàh cung cấp
     'supplier-list' => (function () {
         requireAdmin();
