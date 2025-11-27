@@ -28,7 +28,7 @@ class GuideLayoutController
     {
         $guide_id = $_SESSION['admin_logged']['id'];
 
-        $model = new TourModel();
+        $model = new GuideTourModel();
 
         $diary = $model->getLogsByGuide($guide_id);
         $tours = $model->getSchedulesByGuide($guide_id);
@@ -38,62 +38,47 @@ class GuideLayoutController
             'tours' => $tours
         ];
     }
+
     // Thêm nhật ký mới cho HDV
     public function saveDiaryGuide()
     {
-        $guide_id = $_SESSION['admin_logged']['id'] ?? null;
+        $guide_id = $_SESSION['admin_logged']['id'];
 
-        if (!$guide_id) {
-            die("Bạn chưa đăng nhập!");
-        }
+        $schedule_id = $_POST['schedule_id'];
+        $content = $_POST['content'];
+        $images = $_FILES['images'];
 
-        // Lấy dữ liệu từ form POST
-        $schedule_id = $_POST['schedule_id'] ?? null;
-        $content = $_POST['content'] ?? "";
-        $images = $_FILES['images'] ?? [];
-
-        // Không chọn tour → báo lỗi
-        if (!$schedule_id) {
-            die("Bạn phải chọn tour trước khi lưu nhật ký!");
-        }
-
-        // Tạo thư mục nếu chưa có
         $uploadDir = "uploads/logs/";
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
-        // Xử lý upload ảnh
         $uploadedImages = [];
+
         if (!empty($images['name'][0])) {
             foreach ($images['name'] as $key => $name) {
-                $tmp = $images['tmp_name'][$key];
-                $newName = $uploadDir . uniqid() . "_" . basename($name);
-
-                if (move_uploaded_file($tmp, $newName)) {
+                $newName = $uploadDir . uniqid() . "_" . $name;
+                if (move_uploaded_file($images['tmp_name'][$key], $newName)) {
                     $uploadedImages[] = $newName;
                 }
             }
         }
 
-        // Lưu vào database
-        (new TourModel())->insertLog(
+        (new GuideTourModel())->insertLog(
             $schedule_id,
             $guide_id,
             $content,
             $uploadedImages
         );
 
-        header("Location: " . BASE_URL . "?mode=admin&act=diaryguide");
-        exit;
+        header("Location: ?mode=admin&act=diaryguide");
     }
+
     public function deleteDiaryGuide()
     {
         $id = $_GET['id'] ?? null;
 
         if (!$id) die("Thiếu ID nhật ký!");
 
-        $model = new TourModel();
+        $model = new GuideTourModel();
 
         // Xóa trong database
         $model->deleteLog($id);
@@ -107,7 +92,7 @@ class GuideLayoutController
 
         if (!$id) die("Thiếu ID!");
 
-        $model = new TourModel();
+        $model = new GuideTourModel();
 
         $log = $model->getLogById($id);
         $tours = $model->getSchedulesByGuide($_SESSION['admin_logged']['id']);
@@ -119,7 +104,7 @@ class GuideLayoutController
         $id = $_POST['id'];
         $content = $_POST['content'];
 
-        (new TourModel())->updateLog($id, $content);
+        (new GuideTourModel())->updateLog($id, $content);
 
         header("Location: " . BASE_URL . "?mode=admin&act=diaryguide");
         exit;
@@ -132,7 +117,7 @@ class GuideLayoutController
     {
         $guide_id = $_SESSION['admin_logged']['id'];
 
-        $model = new TourModel();
+        $model = new GuideTourModel();
 
         $todayTour = $model->getTodayTour($guide_id);
 

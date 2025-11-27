@@ -11,6 +11,8 @@ require_once __DIR__ . '/models/CategoryModel.php';
 require_once __DIR__ . '/models/TourModel.php';
 require_once __DIR__ . '/models/SupplierModel.php';
 require_once __DIR__ . '/models/BookingModel.php';
+require_once __DIR__ . '/models/GuideTourModel.php';
+
 
 // admin Controller
 require_once __DIR__ . '/controllers/AdminAuthController.php';

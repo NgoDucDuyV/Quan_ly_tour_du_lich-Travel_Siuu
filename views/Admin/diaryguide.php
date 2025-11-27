@@ -27,7 +27,7 @@
 
                         <?php foreach ($tours as $t): ?>
                             <option value="<?= $t['schedule_id'] ?>">
-                                <?= $t['tour_name'] ?>
+                                <?= $t['tour_name'] ?> (<?= $t['start_date'] ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -67,50 +67,31 @@
             <?php endif; ?>
 
             <?php foreach ($diary as $log): ?>
-                <div class="p-5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white transition shadow-sm">
+                <div class="p-5 rounded-xl border bg-gray-50 shadow-sm">
 
-                    <h3 class="font-bold text-gray-800 text-lg mb-1">
-                        📅 <?= $log['log_date'] ?>
-                    </h3>
-                    <div class="flex justify-end gap-3 mb-2">
+                    <h3 class="font-bold"><?= $log['log_date'] ?></h3>
 
-                        <!-- Nút sửa -->
-                        <a href="?mode=admin&act=editDiaryGuide&id=<?= $log['id'] ?>"
-                            class="px-3 py-1 bg-yellow-500 text-white rounded-lg text-sm hover:bg-yellow-600">
-                            Sửa
-                        </a>
+                    <p><?= nl2br($log['content']) ?></p>
 
-                        <!-- Nút xóa -->
-                        <a href="?mode=admin&act=deleteDiaryGuide&id=<?= $log['id'] ?>"
-                            onclick="return confirm('Bạn có chắc muốn xóa nhật ký này?')"
-                            class="px-3 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">
-                            Xóa
-                        </a>
-
-                    </div>
-
-
-                    <p class="text-gray-700 leading-relaxed mb-2">
-                        <?= nl2br($log['content']) ?>
-                    </p>
-
-                    <p class="text-xs text-gray-400 mb-3">
-                        Cập nhật lúc: <?= $log['updated_at'] ?>
-                    </p>
-
-                    <?php if (!empty($log['images'])) : ?>
-                        <?php $imgs = json_decode($log['images'], true); ?>
-
-                        <div class="flex gap-3 flex-wrap">
+                    <?php
+                    $imgs = json_decode($log['images'], true);
+                    if ($imgs):
+                    ?>
+                        <div class="flex gap-2 mt-2">
                             <?php foreach ($imgs as $img): ?>
-                                <img src="<?= BASE_URL . $img ?>" class="w-20 h-20 rounded-xl object-cover border shadow">
+                                <img src="<?= BASE_URL . $img ?>" class="w-20 h-20 rounded-xl object-cover">
                             <?php endforeach; ?>
                         </div>
-
                     <?php endif; ?>
+
+                    <div class="mt-2 flex gap-2 justify-end">
+                        <a href="?mode=admin&act=editDiaryGuide&id=<?= $log['id'] ?>" class="bg-yellow-500 px-3 py-1 text-white rounded">Sửa</a>
+                        <a onclick="return confirm('Xóa?')" href="?mode=admin&act=deleteDiaryGuide&id=<?= $log['id'] ?>" class="bg-red-600 px-3 py-1 text-white rounded">Xóa</a>
+                    </div>
 
                 </div>
             <?php endforeach; ?>
+
 
         </div>
 

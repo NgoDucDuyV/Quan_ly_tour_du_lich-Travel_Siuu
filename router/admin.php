@@ -193,6 +193,7 @@ echo match ($act) {
 
         require "./views/Admin/diaryguide.php";
     })(),
+
     // XÓA NHẬT KÝ
     'deleteDiaryGuide' => (function () {
         requireGuide();
