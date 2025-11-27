@@ -88,6 +88,19 @@ echo match ($act) {
         requireAdmin();
         (new AdminTourController)->showFromCreateTour();
     })(),
+    'admin_createTour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->CreateTour();
+    })(),
+    'admin_deleteTour' => (function () {
+        requireAdmin();
+        (new AdminTourController)->DeleteTourController($_GET['tour_id']);
+    })(),
+    'admin_searchtour' => (function () {
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        requireAdmin();
+        (new AdminTourController)->getByNameController($requestData);
+    })(),
     // quản lý nàh cung cấp
     'supplier-list' => (function () {
         requireAdmin();
@@ -104,7 +117,7 @@ echo match ($act) {
     })(),
     'newBooking' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowFromNewBooking();
+        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
     })(),
 
     // quản lý tải khoản người dùng
@@ -155,6 +168,13 @@ echo match ($act) {
         exit;
     })(),
 
+    'dashboarthongke' => (function () {
+        requireAdmin();
+        echo "bao cao thong ke";
+        require_once "./views/Admin/dashboard.php";
+        exit;
+    })(),
+
     // show trang lỗi
     '404' => (function () {
         require_once "./views/Admin/common/404.php";
@@ -184,7 +204,6 @@ echo match ($act) {
     // Nhật ký ghi lại của HDV
     'diaryguide' => (function () {
         requireGuide();
-
         $ctrl = new GuideLayoutController();
         $data = $ctrl->diaryGuide();
 

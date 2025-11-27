@@ -9,7 +9,7 @@
     </nav>
 
 
-    <form id="createTourfrom" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form id="createTourfrom" action="?act=admin_createTour" method="POST" enctype="multipart/form-data" class="space-y-6">
         <!-- thông báo -->
         <?php if (isset($_SESSION['success'])): ?>
             <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-md border border-green-300 text-sm font-medium">
@@ -23,7 +23,7 @@
             </div>
         <?php endif; ?>
         <!-- TABS HEADER -->
-        <div class="sticky top-0 z-5">
+        <div class="sticky top-0 z-10">
             <nav class="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2 border-b border-slate-200
                 bg-transparent transition-colors duration-300
                 [@supports(position:sticky)]:backdrop-blur-sm
@@ -35,17 +35,21 @@
                 <button type="button" data-tab="tab-itinerary" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
                     Lịch trình
                 </button>
-                <button type="button" data-tab="tab-activity" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+                <!-- <button type="button" data-tab="tab-activity" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
                     Hoạt động
-                </button>
+                </button> -->
                 <button type="button" data-tab="tab-images" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
                     Ảnh Tour
                 </button>
                 <button type="button" data-tab="tab-supplier" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
-                    Nhà cung cấp
+                    Loại dịch vụ
                 </button>
                 <button type="button" data-tab="tab-version" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
                     Phiên bản Giá
+                </button>
+                <button type="button" data-tab="tab-policy"
+                    class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+                    Chính sách Tour
                 </button>
             </nav>
         </div>
@@ -78,26 +82,25 @@
                 <h3 class="text-xl font-bold text-dark mb-4">Thông Tin Tour</h3>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- Tên Tour -->
+
+                    <input type="hidden" name="id" value="<?= $tour['id'] ?? '' ?>">
+
                     <div>
                         <label class="font-semibold text-gray-700">Tên Tour</label>
-                        <input type="text" name="name" placeholder="Nhập tên tour"
+                        <input type="text" name="name" id="tourName" placeholder="Nhập tên tour"
                             class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
                     </div>
 
-                    <!-- Mã Tour -->
                     <div>
                         <label class="font-semibold text-gray-700">Mã Tour</label>
-                        <input type="text" name="code" placeholder="Ví dụ: TOUR123"
+                        <input type="text" name="code" id="tourCode" placeholder="Ví dụ: TOUR123"
                             class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
                     </div>
 
-                    <!-- Danh mục -->
                     <div>
                         <label class="font-semibold text-gray-700">Danh mục</label>
-                        <select name="category_id"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition"
-                            required>
+                        <select name="category_id" id="category_id"
+                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
                             <option value="">-- Chọn danh mục --</option>
                             <?php foreach ($categories as $cat): ?>
                                 <option value="<?= $cat['id'] ?>"><?= $cat['name'] ?>(<?= $cat['total_tours'] ?> tour)</option>
@@ -109,7 +112,7 @@
                         <label class="font-semibold text-gray-700">Thời lượng</label>
                         <div class="flex gap-2 mt-2">
                             <div class="flex-1">
-                                <input type="number" name="days" min="1" placeholder="Số ngày"
+                                <input type="number" name="days" min="1" placeholder="Số ngày" onchange="onchangeInputItinerary(this)"
                                     class="w-full p-3 rounded-lg border focus:ring-2 focus:ring-main focus:border-main transition" required>
                             </div>
                             <span class="flex items-center px-1 text-gray-600">ngày</span>
@@ -121,19 +124,31 @@
                         </div>
                     </div>
 
-                    <!-- Mô tả -->
                     <div class="md:col-span-2">
                         <label class="font-semibold text-gray-700">Mô tả</label>
                         <textarea name="description" rows="4" placeholder="Nhập mô tả tour"
                             class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none" required></textarea>
                     </div>
 
-                    <!-- Chính sách -->
-                    <div class="md:col-span-2">
+                    <!-- <div class="md:col-span-2">
                         <label class="font-semibold text-gray-700">Chính sách</label>
                         <textarea name="policy" rows="3" placeholder="Nhập chính sách tour"
                             class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none" required></textarea>
+                    </div> -->
+
+                    <!-- Ảnh đại diện -->
+                    <div class="md:col-span-2">
+                        <label class="font-semibold text-gray-700">Ảnh đại diện</label>
+                        <input type="file" name="image" accept="image/*"
+                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition">
                     </div>
+
+                    <!-- Lịch trình JSON -->
+                    <!-- <div class="md:col-span-2">
+                        <label class="font-semibold text-gray-700">Lịch trình (JSON)</label>
+                        <textarea name="itinerary" rows="5" placeholder='Ví dụ: [{"day":1,"title":"Ngày 1"}]'
+                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none"></textarea>
+                    </div> -->
 
                     <!-- Giá -->
                     <div>
@@ -146,13 +161,14 @@
                     <div>
                         <label class="font-semibold text-gray-700">Trạng thái</label>
                         <select name="status"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition"
-                            required>
+                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
                             <option value="active">Hoạt động</option>
                             <option value="inactive">Không hoạt động</option>
                         </select>
                     </div>
+
                 </div>
+
             </div>
 
         </div>
@@ -175,8 +191,8 @@
         </div>
 
 
-        <!-- ===================== TAB 3: HOẠT ĐỘNG ===================== -->
-        <div id="tab-activity" class="tab-content hidden">
+        <!-- hoat dong -->
+        <!-- <div id="tab-activity" class="tab-content hidden">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-4">
                 <h3 class="text-xl font-bold text-dark mb-4">Thêm Hoạt Động Cho Tour</h3>
@@ -189,10 +205,10 @@
                 </button>
             </div>
 
-        </div>
+        </div> -->
 
 
-        <!-- ===================== TAB 4: ẢNH TOUR ===================== -->
+        <!-- abum tour  -->
         <div id="tab-images" class="tab-content hidden">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-4">
@@ -208,24 +224,24 @@
         </div>
 
 
-        <!-- ===================== TAB 5: NHÀ CUNG CẤP ===================== -->
+        <!-- nhà cung cấp -->
         <div id="tab-supplier" class="tab-content hidden">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-4">
-                <h3 class="text-xl font-bold text-dark mb-4">Thêm Nhà Cung Cấp Cho Tour</h3>
+                <h3 class="text-xl font-bold text-dark mb-4">Chọn loại dịch vụ</h3>
 
                 <div id="supplierWrap" class="space-y-4"></div>
 
                 <button type="button" onclick="addSupplier()"
                     class="px-4 py-2 bg-main mt-5 text-white rounded-lg hover:bg-hover">
-                    + Thêm nhà cung cấp
+                    + Thêm loại dịch vụ
                 </button>
             </div>
 
         </div>
 
 
-        <!-- ===================== TAB 6: PHIÊN BẢN GIÁ ===================== -->
+        <!-- phiên bản giá -->
         <div id="tab-version" class="tab-content hidden">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-4">
@@ -238,8 +254,22 @@
                     + Thêm phiên bản giá
                 </button>
             </div>
-
         </div>
+
+        <!-- Chính sách tour -->
+        <div id="tab-policy" class="tab-content hidden">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-4">
+                <h3 class="text-xl font-bold text-dark mb-4">Thêm Chính Sách Cho Tour</h3>
+
+                <div id="policyWrap" class="space-y-4"></div>
+
+                <button type="button" onclick="addPolicy()"
+                    class="px-4 py-2 bg-main mt-5 text-white rounded-lg hover:bg-hover">
+                    + Thêm chính sách
+                </button>
+            </div>
+        </div>
+
 
         <div class="pt-6">
             <button type="submit" class="px-6 py-3 bg-main text-white rounded-lg hover:bg-hover text-lg font-semibold">
@@ -254,15 +284,6 @@
         const tabs = document.querySelectorAll(".tab-btn");
         const contents = document.querySelectorAll(".tab-content");
 
-        // Flags để kiểm tra lần đầu mở tab
-        let init = {
-            itinerary: false,
-            activity: false,
-            image: false,
-            supplier: false,
-            version: false
-        };
-
         tabs.forEach(btn => {
             btn.onclick = () => {
                 tabs.forEach(t => t.classList.remove("tab-active"));
@@ -276,122 +297,110 @@
         });
         let day = 1;
 
+        // Thêm ngày
         function addItinerary() {
             const wrap = document.getElementById("itineraryWrap");
+            const dayNumber = day;
+
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
-                <button 
-                    class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
-                    onclick="this.parentElement.remove()" 
-                    title="Xóa ngày">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group" data-day="${dayNumber}">
+                    <button 
+                        class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
+                        onclick="this.parentElement.remove()" 
+                        title="Xóa ngày">
+                        <i class="fas fa-times"></i>
+                    </button>
 
-                <h3 class="text-xl font-bold text-dark mb-4 flex items-center gap-2">
-                    <span>Ngày</span>
-                    <input 
-                        type="number" 
-                        name="day_number[]" 
-                        value="${day}" 
-                        required
-                        min="1" 
-                        class="w-20 p-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main focus:border-main text-center">
-                </h3>
-                <input type="hidden" name="day_number[]" value="${day}" required>
+                    <h3 class="text-xl font-bold text-dark mb-4 flex items-center gap-2">
+                        <span>Ngày</span>
+                        <input
+                            onchange=""
+                            type="number"
+                            name="day_number[]" 
+                            value="${dayNumber}"
+                            required
+                            min="1" 
+                            class="w-20 p-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main focus:border-main text-center">
+                    </h3>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Tiêu đề -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Tiêu đề</label>
-                        <input type="text" name="itinerary_title[]" placeholder="Nhập tiêu đề cho ngày này"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="font-semibold text-gray-700">Tiêu đề</label>
+                            <input type="text" name="itinerary_title[]" placeholder="Nhập tiêu đề cho ngày này"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                        </div>
+
+                        <div>
+                            <label class="font-semibold text-gray-700">Mô tả</label>
+                            <textarea name="itinerary_desc[]" rows="4" placeholder="Nhập mô tả chi tiết cho ngày này"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none" required></textarea>
+                        </div>
                     </div>
 
-                    <!-- Mô tả -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Mô tả</label>
-                        <textarea name="itinerary_desc[]" rows="4" placeholder="Nhập mô tả chi tiết cho ngày này"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none" required></textarea>
-                    </div>
+                    <!-- wrap hoạt động riêng cho ngày này -->
+                    <div id="activityWrap-${dayNumber}" class="space-y-4 mt-4"></div>
+
+                    <button type="button" onclick="addActivity(${dayNumber})"
+                        class="px-4 py-2 mt-5 bg-main text-white rounded-lg hover:bg-hover">
+                        + Thêm hoạt động
+                    </button>
                 </div>
-                <div id="activityWrap" class="space-y-4"></div>
-
-                <button type="button" onclick="addActivity()"
-                    class="px-4 py-2 mt-5 bg-main text-white rounded-lg hover:bg-hover">
-                    + Thêm hoạt động
-                </button>
-            </div>
-    `);
+            `);
             day++;
         }
 
-        let activity = 1;
-        const handleDayChange = (el) => {
-            activity = Number(el.value) + 1;
-        }
-
-        function addActivity() {
-            const wrap = document.getElementById("activityWrap");
+        // Thêm hoạt động vào ngày cụ thể
+        function addActivity(dayNumber) {
+            const wrap = document.getElementById(`activityWrap-${dayNumber}`);
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
-                <button 
-                    class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
-                    onclick="this.parentElement.remove()" 
-                    title="Xóa ngày">
-                    <i class="fas fa-times"></i>
-                </button>
-                <h3 class="text-xl font-bold text-dark mb-4 flex items-center gap-2">
-                    <span>Hoạt động </span>
-                    <input
-                        onchange="handleDayChange(this)"
-                        type="number" 
-                        name="day_number[]" 
-                        value="${activity}" 
-                        required
-                        min="1" 
-                        class="w-20 p-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main focus:border-main text-center">
-                </h3>
-                
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Tên hoạt động -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Tên hoạt động</label>
-                        <input type="text" name="activity_name[]" placeholder="Nhập tên hoạt động"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                    </div>
+                <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+                    <button 
+                        class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
+                        onclick="this.parentElement.remove()" 
+                        title="Xóa hoạt động">
+                        <i class="fas fa-times"></i>
+                    </button>
 
-                    <!-- Thời gian -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Thời gian</label>
-                        <input type="text" name="activity_time[]" placeholder="Ví dụ: 08:00 - 10:00"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                    </div>
+                    <!-- Ẩn ngày thực tế cho PHP gom dữ liệu -->
+                    <input type="hidden" name="activity_day[]" value="${dayNumber}">
 
-                    <!-- Địa điểm -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Địa điểm</label>
-                        <input type="text" name="activity_location[]" placeholder="Nhập địa điểm"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="font-semibold text-gray-700">Tên hoạt động</label>
+                            <input type="text" name="activity_name[]" placeholder="Nhập tên hoạt động"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                        </div>
 
-                    <!-- Mô tả -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Mô tả</label>
-                        <textarea name="activity_desc[]" rows="3" placeholder="Mô tả chi tiết hoạt động"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none" required></textarea>
+                        <div>
+                            <label class="font-semibold text-gray-700">Thời gian</label>
+                            <input type="text" name="activity_time[]" placeholder="Ví dụ: 08:00 - 10:00"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                        </div>
+
+                        <div>
+                            <label class="font-semibold text-gray-700">Địa điểm</label>
+                            <input type="text" name="activity_location[]" placeholder="Nhập địa điểm"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                        </div>
+
+                        <div>
+                            <label class="font-semibold text-gray-700">Mô tả</label>
+                            <textarea name="activity_desc[]" rows="3" placeholder="Mô tả chi tiết hoạt động"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition resize-none" required></textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
-    `);
-            activity++;
+            `);
         }
+
 
         let image = 1;
 
         function addImage() {
             const wrap = document.getElementById("imageWrap");
+            console.log(wrap);
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+            <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
                 <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                     onclick="this.parentElement.remove()" 
@@ -416,13 +425,6 @@
                     </div>
 
                     <!-- Liên kết hoạt động / hành trình (nếu muốn chọn) -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Liên kết</label>
-                        <select name="image_link[]" class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                            <option value="">-- Chọn liên kết hoạt động/hành trình (nếu có) --</option>
-                            <!-- Tự load activity / itinerary -->
-                        </select>
-                    </div>
                 </div>
             </div>
     `);
@@ -431,59 +433,79 @@
 
         let supplier = 1;
 
+        const supplierTypes = <?php echo json_encode($datasupplier_types); ?>;
+
         function addSupplier() {
             const wrap = document.getElementById("supplierWrap");
             wrap.insertAdjacentHTML("beforeend", `
-            <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+            <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+                <!-- Nút Xóa -->
                 <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
-                    onclick="this.parentElement.remove()" 
-                    title="Xóa ngày">
+                    onclick="this.parentElement.remove()"
+                    title="Xóa">
                     <i class="fas fa-times"></i>
                 </button>
-                <h3 class="text-xl font-bold text-dark mb-4">Nhà cung cấp ${supplier}</h3>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Chọn nhà cung cấp -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Chọn nhà cung cấp</label>
-                        <select name="supplier_id[]" 
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                            <option>-- Chọn nhà cung cấp --</option>
-                            <!-- Load từ DB -->
-                        </select>
-                    </div>
+                <h3 class="text-xl font-bold text-dark mb-4">Dịch vụ ${supplier}</h3>
 
-                    <!-- Vai trò -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Vai trò</label>
-                        <select name="supplier_role[]" 
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
-                            <option>khách sạn</option>
-                            <option>xe</option>
-                            <option>nhà hàng</option>
-                            <option>dịch vụ khác</option>
-                        </select>
-                    </div>
+                <!-- Chọn loại dịch vụ -->
+                <div>
+                    <label class="font-semibold text-gray-700">Chọn loại dịch vụ</label>
+                    <select name="supplier_types_id[]" class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required onchange="showServiceDetail(this)">
+                        <option value="">-- Chọn loại dịch vụ --</option>
+                        <?php foreach ($datasupplier_types as $type): ?>
+                            <option value="<?= $type['id'] ?>"><?= htmlspecialchars($type['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-                    <!-- Ghi chú -->
-                    <div>
-                        <label class="font-semibold text-gray-700">Ghi chú</label>
-                        <input type="text" name="supplier_notes[]" placeholder="Nhập ghi chú nếu có"
-                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                <!-- Chi tiết dịch vụ -->
+                <div class="service-detail mt-3 p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-blue-200 shadow-sm hidden">
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">Thông tin chi tiết</h4>
+                    <div class="space-y-1">
+                        <p><span class="font-semibold text-gray-700">Mô tả:</span> <span class="desc text-gray-600"></span></p>
+                        <p><span class="font-semibold text-gray-700">Số sao:</span> 
+                            <span class="stars text-yellow-500"></span> ⭐
+                        </p>
+                        <p><span class="font-semibold text-gray-700">Chất lượng:</span> <span class="quality text-green-600 font-medium"></span></p>
                     </div>
+                </div>
+
+                <!-- Ghi chú -->
+                <div class="mt-3">
+                    <label class="font-semibold text-gray-700">Ghi chú</label>
+                    <input type="text" name="notes[]" placeholder="Nhập ghi chú nếu có"
+                        class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition">
                 </div>
             </div>
     `);
             supplier++;
         }
 
+        function showServiceDetail(select) {
+            const detailDiv = select.closest('div').nextElementSibling; // Lấy div chi tiết đúng
+            const typeId = select.value;
+            if (!typeId) {
+                detailDiv.classList.add('hidden');
+                return;
+            }
+            const type = supplierTypes.find(t => t.id == typeId);
+            if (type) {
+                detailDiv.querySelector('.desc').innerText = type.description;
+                detailDiv.querySelector('.stars').innerText = type.stars;
+                detailDiv.querySelector('.quality').innerText = type.quality;
+                detailDiv.classList.remove('hidden');
+            }
+        }
+
+
         let version = 1;
 
         function addVersion() {
             const wrap = document.getElementById("versionWrap");
             wrap.insertAdjacentHTML("beforeend", `
-        <div class="relative bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+        <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
             <button 
                     class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
                     onclick="this.parentElement.remove()" 
@@ -547,10 +569,53 @@
     `);
             version++;
         }
+
+        let policyCount = 1;
+
+        function addPolicy() {
+            const wrap = document.getElementById("policyWrap");
+            wrap.insertAdjacentHTML("beforeend", `
+            <div class="relative z-0 bg-white p-6 rounded-xl shadow-lg border border-slate-300 mt-6 group">
+                <button 
+                    class="absolute top-[-10px] left-[-10px] w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-800 shadow-xl hover:bg-red-500 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100"
+                    onclick="this.parentElement.remove()" 
+                    title="Xóa chính sách">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3 class="text-xl font-bold text-dark mb-4">Chính sách ${policyCount}</h3>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Loại chính sách -->
+                    <div>
+                        <label class="font-semibold text-gray-700">Loại chính sách</label>
+                        <input type="text" name="policy_type[]" placeholder="VD: Hủy tour, Đặt cọc..."
+                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                    </div>
+
+                    <!-- Nội dung chính sách -->
+                    <div>
+                        <label class="font-semibold text-gray-700">Nội dung</label>
+                        <textarea name="description[]" rows="3" placeholder="Nhập nội dung chi tiết"
+                            class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required></textarea>
+                    </div>
+                </div>
+            </div>
+    `);
+            policyCount++;
+        }
         addItinerary();
-        addActivity();
+
+        // function onchangeInputItinerary(el) {
+        //     day = 1;
+        //     console.log(el.value);
+        //     for (let i = 1; i <= Number(el.value); i++) {
+        //         addItinerary();
+        //     }
+        // }
+        addActivity(1);
         addImage();
         addSupplier();
         addVersion();
+        addPolicy();
     </script>
 </div>

@@ -146,46 +146,107 @@
                     </div>
 
 
-                    <!-- Nhà cung cấp -->
+                    <!-- Nhà cung cấp / Dịch vụ Tour -->
                     <div class="bg-white rounded-xl border shadow-sm p-5">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Nhà cung cấp</h4>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Nhà cung cấp / Dịch vụ</h4>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             <?php foreach ($dataTourSupplier as $value) { ?>
                                 <div class="p-4 bg-gray-50 border rounded-xl shadow-sm hover:shadow-md transition text-sm">
-                                    <div class="font-semibold text-gray-800"><?= ucfirst($value['role']) ?>:</div>
-                                    <div class="text-gray-600 mt-1"><?= $value['supplier_name'] ?></div>
+
+                                    <!-- Tên dịch vụ -->
+                                    <div class="font-semibold text-gray-800 mb-1"><?= htmlspecialchars($value['name']) ?></div>
+
+                                    <!-- Mô tả -->
+                                    <div class="text-gray-600 mb-2"><?= htmlspecialchars($value['description']) ?></div>
+
+                                    <!-- Stars -->
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-yellow-500 mr-2">
+                                            <?php for ($i = 0; $i < $value['stars']; $i++) { ?>
+                                                ★
+                                            <?php } ?>
+                                            <?php for ($i = $value['stars']; $i < 5; $i++) { ?>
+                                                ☆
+                                            <?php } ?>
+                                        </span>
+                                        <span class="text-gray-500 text-xs"><?= $value['stars'] ?>/5</span>
+                                    </div>
+
+                                    <!-- Chất lượng -->
+                                    <div class="text-gray-700 text-sm mb-1"><strong>Chất lượng:</strong> <?= htmlspecialchars($value['quality']) ?></div>
+
+                                    <!-- Thời gian tạo / cập nhật -->
+                                    <div class="text-gray-400 text-xs">
+                                        <div>Ngày tạo: <?= $value['created_at'] ?></div>
+                                        <div>Cập nhật: <?= $value['updated_at'] ?></div>
+                                    </div>
                                 </div>
                             <?php } ?>
                         </div>
                     </div>
+
                 </div>
 
             </div>
 
             <!-- Tab 2: Phiên bản -->
             <div id="tab-versions" class="tab-pane hidden">
-                <h4 class="text-lg font-semibold text-gray-800">Phiên bản Tour</h4>
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                    <div class="p-4 border rounded-xl bg-gray-50 hover:shadow transition">
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-800">Mùa Hè (Cao điểm)</span>
-                            <span class="text-gray-500"><?= number_format($dataOneTour['price']) ?> VND</span>
-                        </div>
-                        <p class="text-sm text-gray-500 mt-2">Lịch trình: Thêm hoạt động biển</p>
-                    </div>
+                <h4 class="text-xl font-semibold text-gray-800 mb-4">Phiên bản Tour</h4>
 
-                    <div class="p-4 border rounded-xl bg-gray-50 hover:shadow transition">
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-800">Phiên bản Khuyến mãi</span>
-                            <span class="text-gray-500">2.200.000 VND</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <?php foreach ($dataTourVersions as $ver): ?>
+
+                        <div class="border rounded-lg bg-white p-4 shadow-sm hover:shadow-md transition">
+
+                            <!-- Tên phiên bản -->
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="font-semibold text-gray-800 text-base">
+                                    <?= htmlspecialchars($ver['name']) ?>
+                                </span>
+
+                                <!-- Season -->
+                                <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600 border">
+                                    <?= ucfirst($ver['season']) ?>
+                                </span>
+                            </div>
+
+                            <!-- Giá -->
+                            <div class="mb-2 flex justify-between">
+                                <span class="text-gray-600">Giá:</span>
+                                <span class="font-semibold text-gray-800">
+                                    <?= number_format($ver['price']) ?> VND
+                                </span>
+                            </div>
+
+                            <!-- Ngày -->
+                            <div class="mb-2 flex justify-between">
+                                <span class="text-gray-600">Thời gian:</span>
+                                <span class="text-gray-700">
+                                    <?= $ver['start_date'] ?> → <?= $ver['end_date'] ?>
+                                </span>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Trạng thái:</span>
+                                <span class="px-2 py-1 rounded text-xs 
+                        <?= $ver['status'] == 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600' ?>">
+                                    <?= ucfirst($ver['status']) ?>
+                                </span>
+                            </div>
+
                         </div>
-                        <p class="text-sm text-gray-500 mt-2">Ưu đãi: Giảm 12% + bữa trưa miễn phí</p>
-                    </div>
+
+                    <?php endforeach; ?>
 
                 </div>
             </div>
+
+
+
 
             <!-- Tab 3: Hình ảnh -->
             <div id="tab-images" class="tab-pane hidden">
