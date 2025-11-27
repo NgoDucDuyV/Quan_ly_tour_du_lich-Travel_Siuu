@@ -171,4 +171,77 @@ class GuideTourModel
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    // Lấy yêu cầu của hướng dẫn viên
+    public function getRequestsByGuide($guide_id)
+    {
+        $sql = "SELECT *
+                FROM tour_request
+                WHERE guide_id = :guide_id
+                ORDER BY created_at DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(":guide_id", $guide_id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Thêm yêu cầu mới của HDV
+    public function insertRequest($guide_id, $data)
+    {
+        $sql = "INSERT INTO tour_request 
+        (guide_id, title, request_type, desired_date, priority, content, attachment)
+        VALUES (:guide_id, :title, :request_type, :desired_date, :priority, :content, :attachment)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            'guide_id' => $guide_id,
+            'title' => $data['title'],
+            'request_type' => $data['request_type'], 
+            'desired_date' => $data['desired_date'],
+            'priority' => $data['priority'],
+            'content' => $data['content'],
+            'attachment' => $data['attachment']
+        ]);
+    }
+
+    // Lấy yêu cầu cụ thể của HDV
+    public function getRequest($id, $guide_id)
+    {
+        $sql = "SELECT * FROM tour_request WHERE id = :id AND guide_id = :guide_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['id' => $id, 'guide_id' => $guide_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    // Cập nhật yêu cầu của HDV
+    public function updateRequest($id, $guide_id, $data)
+    {
+        $sql = "UPDATE tour_request
+            SET title=:title, desired_date=:desired_date,
+                priority=:priority, content=:content, attachment=:attachment,
+                updated_at=NOW()
+            WHERE id=:id AND guide_id=:guide_id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            'title' => $data['title'],
+            'desired_date' => $data['desired_date'],
+            'priority' => $data['priority'],
+            'content' => $data['content'],
+            'attachment' => $data['attachment'],
+            'id' => $id,
+            'guide_id' => $guide_id
+        ]);
+    }
+    // Xóa yêu cầu của HDV
+    public function deleteRequest($id, $guide_id)
+    {
+        $stmt = $this->conn->prepare("
+        DELETE FROM tour_request 
+        WHERE id = :id AND guide_id = :guide_id
+    ");
+
+        return $stmt->execute(['id' => $id, 'guide_id' => $guide_id]);
+    }
 }

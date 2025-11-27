@@ -187,14 +187,17 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
+    // Trang chủ của HDV
     'homeguide' => (function () {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
+    // Lịch trình của HDV
     'scheduleguide' => (function () {
         requireGuide();
         require_once "./views/Admin/scheduleguide.php";
     })(),
+    // Danh sách khách của HDV
     'listguide' => (function () {
         requireGuide();
 
@@ -230,14 +233,12 @@ echo match ($act) {
         requireGuide();
         (new GuideLayoutController())->updateDiaryGuide();
     })(),
-
-
-
     // Nhật ký lưu lại của HDV
     'saveDiaryGuide' => (function () {
         requireGuide();
         (new GuideLayoutController())->saveDiaryGuide();
     })(),
+
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();
@@ -251,11 +252,34 @@ echo match ($act) {
         require "./views/Admin/checkguide.php";
     })(),
 
-
+    // RequestGuide
+    // Gửi yêu cầu của HDV
     'requestguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/requestguide.php";
+        (new GuideLayoutController())->requestGuide();
     })(),
+    // Lưu yêu cầu của HDV
+    'saveRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->saveRequestGuide();
+    })(),
+    // Sửa yêu cầu của HDV (hiển thị form)
+    'editRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->editRequestGuide();
+    })(),
+    // Cập nhật yêu cầu của HDV sau khi sửa
+    'updateRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->updateRequestGuide();
+    })(),
+    // Xóa yêu cầu của HDV
+    'deleteRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->deleteRequestGuide();
+    })(),
+
+
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
         exit;
