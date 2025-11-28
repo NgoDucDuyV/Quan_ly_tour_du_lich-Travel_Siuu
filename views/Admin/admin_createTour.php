@@ -373,8 +373,9 @@
 
                         <div>
                             <label class="font-semibold text-gray-700">Thời gian</label>
-                            <input type="text" name="activity_time[]" placeholder="Ví dụ: 08:00 - 10:00"
-                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" required>
+                            <input type="time" name="activity_time[]"
+                                class="mt-2 w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-main focus:border-main transition" 
+                                required>
                         </div>
 
                         <div>
@@ -392,7 +393,6 @@
                 </div>
             `);
         }
-
 
         let image = 1;
 

@@ -63,16 +63,18 @@ if (!empty($tourFullData)) {
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Chọn Tour *</label>
                         <select name="tour_id"
-                            class="w-full p-4 border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300"
+                            class="w-full p-4 border border-gray-200 rounded-2xl shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300 bg-white"
                             required onchange="if(this.value) { window.location.href='?act=newBooking&tour_id=' + this.value; }">
                             <option value="">-- Chọn Tour --</option>
                             <?php foreach ($datatour as $tour): ?>
                                 <option value="<?= $tour['id'] ?>" <?= isset($selectedTourId) ? (($tour['id'] == $selectedTourId) ? 'selected' : '') : "" ?>>
-                                    <?= $tour['name'] ?> - <?= $tour['duration'] ?>
+                                    <?= $tour['name'] ?> - <?= $tour['duration'] ?> - <?= number_format($tour['price'], 0, ',', '.') ?>₫
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+
+
 
                     <!-- Phiên bản Tour -->
                     <div class="space-y-2">
@@ -108,6 +110,26 @@ if (!empty($tourFullData)) {
                                     </p>
                                 </div>
                             </div>
+
+                            <div id="default-carousel" class="relative w-full" data-carousel="slide">
+                                <div class="overflow-hidden relative h-56 rounded-lg md:h-96">
+                                    <?php foreach ($tourFullData['images'] as $index => $img): ?>
+                                        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                            <img src="<?= $img['image_url'] ?>" class="absolute block w-full h-full object-cover" alt="<?= htmlspecialchars($img['description']) ?>">
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <!-- Slider controls -->
+                                <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                                    ‹
+                                </button>
+                                <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                                    ›
+                                </button>
+                            </div>
+                            <!-- Flowbite JS -->
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+
 
                             <!-- Box giá tour -->
                             <div class="bg-white rounded-2xl border shadow-md p-6 max-w-full mx-auto">
@@ -194,36 +216,38 @@ if (!empty($tourFullData)) {
 
                             <!-- Dịch vụ kèm tour -->
                             <?php if (!empty($tourFullData['supplier_types'])): ?>
-                                <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-6 mt-6">
-                                    <h3 class="font-semibold text-gray-800 mb-4 text-lg">Dịch vụ kèm theo tour</h3>
+                                <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6 mt-6">
+                                    <h3 class="font-bold text-gray-900 mb-6 text-xl tracking-wide">Dịch vụ kèm theo tour</h3>
 
-                                    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                         <?php foreach ($tourFullData['supplier_types'] as $s): ?>
-                                            <li class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+                                            <li class="bg-gwhite border border-indigo-200 rounded-2xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
 
                                                 <!-- Tên dịch vụ -->
-                                                <h4 class="font-semibold text-indigo-800 mb-1">
+                                                <h4 class="font-semibold text-indigo-900 mb-2 text-lg">
                                                     <?= htmlspecialchars($s['supplier_type_name']) ?>
                                                 </h4>
 
-                                                <p class="text-gray-600 text-sm mb-1">
+                                                <!-- Mô tả -->
+                                                <p class="text-gray-700 text-sm mb-2">
                                                     <?= htmlspecialchars($s['description']) ?>
                                                 </p>
 
+                                                <!-- Chất lượng & sao -->
                                                 <?php if (!empty($s['stars']) && $s['stars'] > 0): ?>
-                                                    <p class="text-yellow-500 text-sm">
-                                                        ⭐ <?= $s['stars'] ?> sao |
-                                                        <span class="text-green-700">Chất lượng: <?= htmlspecialchars($s['quality']) ?></span>
+                                                    <p class="text-yellow-500 text-sm mb-1 flex items-center gap-2">
+                                                        <?= str_repeat('⭐', $s['stars']) ?>
+                                                        <span class="text-green-700 font-medium">Chất lượng: <?= htmlspecialchars($s['quality']) ?></span>
                                                     </p>
                                                 <?php else: ?>
-                                                    <p class="text-gray-700 text-sm">
+                                                    <p class="text-gray-800 text-sm font-medium mb-1">
                                                         Chất lượng: <?= htmlspecialchars($s['quality']) ?>
                                                     </p>
                                                 <?php endif; ?>
 
                                                 <!-- Ghi chú -->
                                                 <?php if (!empty($s['notes'])): ?>
-                                                    <p class="text-gray-500 italic text-sm mt-1">
+                                                    <p class="text-gray-500 italic text-sm mt-2">
                                                         Ghi chú: <?= htmlspecialchars($s['notes']) ?>
                                                     </p>
                                                 <?php endif; ?>
@@ -233,16 +257,15 @@ if (!empty($tourFullData)) {
                                 </div>
                             <?php endif; ?>
 
-
                             <!-- Chính sách tour -->
                             <?php if (!empty($tourFullData['policies'])): ?>
-                                <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-6 mt-6">
-                                    <h3 class="font-semibold text-gray-800 mb-4 text-lg">Chính sách tour</h3>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6 mt-6">
+                                    <h3 class="font-bold text-gray-900 mb-6 text-xl tracking-wide">Chính sách tour</h3>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                         <?php foreach ($tourFullData['policies'] as $p): ?>
-                                            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
-                                                <h4 class="font-semibold text-indigo-800 mb-1"><?= htmlspecialchars($p['policy_type']) ?></h4>
-                                                <p class="text-gray-600 text-sm"><?= htmlspecialchars($p['description']) ?></p>
+                                            <div class="bg-white border border-indigo-200 rounded-2xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
+                                                <h4 class="font-semibold text-indigo-900 mb-2 text-lg"><?= htmlspecialchars($p['policy_type']) ?></h4>
+                                                <p class="text-gray-700 text-sm"><?= htmlspecialchars($p['description']) ?></p>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
@@ -292,7 +315,7 @@ if (!empty($tourFullData)) {
                         </div>
                         <div>
                             <label class="block text-sm font-medium">Loại nhóm *</label>
-                            <select name="group_type" class="w-full p-4 border rounded-xl" required>
+                            <select name="group_type" id="group_type" class="w-full p-4 border rounded-xl" required onchange="handleGroupTypeChange(this.value)">
                                 <option value="le">Khách lẻ</option>
                                 <option value="doan">Khách đoàn</option>
                             </select>
@@ -317,6 +340,7 @@ if (!empty($tourFullData)) {
                     </div>
                 </div>
             </div>
+
 
             <!-- STEP 3: Hành khách & Dịch vụ & File -->
             <div id="step-3-content" class="step-content hidden">

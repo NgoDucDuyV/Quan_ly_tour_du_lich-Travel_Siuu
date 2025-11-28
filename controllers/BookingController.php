@@ -51,7 +51,7 @@ class BookingController
         }
         // if (isset($tourFullData)) {
         //     echo "<pre>";
-        //     var_dump($tourFullData['supplier_types']);
+        //     var_dump($tourFullData['images']);
         //     echo "<pre>";
         //     die;
         // }
