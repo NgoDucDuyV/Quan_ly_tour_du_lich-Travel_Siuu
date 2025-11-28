@@ -329,7 +329,7 @@ class TourModel
             ':price'      => $datatourversions['price'] ?? 0,
             ':start_date' => $datatourversions['start_date'] ?? null,
             ':end_date'   => $datatourversions['end_date'] ?? null,
-            ':status'     => $datatourversions['status'] ?? 1,
+            ':status'     => $datatourversions['status'] ? 1 : 0,
             ':created_at' => date('Y-m-d H:i:s'),
             ':updated_at' => date('Y-m-d H:i:s')
         ];

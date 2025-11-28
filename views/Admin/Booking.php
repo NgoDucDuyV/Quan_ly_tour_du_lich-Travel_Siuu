@@ -79,7 +79,7 @@
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">email</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">loại nhóm</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">số người</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">ghi chú</th>
+                        <!-- <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">ghi chú</th> -->
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">trạng thái</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">ngày tạo</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">cập nhật</th>
@@ -110,14 +110,14 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-4 text-center font-medium"><?= $b['number_of_people'] ?></td>
-                                <td class="px-4 py-4 text-slate-600 max-w-xs truncate" title="<?= htmlspecialchars($b['note'] ?? '') ?>">
+                                <!-- <td class="px-4 py-4 text-slate-600 max-w-xs truncate" title="<?= htmlspecialchars($b['note'] ?? '') ?>">
                                     <?= $b['note'] ? htmlspecialchars($b['note']) : '<span class="text-slate-400">không có</span>' ?>
-                                </td>
+                                </td> -->
                                 <td class="px-4 py-4">
                                     <?php
-                                    $status = $b['status'] ?? 'cho_xac_nhan';
-                                    $statusText = $status == 'cho_xac_nhan' ? 'chờ xác nhận' : ($status == 'da_coc' ? 'đã cọc' : ($status == 'hoan_tat' ? 'hoàn tất' : $status));
-                                    $statusColor = $status == 'hoan_tat' ? 'bg-green-100 text-green-800' : ($status == 'da_coc' ? 'bg-blue-100 text-blue-800' :
+                                    $status = $b['status_code'] ?? 'CHXACNHAN';
+                                    $statusText = $status == 'CHXACNHAN' ? 'chờ xác nhận' : ($status == 'DACOC' ? 'đã cọc' : ($status == 'HOANTAT' ? 'hoàn tất' : $status));
+                                    $statusColor = $status == 'HOANTAT' ? 'bg-green-100 text-green-800' : ($status == 'DACOC' ? 'bg-blue-100 text-blue-800' :
                                         'bg-yellow-100 text-yellow-800');
                                     ?>
                                     <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full <?= $statusColor ?>">
@@ -143,7 +143,7 @@
                                     group-hover:opacity-100 group-hover:visible 
                                     transition-all duration-200 z-20 overflow-hidden">
 
-                                        <a href="?act=booking&view_id=<?= $b['id'] ?>"
+                                        <a href="?act=bookingdetail&booking_id=<?= $b['id'] ?>"
                                             class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
                                             <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
                                         </a>
