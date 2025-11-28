@@ -52,15 +52,15 @@
                         <td class="p-3"><?= $booking['number_of_people'] ?></td>
 
                         <td class="p-3">
-                            <?php if ($booking['status'] == 'cho_xac_nhan'): ?>
+                            <?php if ($booking['status_code'] == 'CHXACNHAN'): ?>
                                 <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-sm">
                                     Chờ xác nhận
                                 </span>
-                            <?php elseif ($booking['status'] == 'da_coc'): ?>
+                            <?php elseif ($booking['status_code'] == 'DACOC'): ?>
                                 <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm">
                                     Đã cọc
                                 </span>
-                            <?php elseif ($booking['status'] == 'hoan_tat'): ?>
+                            <?php elseif ($booking['status_code'] == 'HOANTAT'): ?>
                                 <span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm">
                                     Hoàn tất
                                 </span>
@@ -86,7 +86,7 @@
     const input = document.querySelector('input[name="keyword"]');
     const rows = document.querySelectorAll("tbody tr");
 
-    input.addEventListener("input", function () {
+    input.addEventListener("input", function() {
         const keyword = this.value.toLowerCase().trim();
 
         rows.forEach(row => {
