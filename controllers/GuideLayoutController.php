@@ -13,6 +13,8 @@ class GuideLayoutController
     {
         require_once "./views/Admin/layout_guide/footer.php";
     }
+    // ListGuide
+    // Danh sách khách của HDV
     public function listGuide()
     {
         // Hàm tìm kiếm khách hàng theo từ khóa
@@ -22,41 +24,202 @@ class GuideLayoutController
 
         require "./views/Admin/listguide.php";
     }
+    // DiaryGuide
+    // Nhật ký ghi lại của HDV 
     public function diaryGuide()
     {
-        echo "<pre>";
-        print_r($_SESSION);
-        echo "</pre>";
-        die(); // dừng tại đây để xem session
+        $guide_id = $_SESSION['admin_logged']['id'];
+
+        $model = new GuideTourModel();
+
+        $diary = $model->getLogsByGuide($guide_id);
+        $tours = $model->getSchedulesByGuide($guide_id);
+
+        return [
+            'diary' => $diary,
+            'tours' => $tours
+        ];
     }
+    // Thêm nhật ký mới cho HDV
+    public function saveDiaryGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+
+        $schedule_id = $_POST['schedule_id'];
+        $content = $_POST['content'];
+        $images = $_FILES['images'];
+
+        $uploadDir = "uploads/logs/";
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+        $uploadedImages = [];
+
+        if (!empty($images['name'][0])) {
+            foreach ($images['name'] as $key => $name) {
+                $newName = $uploadDir . uniqid() . "_" . $name;
+                if (move_uploaded_file($images['tmp_name'][$key], $newName)) {
+                    $uploadedImages[] = $newName;
+                }
+            }
+        }
+
+        (new GuideTourModel())->insertLog(
+            $schedule_id,
+            $guide_id,
+            $content,
+            $uploadedImages
+        );
+
+        header("Location: ?mode=admin&act=diaryguide");
+    }
+    // Xóa nhật ký của HDV
+    public function deleteDiaryGuide()
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) die("Thiếu ID nhật ký!");
+
+        $model = new GuideTourModel();
+
+        // Xóa trong database
+        $model->deleteLog($id);
+
+        header("Location: " . BASE_URL . "?mode=admin&act=diaryguide");
+        exit;
+    }
+    // Chỉnh sửa nhật ký của HDV
+    public function editDiaryGuide()
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) die("Thiếu ID!");
+
+        $model = new GuideTourModel();
+
+        $log = $model->getLogById($id);
+        $tours = $model->getSchedulesByGuide($_SESSION['admin_logged']['id']);
+
+        require "./views/Admin/editDiaryguide.php";
+    }
+    // Cập nhật nhật ký của HDV
+    public function updateDiaryGuide()
+    {
+        $id = $_POST['id'];
+        $content = $_POST['content'];
+
+        (new GuideTourModel())->updateLog($id, $content);
+
+        header("Location: " . BASE_URL . "?mode=admin&act=diaryguide");
+        exit;
+    }
+    // CheckGuide
+    // Check-in và điểm danh của HDV
     public function checkGuide()
     {
-        echo "<pre>";
-        print_r($_SESSION);
-        echo "</pre>";
-        // $guide_id = $_SESSION['admin_id'] ?? null;
+        $guide_id = $_SESSION['admin_logged']['id'];
 
-        // // Nếu chưa đăng nhập HDV
-        // if (!$guide_id) {
-        //     $todayTour = null;
-        //     $customers = [];
-        //     require "./views/Admin/checkguide.php";
-        //     return;
-        // }
+        $model = new GuideTourModel();
 
-        // $model = new TourModel();
+        $todayTour = $model->getTodayTour($guide_id);
 
-        // // Lấy tour hôm nay
-        // $todayTour = $model->getTodayTour($guide_id);
+        $customers = [];
+        if ($todayTour) {
+            $customers = $model->getCustomersBySchedule($todayTour['schedule_id']);
+        }
 
-        // // Mặc định danh sách rỗng
-        // $customers = [];
+        return [
+            'todayTour' => $todayTour,
+            'customers' => $customers
+        ];
+    }
+    // RequestGuide
+    // Yêu cầu đặc biệt của HDV
+    public function requestGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id']; // guide_id của HDV đang đăng nhập
 
-        // // Nếu có tour thì lấy danh sách khách
-        // if ($todayTour) {
-        //     $customers = $model->getCustomersBySchedule($todayTour['schedule_id']);
-        // }
+        $model = new GuideTourModel();
+        $requests = $model->getRequestsByGuide($guide_id);
 
-        // require "./views/Admin/checkguide.php";
+        require "./views/Admin/requestguide.php";
+    }
+    // Lưu yêu cầu của HDV
+    public function saveRequestGuide()
+    {
+        // var_dump($_POST);
+        // exit;
+
+        $guide_id = $_SESSION['admin_logged']['id'];
+
+        $attachment = null;
+        if (!empty($_FILES['attachment']['name'])) {
+            $path = "uploads/requests/";
+            if (!is_dir($path)) mkdir($path, 0777, true);
+
+            $attachment = $path . uniqid() . "_" . $_FILES['attachment']['name'];
+            move_uploaded_file($_FILES['attachment']['tmp_name'], $attachment);
+        }
+
+        $data = [
+            'title' => $_POST['title'],
+            'request_type' => $_POST['request_type'],  // ✔ Thêm dòng này
+            'desired_date' => $_POST['desired_date'],
+            'priority' => $_POST['priority'],
+            'content' => $_POST['content'],
+            'attachment' => $attachment
+        ];
+
+
+        (new GuideTourModel())->insertRequest($guide_id, $data);
+
+        header("Location: ?mode=admin&act=requestguide");
+    }
+    // Sửa yêu cầu của HDV (hiển thị form)
+    public function editRequestGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+        $id = $_GET['id'];
+
+        $req = (new GuideTourModel())->getRequest($id, $guide_id);
+
+        require "./views/Admin/editRequestGuide.php";
+    }
+    // Cập nhật yêu cầu của HDV sau khi sửa
+    public function updateRequestGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+        $id = $_POST['id'];
+
+        $attachment = $_POST['old_attachment'];
+
+        if (!empty($_FILES['attachment']['name'])) {
+            $path = "uploads/requests/";
+            if (!is_dir($path)) mkdir($path, 0777, true);
+
+            $attachment = $path . uniqid() . "_" . $_FILES['attachment']['name'];
+            move_uploaded_file($_FILES['attachment']['tmp_name'], $attachment);
+        }
+
+        $data = [
+            'title' => $_POST['title'],
+            'desired_date' => $_POST['desired_date'],
+            'priority' => $_POST['priority'],
+            'content' => $_POST['content'],
+            'attachment' => $attachment
+        ];
+
+        (new GuideTourModel())->updateRequest($id, $guide_id, $data);
+
+        header("Location: ?mode=admin&act=requestguide");
+    }
+    // Xóa yêu cầu của HDV
+    public function deleteRequestGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+        $id = $_GET['id'];
+
+        (new GuideTourModel())->deleteRequest($id, $guide_id);
+
+        header("Location: ?mode=admin&act=requestguide");
     }
 }

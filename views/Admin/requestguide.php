@@ -1,117 +1,143 @@
-<main class="flex-1 p-6 space-y-6">
+<main class="flex-1 p-6 space-y-8">
 
     <!-- HEADER -->
-    <header class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-gray-800">Yêu cầu đặc biệt</h1>
-        <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full border">
+    <header class="bg-white p-6 rounded-2xl shadow flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
+            Yêu cầu đặc biệt
+        </h1>
+        <img src="https://i.pravatar.cc/40" class="w-12 h-12 rounded-full border shadow-sm">
     </header>
 
-    <!-- FORM GỬI YÊU CẦU -->
-    <section class="bg-white p-6 rounded-xl shadow space-y-5">
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <h2 class="text-xl font-semibold text-gray-800">Gửi yêu cầu mới</h2>
+        <!-- FORM GỬI YÊU CẦU -->
+        <div class="bg-white p-6 rounded-2xl shadow space-y-5 border border-gray-100">
 
-        <!-- Tiêu đề -->
-        <div>
-            <label class="font-medium text-gray-700">Tiêu đề yêu cầu</label>
-            <input 
-                class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500" 
-                placeholder="Ví dụ: Xin nghỉ 1 ngày, Xin đổi tour trực tuần..."
-            >
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3">
+                ➕ Gửi yêu cầu mới
+            </h2>
+
+            <form action="?mode=admin&act=saveRequestGuide" method="POST" enctype="multipart/form-data"
+                class="space-y-5">
+
+                <div>
+                    <label class="text-sm text-gray-600 font-medium">Tiêu đề yêu cầu</label>
+                    <input name="title" class="w-full border rounded-xl px-4 py-3 mt-1" required>
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-600 font-medium">Loại yêu cầu</label>
+                    <select name="request_type" class="w-full border rounded-xl px-4 py-3 mt-1">
+                        <option value="Xin nghỉ phép">Xin nghỉ phép</option>
+                        <option value="Đổi tour">Đổi tour</option>
+                        <option value="Xin hỗ trợ khách">Xin hỗ trợ khách</option>
+                        <option value="Bổ sung thiết bị">Bổ sung thiết bị</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-600 font-medium">Ngày mong muốn</label>
+                    <input type="date" name="desired_date" class="w-full border rounded-xl px-4 py-3 mt-1">
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-600 font-medium">Mức độ ưu tiên</label>
+                    <select name="priority" class="w-full border rounded-xl px-4 py-3 mt-1">
+                        <option value="low">Thấp</option>
+                        <option value="medium">Trung bình</option>
+                        <option value="high">Cao</option>
+                        <option value="urgent">Khẩn cấp</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-600 font-medium">Nội dung</label>
+                    <textarea name="content" rows="5"
+                        class="w-full border rounded-xl px-4 py-3"
+                        placeholder="Mô tả yêu cầu..."></textarea>
+                </div>
+
+                <div>
+                    <label class="text-sm text-gray-600 font-medium">Tệp đính kèm (nếu có)</label>
+                    <input type="file" name="attachment" class="w-full border rounded-xl px-4 py-2">
+                </div>
+
+                <button class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
+                    Gửi yêu cầu
+                </button>
+            </form>
+
         </div>
 
-        <!-- Loại yêu cầu -->
-        <div>
-            <label class="font-medium text-gray-700">Loại yêu cầu</label>
-            <select class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500">
-                <option>Xin nghỉ phép</option>
-                <option>Đổi tour</option>
-                <option>Xin hỗ trợ khách</option>
-                <option>Bổ sung thiết bị</option>
-                <option>Khác…</option>
-            </select>
-        </div>
+        <!-- DANH SÁCH YÊU CẦU -->
+        <div class="bg-white p-6 rounded-2xl shadow space-y-5 border border-gray-100
+            max-h-[80vh] overflow-y-auto scrollbar-thin 
+            scrollbar-thumb-gray-300 scrollbar-track-gray-100">
 
-        <!-- Ngày mong muốn -->
-        <div>
-            <label class="font-medium text-gray-700">Ngày mong muốn</label>
-            <input 
-                type="date" 
-                class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500">
-        </div>
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-semibold text-gray-800">📌 Yêu cầu đã gửi</h2>
 
-        <!-- Mức độ ưu tiên -->
-        <div>
-            <label class="font-medium text-gray-700">Mức độ ưu tiên</label>
-            <select class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500">
-                <option>Thấp</option>
-                <option>Trung bình</option>
-                <option>Cao</option>
-                <option>Khẩn cấp</option>
-            </select>
-        </div>
-
-        <!-- Nội dung -->
-        <div>
-            <label class="font-medium text-gray-700">Nội dung chi tiết</label>
-            <textarea 
-                rows="5" 
-                class="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-500"
-                placeholder="Mô tả rõ yêu cầu của bạn…"></textarea>
-        </div>
-
-        <!-- File đính kèm -->
-        <div>
-            <label class="font-medium text-gray-700">Tệp đính kèm (nếu có)</label>
-            <input 
-                type="file" 
-                class="w-full border rounded-lg px-3 py-2 mt-1 cursor-pointer">
-        </div>
-
-        <!-- Gửi -->
-        <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            Gửi yêu cầu
-        </button>
-
-    </section>
-
-
-    <!-- DANH SÁCH YÊU CẦU ĐÃ GỬI -->
-    <section class="bg-white p-6 rounded-xl shadow space-y-5">
-
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Yêu cầu đã gửi</h2>
-            <a href="#" class="text-sm text-blue-600 hover:underline">Xem tất cả</a>
-        </div>
-
-        <!-- ITEM -->
-        <div class="p-4 border rounded-lg hover:bg-gray-50 flex items-center justify-between">
-            <div>
-                <h3 class="font-semibold text-gray-800">Xin nghỉ ngày 22/11</h3>
-                <p class="text-gray-600 text-sm">Lý do: Có việc gia đình</p>
-                <p class="text-gray-400 text-xs">Gửi lúc 10:30 - 18/11/2025</p>
+                <a href="?mode=admin&act=requestguide_all"
+                    class="text-blue-600 hover:underline text-sm">
+                    Xem tất cả
+                </a>
             </div>
-            <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm">Chờ duyệt</span>
-        </div>
 
-        <div class="p-4 border rounded-lg hover:bg-gray-50 flex items-center justify-between">
-            <div>
-                <h3 class="font-semibold text-gray-800">Xin đổi tour trực tuần</h3>
-                <p class="text-gray-600 text-sm">Đổi sang Tour Hà Giang</p>
-                <p class="text-gray-400 text-xs">Gửi lúc 14:20 - 14/11/2025</p>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm">Đã duyệt</span>
-        </div>
+            <?php if (empty($requests)): ?>
+                <p class="text-gray-500 italic">Chưa có yêu cầu nào...</p>
+            <?php endif; ?>
 
-        <div class="p-4 border rounded-lg hover:bg-gray-50 flex items-center justify-between">
-            <div>
-                <h3 class="font-semibold text-gray-800">Bổ sung áo mưa cho đoàn</h3>
-                <p class="text-gray-600 text-sm">Cần 30 áo mưa dùng 1 lần</p>
-                <p class="text-gray-400 text-xs">Gửi lúc 08:12 - 10/11/2025</p>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm">Đang xử lý</span>
-        </div>
+            <?php foreach ($requests as $req): ?>
+                <div class="p-5 rounded-xl border bg-gray-50 shadow-sm">
 
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">
+                                <?= htmlspecialchars($req['title']) ?>
+                            </h3>
+
+                            <p class="text-gray-600 text-sm mt-1">
+                                <?= nl2br($req['content']) ?>
+                            </p>
+
+                            <p class="text-gray-400 text-xs mt-2">
+                                Gửi lúc <?= date("H:i d/m/Y", strtotime($req['created_at'])) ?>
+                            </p>
+                        </div>
+
+                        <?php
+                        $status = $req['status'];
+                        $color = [
+                            'pending'   => 'bg-yellow-100 text-yellow-700',
+                            'approved'  => 'bg-green-100 text-green-700',
+                            'processing' => 'bg-blue-100 text-blue-700',
+                            'rejected'  => 'bg-red-100 text-red-700',
+                        ][$status];
+                        ?>
+                        <span class="px-3 py-1 rounded-full text-sm <?= $color ?>">
+                            <?= ucfirst($status) ?>
+                        </span>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="mt-3 flex justify-end gap-2">
+                        <a href="?mode=admin&act=editRequestGuide&id=<?= $req['id'] ?>"
+                            class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                            Sửa
+                        </a>
+
+                        <a href="?mode=admin&act=deleteRequestGuide&id=<?= $req['id'] ?>"
+                            onclick="return confirm('Bạn chắc chắn muốn xóa?')"
+                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                            Xóa
+                        </a>
+                    </div>
+
+                </div>
+            <?php endforeach; ?>
+
+        </div>
     </section>
 
 </main>

@@ -87,10 +87,17 @@
                 Quản lý tour, khách và nhật ký HDV.
             </p>
             <div class="mt-6 flex justify-center">
-                <button class="bg-main text-white px-6 py-2 rounded-lg shadow-md hover:bg-hover transition">
-                    Đăng xuất
-                </button>
+                <a href="<?= BASE_URL ?>?mode=admin&act=logout"
+                    onclick="return confirm('Bạn có chắc muốn đăng xuất?')"
+                    class="flex items-center gap-2 px-5 py-2.5 
+              bg-blue-600 text-white font-medium rounded-xl 
+              shadow-md hover:bg-blue-700 active:scale-95 
+              transition duration-200">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    Đăng Xuất
+                </a>
             </div>
+
             <div class="absolute inset-x-4 bottom-4 h-20 rounded-lg" style="background: linear-gradient(180deg, transparent, rgba(99,102,241,0.06)); filter: blur(12px); opacity: 0.9;"></div>
         </div>
     </div>
