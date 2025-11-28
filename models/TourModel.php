@@ -54,11 +54,6 @@ class TourModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // trả về tất cả kết quả
     }
-
-
-
-
-
     public function TourDetailItineraryModel($tour_id)
     {
         $stmt = $this->conn->prepare("
@@ -93,8 +88,6 @@ class TourModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-
     public function TourSuppliersModel($tour_id)
     {
         $stmt = $this->conn->prepare("
@@ -112,7 +105,7 @@ class TourModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    // Lấy chính sách tour
     public function TourPoliciesModel($tour_id)
     {
         $stmt = $this->conn->prepare("
@@ -125,8 +118,7 @@ class TourModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-
+    // Lấy hình ảnh tour
     public function TourImagesModel($tour_id)
     {
         $stmt = $this->conn->prepare("
@@ -337,7 +329,7 @@ class TourModel
             ':price'      => $datatourversions['price'] ?? 0,
             ':start_date' => $datatourversions['start_date'] ?? null,
             ':end_date'   => $datatourversions['end_date'] ?? null,
-            ':status'     => $datatourversions['status'] ?? 1,
+            ':status'     => $datatourversions['status'] ? 1 : 0,
             ':created_at' => date('Y-m-d H:i:s'),
             ':updated_at' => date('Y-m-d H:i:s')
         ];
@@ -399,4 +391,5 @@ class TourModel
         $stmt->bindParam(':tour_id', $tour_id, PDO::PARAM_INT);
         $stmt->execute();
     }
+
 }
