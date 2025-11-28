@@ -15,7 +15,7 @@
                 <div class="flex items-center justify-between h-20">
                     <!-- Trái -->
                     <div class="flex items-center space-x-8">
-                        <button onclick="toggleSidebar('sidebarHDV')" class="bg-[#0000] text-dark text-[20px] font-[100] flex items-center justify-center hover:text-hover scale-[1.2] active:scale-[1] transition-all duration-200 ease-out ">
+                        <button id="toggleButtonId" onclick="toggleSidebar('sidebarHDV')" class="bg-[#0000] text-dark text-[20px] font-[100] flex items-center justify-center hover:text-hover scale-[1.2] active:scale-[1] transition-all duration-200 ease-out ">
                             <i class="fa-solid fa-bars"></i>
                         </button>
 
