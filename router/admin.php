@@ -192,11 +192,15 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
+
+    // ScheduleGuide
     // Lịch trình của HDV
     'scheduleguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/scheduleguide.php";
+        (new GuideLayoutController())->scheduleGuide();
     })(),
+
+    // ListGuide
     // Danh sách khách của HDV
     'listguide' => (function () {
         requireGuide();
@@ -204,6 +208,8 @@ echo match ($act) {
         $ctrl = new GuideLayoutController();
         $ctrl->listGuide();
     })(),
+
+    // DiaryGuide
     // Nhật ký ghi lại của HDV
     'diaryguide' => (function () {
         requireGuide();
@@ -215,20 +221,17 @@ echo match ($act) {
 
         require "./views/Admin/diaryguide.php";
     })(),
-
     // XÓA NHẬT KÝ
     'deleteDiaryGuide' => (function () {
         requireGuide();
         (new GuideLayoutController())->deleteDiaryGuide();
     })(),
-
-    // SỬA NHẬT KÝ (hiển thị form)
+    // Sửa nhật ký (hiển thị form)
     'editDiaryGuide' => (function () {
         requireGuide();
         (new GuideLayoutController())->editDiaryGuide();
     })(),
-
-    // UPDATE nhật ký sau khi sửa
+    // Update nhật ký sau khi sửa
     'updateDiaryGuide' => (function () {
         requireGuide();
         (new GuideLayoutController())->updateDiaryGuide();
@@ -238,6 +241,7 @@ echo match ($act) {
         requireGuide();
         (new GuideLayoutController())->saveDiaryGuide();
     })(),
+
 
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {

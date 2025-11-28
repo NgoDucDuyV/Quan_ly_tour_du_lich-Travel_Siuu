@@ -74,7 +74,7 @@ class GuideTourModel
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+    // Lấy danh sách khách hàng theo lịch trình
     public function getCustomersBySchedule($schedule_id)
     {
         $sql = "
@@ -88,22 +88,32 @@ class GuideTourModel
         $stmt->execute(['schedule_id' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function getSchedulesByGuide($guide_id)
+    // Lấy lịch trình theo HDV
+    public function getSchedulesForGuide($guide_id)
     {
         $sql = "
-            SELECT s.id AS schedule_id, t.name AS tour_name, s.start_date
-            FROM schedules s
-            JOIN tours t ON s.tour_id = t.id
-            WHERE s.guide_id = :guide_id
-            ORDER BY s.start_date DESC
-        ";
+        SELECT 
+            s.id AS schedule_id,
+            t.name AS tour_name,
+            t.code AS tour_code,
+            s.start_date,
+            s.end_date,
+            s.meeting_point,
+            s.vehicle,
+            s.hotel,
+            s.restaurant,
+            s.status
+        FROM schedules s
+        JOIN tours t ON t.id = s.tour_id
+        WHERE s.guide_id = :guide_id
+        ORDER BY s.start_date ASC
+    ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    // Lấy nhật ký theo HDV
     public function getLogsByGuide($guide_id)
     {
         $sql = "
@@ -137,7 +147,6 @@ class GuideTourModel
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
     // Tour gần đây
     public function getRecentTours($guide_id)
     {
@@ -156,7 +165,6 @@ class GuideTourModel
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
     // Thống kê tour tuần này
     public function getTourStatsThisWeek($guide_id)
     {
@@ -171,6 +179,36 @@ class GuideTourModel
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Lấy danh sách khách hàng theo HDV
+    public function getCustomerListByGuide($guide_id)
+    {
+        $sql = "
+        SELECT 
+            bc.id AS customer_id,
+            bc.full_name,
+            bc.birth_year,
+            bc.type,
+            bc.passport,
+            bc.note,
+            b.id AS booking_id,
+            t.name AS tour_name,
+            s.start_date,
+            s.end_date
+        FROM booking_customers bc
+        JOIN bookings b ON bc.booking_id = b.id
+        JOIN schedules s ON b.tour_id = s.tour_id   -- SỬA CHỖ NÀY
+        JOIN tours t ON s.tour_id = t.id
+        WHERE s.guide_id = :guide_id
+        ORDER BY s.start_date DESC, bc.full_name ASC
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['guide_id' => $guide_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Requestguide
     // Lấy yêu cầu của hướng dẫn viên
     public function getRequestsByGuide($guide_id)
     {
@@ -197,14 +235,13 @@ class GuideTourModel
         return $stmt->execute([
             'guide_id' => $guide_id,
             'title' => $data['title'],
-            'request_type' => $data['request_type'], 
+            'request_type' => $data['request_type'],
             'desired_date' => $data['desired_date'],
             'priority' => $data['priority'],
             'content' => $data['content'],
             'attachment' => $data['attachment']
         ]);
     }
-
     // Lấy yêu cầu cụ thể của HDV
     public function getRequest($id, $guide_id)
     {
