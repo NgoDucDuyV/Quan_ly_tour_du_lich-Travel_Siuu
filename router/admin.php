@@ -192,37 +192,99 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
+    // Trang chủ của HDV
     'homeguide' => (function () {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
+    // Lịch trình của HDV
     'scheduleguide' => (function () {
         requireGuide();
         require_once "./views/Admin/scheduleguide.php";
     })(),
+    // Danh sách khách của HDV
     'listguide' => (function () {
         requireGuide();
 
         $ctrl = new GuideLayoutController();
         $ctrl->listGuide();
     })(),
-
+    // Nhật ký ghi lại của HDV
     'diaryguide' => (function () {
         requireGuide();
         $ctrl = new GuideLayoutController();
-        $ctrl->diaryGuide();
+        $data = $ctrl->diaryGuide();
+
+        $diary = $data['diary'];
+        $tours = $data['tours'];
+
+        require "./views/Admin/diaryguide.php";
     })(),
 
+    // XÓA NHẬT KÝ
+    'deleteDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->deleteDiaryGuide();
+    })(),
+
+    // SỬA NHẬT KÝ (hiển thị form)
+    'editDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->editDiaryGuide();
+    })(),
+
+    // UPDATE nhật ký sau khi sửa
+    'updateDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->updateDiaryGuide();
+    })(),
+    // Nhật ký lưu lại của HDV
+    'saveDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->saveDiaryGuide();
+    })(),
+
+    // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();
+
         $ctrl = new GuideLayoutController();
-        $ctrl->checkGuide();
+        $data = $ctrl->checkGuide();
+
+        $todayTour = $data['todayTour'];
+        $customers = $data['customers'];
+
+        require "./views/Admin/checkguide.php";
     })(),
 
+    // RequestGuide
+    // Gửi yêu cầu của HDV
     'requestguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/requestguide.php";
+        (new GuideLayoutController())->requestGuide();
     })(),
+    // Lưu yêu cầu của HDV
+    'saveRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->saveRequestGuide();
+    })(),
+    // Sửa yêu cầu của HDV (hiển thị form)
+    'editRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->editRequestGuide();
+    })(),
+    // Cập nhật yêu cầu của HDV sau khi sửa
+    'updateRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->updateRequestGuide();
+    })(),
+    // Xóa yêu cầu của HDV
+    'deleteRequestGuide' => (function () {
+        requireGuide();
+        (new GuideLayoutController())->deleteRequestGuide();
+    })(),
+
+
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
         exit;
