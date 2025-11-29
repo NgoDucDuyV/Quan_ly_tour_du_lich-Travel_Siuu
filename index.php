@@ -12,6 +12,7 @@ require_once __DIR__ . '/models/TourModel.php';
 require_once __DIR__ . '/models/SupplierModel.php';
 require_once __DIR__ . '/models/BookingModel.php';
 require_once __DIR__ . '/models/GuideTourModel.php';
+require_once __DIR__ . '/models/SchedulesModel.php';
 
 
 // admin Controller
@@ -67,7 +68,7 @@ $content_views = ob_get_clean();
     <link rel="stylesheet" href="./assets/Css/style.css" />
     <!-- ApexCharts phải trước script custom -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
-    <script src="custom.js"></script>
+    <!-- <script src="custom.js"></script> -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <!-- Swiper JS -->

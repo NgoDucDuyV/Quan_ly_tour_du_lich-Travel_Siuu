@@ -80,8 +80,34 @@ class SupplierModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getSuppliersByType($supplier_type_id)
+    {
+        $sql = "
+            SELECT s.*
+            FROM supplier_has_types sht
+            JOIN suppliers s 
+                ON s.id = sht.supplier_id
+            WHERE sht.supplier_type_id = :supplier_type_id
+            ORDER BY s.id
+        ";
 
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['supplier_type_id' => $supplier_type_id]);
 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getsupplierPricesBySupplierId($supplier_id)
+    {
+        $sql = "
+            SELECT * FROM supplier_prices 
+            WHERE supplier_prices.supplier_type_id = :supplier_id
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['supplier_id' => $supplier_id]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function supplier_types()
     {

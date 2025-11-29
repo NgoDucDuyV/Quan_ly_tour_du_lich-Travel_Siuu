@@ -125,6 +125,27 @@ echo match ($act) {
         echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
     })(),
 
+    // call api js booking
+    'getAllSchedulesByid' => (function () {
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        requireAdmin();
+        (new BookingController())->getAllSchedulesByid($requestData);
+        exit;
+    })(),
+    // call api js booking
+    'getsupplierPricesBySupplierId' => (function () {
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        // echo json_encode(
+        //     [
+        //         'id' => $requestData['supplier_id']
+        //     ]
+        // );
+        // exit;
+        requireAdmin();
+        (new BookingController())->getsupplierPricesBySupplierId($requestData);
+        exit;
+    })(),
+
     // quản lý tải khoản người dùng
     'listclient' => (function () {
         requireAdmin();
@@ -252,7 +273,6 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->saveDiaryGuide();
     })(),
-
 
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
