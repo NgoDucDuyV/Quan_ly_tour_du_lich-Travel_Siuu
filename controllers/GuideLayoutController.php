@@ -13,17 +13,51 @@ class GuideLayoutController
     {
         require_once "./views/Admin/layout_guide/footer.php";
     }
+    public function homeGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+
+        $model = new GuideTourModel();
+
+        // Nhật ký gần đây
+        $diary = $model->getRecentDiary($guide_id);
+
+        // Yêu cầu gần đây
+        $requests = $model->getRecentRequests($guide_id);
+
+        require_once "./views/Admin/homeguide.php";
+    }
+
     // ListGuide
     // Danh sách khách của HDV
     public function listGuide()
     {
-        // Hàm tìm kiếm khách hàng theo từ khóa
-        $keyword = $_GET['keyword'] ?? '';
+        $guide_id = $_SESSION['admin_logged']['id'];
 
-        $bookings = (new BookingModel())->getBookings($keyword);
+        $model = new GuideTourModel();
+
+        // Lấy dữ liệu khách theo hướng dẫn viên
+        $customers = $model->getCustomerListByGuide($guide_id);
 
         require "./views/Admin/listguide.php";
     }
+
+    // ScheduleGuide
+    // Lịch trình của HDV
+    public function scheduleGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+
+        $model = new GuideTourModel();
+
+        $weekTours = $model->getThisWeekTours($guide_id);
+        $recentTours = $model->getRecentTours($guide_id);
+
+        $customers = $model->getCustomerListByGuide($guide_id);
+
+        require "./views/Admin/scheduleguide.php";
+    }
+
     // DiaryGuide
     // Nhật ký ghi lại của HDV 
     public function diaryGuide()
@@ -33,7 +67,7 @@ class GuideLayoutController
         $model = new GuideTourModel();
 
         $diary = $model->getLogsByGuide($guide_id);
-        $tours = $model->getSchedulesByGuide($guide_id);
+        $tours = $model->getSchedulesForGuide($guide_id);
 
         return [
             'diary' => $diary,
@@ -112,6 +146,7 @@ class GuideLayoutController
         header("Location: " . BASE_URL . "?mode=admin&act=diaryguide");
         exit;
     }
+
     // CheckGuide
     // Check-in và điểm danh của HDV
     public function checkGuide()
@@ -132,6 +167,7 @@ class GuideLayoutController
             'customers' => $customers
         ];
     }
+
     // RequestGuide
     // Yêu cầu đặc biệt của HDV
     public function requestGuide()

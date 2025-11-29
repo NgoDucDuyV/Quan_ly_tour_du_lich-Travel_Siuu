@@ -6,7 +6,6 @@
             <h1 class="text-3xl font-bold text-gray-900">📍 Check-in & Điểm danh</h1>
             <p class="text-gray-500 text-sm mt-1">Quản lý khách trong tour bạn đang phụ trách</p>
         </div>
-        <img src="https://i.pravatar.cc/40" class="w-12 h-12 rounded-full border shadow">
     </header>
 
     <!-- TOUR HÔM NAY -->
