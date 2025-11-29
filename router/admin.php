@@ -195,24 +195,36 @@ echo match ($act) {
     // Trang chủ của HDV
     'homeguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/homeguide.php";
+        (new GuideController())->homeGuide();
     })(),
+
+    'aboutguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/aboutguide.php";
+    })(),
+
+
+    // ScheduleGuide
     // Lịch trình của HDV
     'scheduleguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/scheduleguide.php";
+        (new GuideController())->scheduleGuide();
     })(),
+
+    // ListGuide
     // Danh sách khách của HDV
     'listguide' => (function () {
         requireGuide();
 
-        $ctrl = new GuideLayoutController();
+        $ctrl = new GuideController();
         $ctrl->listGuide();
     })(),
+
+    // DiaryGuide
     // Nhật ký ghi lại của HDV
     'diaryguide' => (function () {
         requireGuide();
-        $ctrl = new GuideLayoutController();
+        $ctrl = new GuideController();
         $data = $ctrl->diaryGuide();
 
         $diary = $data['diary'];
@@ -220,35 +232,33 @@ echo match ($act) {
 
         require "./views/Admin/diaryguide.php";
     })(),
-
     // XÓA NHẬT KÝ
     'deleteDiaryGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->deleteDiaryGuide();
+        (new GuideController())->deleteDiaryGuide();
     })(),
-
-    // SỬA NHẬT KÝ (hiển thị form)
-    'editDiaryGuide' => (function () {
-        requireGuide();
-        (new GuideLayoutController())->editDiaryGuide();
-    })(),
-
-    // UPDATE nhật ký sau khi sửa
+    // Sửa nhật ký (hiển thị form)
+    // 'editDiaryGuide' => (function () {
+    //     requireGuide();
+    //     (new GuideLayoutController())->editDiaryGuide();
+    // })(),
+    // Update nhật ký sau khi sửa
     'updateDiaryGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->updateDiaryGuide();
+        (new GuideController())->updateDiaryGuide();
     })(),
     // Nhật ký lưu lại của HDV
     'saveDiaryGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->saveDiaryGuide();
+        (new GuideController())->saveDiaryGuide();
     })(),
+
 
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();
 
-        $ctrl = new GuideLayoutController();
+        $ctrl = new GuideController();
         $data = $ctrl->checkGuide();
 
         $todayTour = $data['todayTour'];
@@ -261,27 +271,27 @@ echo match ($act) {
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->requestGuide();
+        (new GuideController())->requestGuide();
     })(),
     // Lưu yêu cầu của HDV
     'saveRequestGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->saveRequestGuide();
+        (new GuideController())->saveRequestGuide();
     })(),
     // Sửa yêu cầu của HDV (hiển thị form)
     'editRequestGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->editRequestGuide();
+        (new GuideController())->editRequestGuide();
     })(),
     // Cập nhật yêu cầu của HDV sau khi sửa
     'updateRequestGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->updateRequestGuide();
+        (new GuideController())->updateRequestGuide();
     })(),
     // Xóa yêu cầu của HDV
     'deleteRequestGuide' => (function () {
         requireGuide();
-        (new GuideLayoutController())->deleteRequestGuide();
+        (new GuideController())->deleteRequestGuide();
     })(),
 
 

@@ -21,17 +21,17 @@
 
                         <div class="hidden text-black md:flex space-x-8
                         [$_a]:text-dark">
-                            <a href="#" class="flex items-center text-gray-800 hover:text-hover ">
+                            <a href="?mode=admin&act=homeguide" class="flex items-center text-gray-800 hover:text-hover ">
                                 <i data-lucide="home" class="w-5 h-5 mr-2"></i>
                                 <span>Trang Chủ</span>
                             </a>
 
-                            <a href="#" class="flex items-center text-gray-800 hover:text-hover ">
+                            <a href="?mode=admin&act=aboutguide" class="flex items-center text-gray-800 hover:text-hover ">
                                 <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
                                 <span>Giới Thiệu</span>
                             </a>
 
-                            <a href="#" class="flex items-center text-gray-800 hover:text-hover ">
+                            <a href="?mode=admin&act=scheduleguide" class="flex items-center text-gray-800 hover:text-hover ">
                                 <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
                                 <span>Danh Mục</span>
                             </a>

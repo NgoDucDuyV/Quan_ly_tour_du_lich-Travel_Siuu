@@ -3,7 +3,6 @@
     <!-- ========== HEADER ========== -->
     <header class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
         <h1 class="text-2xl font-semibold text-gray-800">Lịch Trình & Tour</h1>
-        <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full border">
     </header>
 
 
@@ -46,36 +45,29 @@
 
         <div class="space-y-4">
 
-            <!-- TOUR ITEM -->
-            <div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                <div>
-                    <h3 class="font-semibold text-gray-800">Tour Ninh Bình</h3>
-                    <p class="text-gray-500 text-sm">Hoàn thành ngày 18/11/2025 – 26 khách</p>
-                </div>
-                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
-                    Hoàn thành
-                </span>
-            </div>
+            <?php foreach ($recentTours as $tour): ?>
+                <div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                    <div>
+                        <h3 class="font-semibold text-gray-800"><?= $tour['tour_name'] ?></h3>
+                        <p class="text-gray-500 text-sm">
+                            Hoàn thành ngày <?= date("d/m/Y", strtotime($tour['end_date'])) ?>
+                            – <?= $tour['total_customers'] ?> khách
+                        </p>
+                    </div>
 
-            <div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                <div>
-                    <h3 class="font-semibold text-gray-800">Tour Đà Nẵng – Hội An</h3>
-                    <p class="text-gray-500 text-sm">Hoàn thành ngày 12/11/2025 – 32 khách</p>
-                </div>
-                <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
-                    Đã nhận xét
-                </span>
-            </div>
+                    <?php
+                    $badge = '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">Đã nhận xét</span>';
 
-            <div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                <div>
-                    <h3 class="font-semibold text-gray-800">Tour Sa Pa</h3>
-                    <p class="text-gray-500 text-sm">Hoàn thành ngày 05/11/2025 – 18 khách</p>
+                    if ($tour['guide_status'] === "pending")
+                        $badge = '<span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">Đợi đánh giá</span>';
+
+                    if ($tour['guide_status'] === "completed")
+                        $badge = '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">Hoàn thành</span>';
+                    ?>
+
+                    <?= $badge ?>
                 </div>
-                <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">
-                    Đợi đánh giá
-                </span>
-            </div>
+            <?php endforeach; ?>
 
         </div>
     </section>
@@ -94,23 +86,29 @@
                     <th class="p-3">Trạng thái</th>
                 </tr>
             </thead>
+
             <tbody>
+                <?php foreach ($weekTours as $tour): ?>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3"><?= $tour['tour_name'] ?></td>
 
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3">Tour Hạ Long</td>
-                    <td class="p-3">Thứ 3 – 7:30</td>
-                    <td class="p-3">25 khách</td>
-                    <td class="p-3 text-green-600 font-medium">Đã xác nhận</td>
-                </tr>
+                        <td class="p-3">
+                            <?= date("d/m/Y", strtotime($tour['start_date'])) ?>
+                        </td>
 
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3">Tour Hà Giang</td>
-                    <td class="p-3">Thứ 5 – 6:00</td>
-                    <td class="p-3">18 khách</td>
-                    <td class="p-3 text-yellow-600 font-medium">Chưa xác nhận</td>
-                </tr>
+                        <td class="p-3"><?= $tour['total_customers'] ?> khách</td>
 
+                        <td class="p-3">
+                            <?php if ($tour['guide_status'] == "confirmed"): ?>
+                                <span class="text-green-600 font-medium">Đã xác nhận</span>
+                            <?php else: ?>
+                                <span class="text-yellow-600 font-medium">Chưa xác nhận</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
+
         </table>
     </section>
 

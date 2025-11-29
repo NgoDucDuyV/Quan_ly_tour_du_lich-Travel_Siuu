@@ -1,6 +1,6 @@
 <aside
     id="sidebarHDV"
-    class="flex flex-col z-[10] bg-white border-r border-slate-200 shadow-lg top-0 transition-all duration-200 ease-in-out absolute top-0 bottom-0 h-full min-w-[300px]
+    class="flex flex-col z-[100]  bg-white border-r border-slate-200 shadow-lg top-0 transition-all duration-200 ease-in-out absolute top-0 bottom-0 h-full min-w-[300px]
     sm:min-w-[350px] sm:overflow-y-auto sm:overflow-x-hidden
     md:hide-scrollbar md:max-w-[80px] md:min-w-[80px] md:px-2 md:items-center md:w-full md:overflow-visible  
     xl:min-w-[350px] xl:w-full xl:items-stretch xl:py-6 xl:px-4 xl:overflow-y-auto xl:overflow-x-hidden sm:sticky
