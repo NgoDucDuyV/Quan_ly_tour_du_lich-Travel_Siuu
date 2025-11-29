@@ -190,8 +190,14 @@ echo match ($act) {
     // Trang chủ của HDV
     'homeguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/homeguide.php";
+        (new GuideLayoutController())->homeGuide();
     })(),
+
+    'aboutguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/aboutguide.php";
+    })(),
+
 
     // ScheduleGuide
     // Lịch trình của HDV
