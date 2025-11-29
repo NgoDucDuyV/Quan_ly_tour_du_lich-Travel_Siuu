@@ -46,14 +46,14 @@ class GuideController
 
     // ScheduleGuide
     // Lịch trình của HDV
-    public function scheduleGuide($tour_id, $start_date, $end_date)
+    public function scheduleGuide($tour_id = null, $start_date = null, $end_date = null)
     {
         $user_id = $_SESSION['admin_logged']['id'];
 
-        echo "<pre>";
-        var_dump($user_id);
-        echo "<pre>";
-        die;
+        // echo "<pre>";
+        // var_dump($user_id);
+        // echo "<pre>";
+        // die;
         $getGuideUserid = (new GuideTourModel())->getGuideUserid($user_id);
 
         $model = new GuideTourModel();
