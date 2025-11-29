@@ -281,4 +281,36 @@ class GuideTourModel
 
         return $stmt->execute(['id' => $id, 'guide_id' => $guide_id]);
     }
+
+    // Lấy 5 nhật ký gần nhất
+    public function getRecentDiary($guide_id)
+    {
+        $sql = "
+        SELECT tl.*, t.name AS tour_name
+        FROM tour_logs tl
+        JOIN schedules s ON tl.schedule_id = s.id
+        JOIN tours t ON s.tour_id = t.id
+        WHERE tl.guide_id = :gid
+        ORDER BY tl.id DESC
+        LIMIT 5
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['gid' => $guide_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    // Lấy 5 yêu cầu gần đây
+    public function getRecentRequests($guide_id)
+    {
+        $sql = "SELECT * FROM tour_request 
+            WHERE guide_id = :gid 
+            ORDER BY id DESC 
+            LIMIT 5";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['gid' => $guide_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
