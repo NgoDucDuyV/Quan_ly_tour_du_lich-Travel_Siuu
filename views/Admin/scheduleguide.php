@@ -3,7 +3,6 @@
     <!-- ========== HEADER ========== -->
     <header class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
         <h1 class="text-2xl font-semibold text-gray-800">Lịch Trình & Tour</h1>
-        <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full border">
     </header>
 
 

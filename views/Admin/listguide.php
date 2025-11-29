@@ -6,7 +6,6 @@
          <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
              Danh sách khách đặt tour
          </h1>
-         <img src="https://i.pravatar.cc/40" class="w-12 h-12 rounded-full border shadow-sm">
      </header>
 
      <!-- SEARCH BOX -->

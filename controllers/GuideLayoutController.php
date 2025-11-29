@@ -13,6 +13,21 @@ class GuideLayoutController
     {
         require_once "./views/Admin/layout_guide/footer.php";
     }
+    public function homeGuide()
+    {
+        $guide_id = $_SESSION['admin_logged']['id'];
+
+        $model = new GuideTourModel();
+
+        // Nhật ký gần đây
+        $diary = $model->getRecentDiary($guide_id);
+
+        // Yêu cầu gần đây
+        $requests = $model->getRecentRequests($guide_id);
+
+        require_once "./views/Admin/homeguide.php";
+    }
+
     // ListGuide
     // Danh sách khách của HDV
     public function listGuide()
@@ -26,7 +41,7 @@ class GuideLayoutController
 
         require "./views/Admin/listguide.php";
     }
-    
+
     // ScheduleGuide
     // Lịch trình của HDV
     public function scheduleGuide()
