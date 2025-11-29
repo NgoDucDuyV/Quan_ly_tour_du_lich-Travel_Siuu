@@ -115,11 +115,29 @@ const loadAdminPage = (href) => {
     });
 };
 
-// bật tắt sider bar
-function toggleSidebar(id) {
-  const siderbaradmin = document.getElementById(`${id}`);
+const sidebar = document.getElementById("siderbaradmin"); // id sidebar
+const toggleBtn = document.getElementById("toggleButtonId"); // id nút toggle
+
+// bật/tắt sidebar khi bấm nút
+toggleBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); // ngăn click lan ra document
   const screenWidth = window.innerWidth;
   if (screenWidth <= 640) {
-    siderbaradmin.classList.toggle("-translate-x-full"); // chỉ trượt
+    sidebar.classList.toggle("-translate-x-full"); // chỉ trượt khi <= 640px
   }
-}
+});
+
+// tắt sidebar khi bấm ngoài (chỉ khi <= 640px)
+document.addEventListener("click", (e) => {
+  const screenWidth = window.innerWidth;
+  if (screenWidth <= 640) {
+    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+      sidebar.classList.add("-translate-x-full"); // đóng sidebar
+    }
+  }
+});
+
+// ngăn click trong sidebar tự đóng
+sidebar.addEventListener("click", (e) => {
+  e.stopPropagation();
+});

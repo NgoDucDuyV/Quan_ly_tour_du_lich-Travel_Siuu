@@ -115,6 +115,11 @@ echo match ($act) {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
+    'bookingdetail' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/bookingdetail.php";
+        // echo (new BookingController)->ShowBooking();
+    })(),
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);

@@ -21,7 +21,6 @@ class BookingController
         // var_dump($datatour);
         // echo "<pre>";
         // die;
-
         if (!empty($tour_id)) {
 
             $dataTourDetai = (new TourModel())->TourDetailItineraryModel($tour_id);
@@ -30,11 +29,15 @@ class BookingController
 
             $dataTourSupplier = (new TourModel())->TourSuppliersModel($tour_id);
 
+            $datatour_supplier_types = (new SupplierModel())->getallTour_supplier_types($tour_id);
+
             $dataTourVersions = (new TourModel())->TourVersionsModel($tour_id);
 
             $dataTourImages = (new TourModel())->TourImagesModel($tour_id);
 
             $dataTourPolicies = (new TourModel())->TourPoliciesModel($tour_id);
+
+            $databookingbytourid = (new BookingModel())->getAllBookingsByTourId($tour_id);
 
             $tourFullData = [
                 'tourDetail'    => $dataTourDetai ?? [],
@@ -43,11 +46,12 @@ class BookingController
                 'versions'      => $dataTourVersions ?? [],
                 'images'        => $dataTourImages ?? [],
                 'policies'      => $dataTourPolicies ?? [],
+                'supplier_types' => $datatour_supplier_types ?? [],
             ];
         }
         // if (isset($tourFullData)) {
         //     echo "<pre>";
-        //     var_dump($tourFullData);
+        //     var_dump($tourFullData['images']);
         //     echo "<pre>";
         //     die;
         // }

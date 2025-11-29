@@ -11,11 +11,22 @@ class BookingModel
     // Lấy toàn bộ booking
     public function getAllBookings()
     {
-        
+
         $sql = "SELECT * FROM bookings ORDER BY created_at DESC";
         $stmt = $this->conn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAllBookingsByTourId($tour_id)
+    {
+        $sql = "SELECT * FROM bookings 
+            WHERE bookings.tour_id = :tour_id  
+            ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['tour_id' => $tour_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Giao diện Guide
     public function getBookings($keyword = '')
     {

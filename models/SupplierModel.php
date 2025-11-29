@@ -56,6 +56,33 @@ class SupplierModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getallTour_supplier_types($tour_id)
+    {
+        $sql = "
+        SELECT 
+            tst.id AS tour_supplier_type_id,
+            tst.tour_id,
+            st.id AS supplier_type_id,
+            st.name AS supplier_type_name,
+            st.description,
+            st.stars,
+            st.quality,
+            tst.notes,
+            tst.created_at,
+            tst.updated_at
+        FROM tour_suppliers_types AS tst
+        JOIN supplier_types AS st 
+            ON tst.supplier_types_id = st.id
+        WHERE tst.tour_id = :tour_id
+    ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['tour_id' => $tour_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
+
     public function supplier_types()
     {
         $stmt = $this->conn->query("
