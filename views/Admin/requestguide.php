@@ -5,7 +5,6 @@
         <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
             Yêu cầu đặc biệt
         </h1>
-        <img src="https://i.pravatar.cc/40" class="w-12 h-12 rounded-full border shadow-sm">
     </header>
 
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">

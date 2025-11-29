@@ -115,29 +115,42 @@ const loadAdminPage = (href) => {
     });
 };
 
-const sidebar = document.getElementById("siderbaradmin"); // id sidebar
+const sidebars = [
+  document.getElementById("siderbaradmin"),
+  document.getElementById("sidebarHDV"),
+].filter(Boolean); // loại bỏ các phần tử null
+
 const toggleBtn = document.getElementById("toggleButtonId"); // id nút toggle
 
-// bật/tắt sidebar khi bấm nút
-toggleBtn.addEventListener("click", (e) => {
-  e.stopPropagation(); // ngăn click lan ra document
-  const screenWidth = window.innerWidth;
-  if (screenWidth <= 640) {
-    sidebar.classList.toggle("-translate-x-full"); // chỉ trượt khi <= 640px
-  }
-});
+if (toggleBtn) {
+  // bật/tắt cả sidebar khi bấm nút
+  toggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 640) {
+      sidebars.forEach((sidebar) =>
+        sidebar.classList.toggle("-translate-x-full")
+      );
+    }
+  });
+}
 
 // tắt sidebar khi bấm ngoài (chỉ khi <= 640px)
 document.addEventListener("click", (e) => {
   const screenWidth = window.innerWidth;
   if (screenWidth <= 640) {
-    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-      sidebar.classList.add("-translate-x-full"); // đóng sidebar
-    }
+    sidebars.forEach((sidebar) => {
+      if (
+        !sidebar.contains(e.target) &&
+        (!toggleBtn || !toggleBtn.contains(e.target))
+      ) {
+        sidebar.classList.add("-translate-x-full");
+      }
+    });
   }
 });
 
 // ngăn click trong sidebar tự đóng
-sidebar.addEventListener("click", (e) => {
-  e.stopPropagation();
+sidebars.forEach((sidebar) => {
+  sidebar.addEventListener("click", (e) => e.stopPropagation());
 });
