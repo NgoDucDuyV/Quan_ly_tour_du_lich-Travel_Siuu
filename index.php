@@ -23,6 +23,7 @@ require_once __DIR__ . '/controllers/AccountManagementController.php';
 
 require_once __DIR__ . '/controllers/AdminLayoutController.php';
 require_once __DIR__ . '/controllers/GuideLayoutController.php';
+require_once __DIR__ . '/controllers/GuideController.php';
 //quản lý danh mục tour
 require_once __DIR__ . '/controllers/AdminTourController.php';
 require_once __DIR__ . '/controllers/AdminSupplierController.php';

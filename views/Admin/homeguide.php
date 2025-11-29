@@ -8,7 +8,7 @@
     <section class="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-3xl p-8 shadow-lg">
         <div class="relative z-10">
             <h1 class="text-3xl font-bold">
-                Xin chào, HDV <span class="text-yellow-300"><?= $name ?></span> 👋
+                Xin chào, HDV <span class="text-white text-shadow-xl"><?= $name ?></span> 👋
             </h1>
             <p class="mt-2 text-blue-100">
                 Chúc bạn có một ngày làm việc hiệu quả và nhiều trải nghiệm thú vị.
@@ -22,15 +22,17 @@
 
         <!-- CARD -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
-            <div class="flex items-center gap-4">
-                <div class="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-200">
-                    <i data-lucide="calendar" class="w-6 h-6 text-blue-700"></i>
+            <a href="#schedulenewquyj">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-200">
+                        <i data-lucide="calendar" class="w-6 h-6 text-blue-700"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500">Tour sắp tới</p>
+                        <h3 class="text-xl font-bold text-gray-800">3 tour</h3>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-gray-500">Tour sắp tới</p>
-                    <h3 class="text-xl font-bold text-gray-800">3 tour</h3>
-                </div>
-            </div>
+            </a>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
@@ -83,28 +85,66 @@
         </div>
     </section>
 
-    <!-- TOUR TIẾP THEO -->
-    <section class="bg-white p-6 rounded-2xl shadow">
+    <section id="schedulenewquyj" class="bg-white p-6 rounded-2xl shadow">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <i data-lucide="compass"></i> Tour tiếp theo
         </h2>
 
         <div class="flex flex-col gap-4">
+            <?php foreach ($dataSchedulesByGuideId as $schedule): ?>
+                <?php
+                // Format ngày
+                $start = date('d/m/Y', strtotime($schedule['start_date']));
+                $end = date('d/m/Y', strtotime($schedule['end_date']));
 
-            <div class="p-4 border rounded-xl hover:bg-gray-50 transition">
-                <h3 class="font-semibold text-gray-800">Tour Đà Lạt 3 ngày 2 đêm</h3>
-                <p class="text-gray-600 text-sm">28/11 - 30/11/2025 • Lâm Đồng</p>
-                <span class="text-yellow-600 font-medium">Đang chuẩn bị</span>
-            </div>
+                // Trạng thái màu
+                $status_color = match ($schedule['schedule_status']) {
+                    'planned' => 'text-yellow-600',
+                    'ongoing' => 'text-green-600',
+                    'completed' => 'text-gray-400',
+                    default => 'text-gray-600',
+                };
 
-            <div class="p-4 border rounded-xl hover:bg-gray-50 transition">
-                <h3 class="font-semibold text-gray-800">Tour Phú Quốc</h3>
-                <p class="text-gray-600 text-sm">03/12 - 05/12/2025 • Kiên Giang</p>
-                <span class="text-green-600 font-medium">Sắp diễn ra</span>
-            </div>
+                // Thông tin tour
+                $tour_name = $schedule['tour_name'] ?? "Tour ID " . $schedule['tour_id'];
+                $tour_location = $schedule['tour_location'] ?? 'Chưa có địa điểm';
+                $days = $schedule['days'] ?? '';
+                $nights = $schedule['nights'] ?? '';
 
+                // Thông tin chi tiết
+                $meeting_point = $schedule['meeting_point'] ?? 'Chưa có điểm gặp';
+                $hotel = $schedule['hotel'] ?? 'Chưa có khách sạn';
+                $vehicle = $schedule['vehicle'] ?? 'Chưa có phương tiện';
+                $restaurant = $schedule['restaurant'] ?? 'Chưa có nhà hàng';
+                $flight_info = $schedule['flight_info'] ?? 'Chưa có thông tin bay';
+                $guide_notes = $schedule['guide_notes'] ?? '';
+                $num_customers = $schedule['num_customers'] ?? 0; // nếu có dữ liệu số khách
+                ?>
+                <div class="p-4 border rounded-xl bg-blue-50 hover:bg-blue-100 transition group relative">
+                    <h3 class="font-semibold text-gray-800"><?= htmlspecialchars($tour_name) ?> – <?= $num_customers ?> khách</h3>
+                    <p class="text-gray-600 text-sm"><?= $start ?> - <?= $end ?> • <?= htmlspecialchars($meeting_point) ?></p>
+                    <span class="<?= $status_color ?> font-medium"><?= ucfirst($schedule['schedule_status']) ?></span>
+
+                    <!-- Hover chi tiết -->
+                    <div class="absolute left-0 top-full mt-2 w-full p-4 bg-white border rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <p><strong>Địa điểm tour:</strong> <?= htmlspecialchars($tour_location) ?></p>
+                        <p><strong>Thời gian:</strong> <?= $days ?> ngày <?= $nights ?> đêm</p>
+                        <p><strong>Điểm gặp:</strong> <?= htmlspecialchars($meeting_point) ?></p>
+                        <p><strong>Khách sạn:</strong> <?= htmlspecialchars($hotel) ?></p>
+                        <p><strong>Phương tiện:</strong> <?= htmlspecialchars($vehicle) ?></p>
+                        <p><strong>Nhà hàng:</strong> <?= htmlspecialchars($restaurant) ?></p>
+                        <p><strong>Thông tin bay:</strong> <?= htmlspecialchars($flight_info) ?></p>
+                        <?php if ($guide_notes): ?>
+                            <p><strong>Ghi chú hướng dẫn:</strong> <?= htmlspecialchars($guide_notes) ?></p>
+                        <?php endif; ?>
+                        <p><strong>Trạng thái:</strong> <span class="<?= $status_color ?> font-medium"><?= ucfirst($schedule['schedule_status']) ?></span></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </section>
+
+
 
     <!-- NHẬT KÝ GẦN NHẤT -->
     <section class="bg-white p-6 rounded-2xl shadow">
@@ -156,7 +196,7 @@
         <?php endif; ?>
 
         <ul class="space-y-3 max-h-80 overflow-y-auto pr-2
-               scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+            scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
 
             <?php foreach ($requests as $req): ?>
                 <li class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
