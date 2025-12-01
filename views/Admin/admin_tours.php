@@ -78,7 +78,7 @@
                         </div>
 
 
-                        <div id="tourListContainer" class="space-y-3 overflow-y-auto max-h-[800px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
+                        <div id="tourListContainer" class="space-y-3 overflow-y-auto max-h-[800px] max-w-[500px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hide-scrollbar">
                             <!-- danh sacsh tour -->
                             <?php foreach ($datatour as $value) { ?>
                                 <article class="p-3 rounded-lg border hover:shadow-md transition-shadow bg-gray-50">

@@ -39,6 +39,8 @@ class BookingController
 
             $databookingbytourid = (new BookingModel())->getAllBookingsByTourId($tour_id);
 
+            $dataSchedulesByTourId = (new SchedulesModel())->getallSchedulesByTourId($tour_id);
+
             $tourFullData = [
                 'tourDetail'    => $dataTourDetai ?? [],
                 'oneTour'       => $dataOneTour ?? [],
@@ -49,15 +51,53 @@ class BookingController
                 'supplier_types' => $datatour_supplier_types ?? [],
             ];
         }
+        $dataSuppliersByType = []; // khởi tạo mảng chứa kết quả
+
+        if (isset($tourFullData['suppliers'])) {
+            foreach ($tourFullData['suppliers'] as $item) {
+                $suppliers = (new SupplierModel())->getSuppliersByType($item['id']);
+                if (!empty($suppliers)) {
+                    // lưu theo supplier_type_id
+                    $dataSuppliersByType[$item['id']] = $suppliers;
+                }
+            }
+        }
+        // $dataSchedulesByid = (new SchedulesModel())->getAllSchedulesByid(1);
+
         // if (isset($tourFullData)) {
         //     echo "<pre>";
-        //     var_dump($tourFullData['images']);
+        //     var_dump($dataSchedulesByTourId);
         //     echo "<pre>";
         //     die;
         // }
+
         require_once "./views/Admin/newBooking.php";
     }
 
+    // call api js
+    public function getAllSchedulesByid($requestData)
+    {
+        header('Content-Type: application/json');
+        // echo json_encode([
+        //     "id" => $requestData['schedules_id'],
+        // ]);
+        // exit;
+        $dataSchedulesByid = (new SchedulesModel())->getAllSchedulesByid($requestData['schedules_id']);
+        echo json_encode($dataSchedulesByid);
+        exit;
+    }
+    // call api js
+    public function getsupplierPricesBySupplierId($requestData)
+    {
+        header('Content-Type: application/json');
+        // echo json_encode([
+        //     "id" => $requestData['schedules_id'],
+        // ]);
+        // exit;
+        $dataSupplierPricesBySupplierId = (new SupplierModel())->getsupplierPricesBySupplierId($requestData['supplier_id']);
+        echo json_encode($dataSupplierPricesBySupplierId);
+        exit;
+    }
 
     public function createBooking()
     {
