@@ -1,0 +1,218 @@
+// --- TRẠNG THÁI & SESSION STORAGE ---
+let currentStep = 1;
+let bookingData = {};
+const STORAGE_KEY = "tempBookingData";
+
+// Hiển thị thông báo
+function showMessage(text, type = "error") {
+  const container = document.getElementById("message-container");
+  container.textContent = text;
+  container.className = `mb-4 p-3 rounded-lg font-medium ${
+    type === "error" ? "bg-red-500" : "bg-green-500"
+  }`;
+  container.style.display = "block";
+  setTimeout(() => (container.style.display = "none"), 5000);
+}
+
+// Định dạng số tiền
+function formatCurrency(number) {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
+    .format(number)
+    .replace("₫", "VND");
+}
+
+// --- GIAO DIỆN & CHUYỂN BƯỚC ---
+function renderStep() {
+  document.getElementById("progress-bar").style.width = `${
+    (currentStep / 3) * 100
+  }%`;
+  const titles = {
+    1: "Lựa chọn Tour & Thông tin cơ bản",
+    2: "Chi tiết Booking & Trạng thái",
+    3: "Chi tiết bổ sung & Hoàn tất",
+  };
+  document.getElementById("step-title").textContent = titles[currentStep];
+
+  document
+    .querySelectorAll(".step-content")
+    .forEach((el) => el.classList.add("hidden"));
+  document
+    .getElementById(`step-${currentStep}-content`)
+    .classList.remove("hidden");
+
+  if (currentStep === 2) calculateTotalPrice(false);
+  if (currentStep === 3) renderStep3DynamicContent();
+
+  document.getElementById("success-view").classList.add("hidden");
+}
+
+// Load dữ liệu từ sessionStorage
+function loadData() {
+  const storedData = sessionStorage.getItem(STORAGE_KEY);
+  if (storedData) {
+    bookingData = JSON.parse(storedData);
+    currentStep = bookingData.step || 1;
+    Object.keys(bookingData).forEach((key) => {
+      const input = document.getElementById(key);
+      if (input) input.value = bookingData[key];
+    });
+  }
+  renderStep();
+}
+
+// Lưu dữ liệu vào sessionStorage
+function saveData(data) {
+  bookingData = { ...bookingData, ...data, step: currentStep };
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(bookingData));
+}
+
+// --- XỬ LÝ BƯỚC 1 ---
+function handleStep1Submit() {
+  const fields = [
+    "tour_id",
+    "tour_version_id",
+    "customer_name",
+    "customer_phone",
+    "customer_email",
+  ];
+  for (const field of fields) {
+    if (!document.getElementById(field).value) {
+      showMessage(`Vui lòng điền thông tin bắt buộc: ${field}`);
+      return;
+    }
+  }
+
+  const data = {};
+  fields.forEach((f) => (data[f] = document.getElementById(f).value));
+  data.booking_id =
+    bookingData.booking_id ||
+    `BK-${crypto.randomUUID().substring(0, 8).toUpperCase()}`;
+  data.status = "DRAFT";
+
+  saveData(data);
+  currentStep = 2;
+  renderStep();
+}
+
+// --- TÍNH GIÁ ---
+function calculateTotalPrice(showAlert = true) {
+  const versionSelect = document.getElementById("tour_version_id");
+  const selectedOption = versionSelect.options[versionSelect.selectedIndex];
+  const basePrice = selectedOption?.getAttribute("data-price");
+  const people = parseInt(
+    document.getElementById("number_of_people")?.value || 0
+  );
+
+  if (!basePrice || people <= 0) {
+    document.getElementById("total-price-display")?.classList.add("hidden");
+    if (showAlert && people > 0)
+      showMessage("Vui lòng chọn Phiên bản Tour để tính giá.");
+    return 0;
+  }
+
+  const totalPrice = parseFloat(basePrice) * people;
+  document.getElementById("calculated-price").textContent =
+    formatCurrency(totalPrice);
+  document.getElementById("total-price-display").classList.remove("hidden");
+  return totalPrice;
+}
+
+// --- XỬ LÝ BƯỚC 2 ---
+function handleStep2Submit(direction) {
+  if (direction === "prev") {
+    currentStep = 1;
+    renderStep();
+    return;
+  }
+
+  const people = document.getElementById("number_of_people").value;
+  const groupType = document.getElementById("group_type").value;
+  const initialStatus = document.getElementById("initial_status").value;
+
+  if (!people || parseInt(people) <= 0) {
+    showMessage("Vui lòng nhập Số lượng khách hợp lệ.");
+    return;
+  }
+  const calculatedPrice = calculateTotalPrice();
+  if (calculatedPrice === 0) return;
+
+  saveData({
+    number_of_people: people,
+    group_type: groupType,
+    initial_status: initialStatus,
+    note: document.getElementById("note")?.value,
+    total_price: calculatedPrice,
+    status_log: `[${new Date().toISOString()}] - Trạng thái: DRAFT -> ${initialStatus}`,
+  });
+
+  currentStep = 3;
+  renderStep();
+}
+
+// --- BƯỚC 3: Nội dung động ---
+function renderStep3DynamicContent() {
+  const container = document.getElementById("dynamic-step-3-content");
+  container.innerHTML = "";
+  const groupType = bookingData.group_type || "le";
+
+  if (groupType === "doan") {
+    container.className = "bg-red-50 border border-red-200 p-4 rounded-xl";
+    container.innerHTML = `
+      <p class="text-lg font-semibold text-red-700">Xử lý Booking Đoàn (Group Tour)</p>
+      <textarea id="member_list" rows="5" placeholder="Họ tên thành viên, ngày sinh, yêu cầu..." class="w-full border-red-300 rounded-md p-3"></textarea>
+      <div class="flex items-center mt-2">
+        <input type="checkbox" id="require_quote" class="mr-2 rounded text-red-500">
+        <label for="require_quote" class="text-sm font-medium">Yêu cầu tạo báo giá chi tiết</label>
+      </div>`;
+  } else {
+    container.className = "bg-green-50 border border-green-200 p-4 rounded-xl";
+    container.innerHTML = `
+      <p class="text-lg font-semibold text-green-700">Xử lý Booking Lẻ (Individual Tour)</p>
+      <div class="flex items-center mt-2">
+        <input type="checkbox" id="confirm_policy" required class="mr-2 rounded text-green-500">
+        <label for="confirm_policy" class="text-sm font-medium">Đã xác nhận chính sách đặt tour và hủy tour</label>
+      </div>`;
+  }
+}
+
+// --- XỬ LÝ BƯỚC 3 ---
+function handleStep3Submit(direction) {
+  if (direction === "prev") {
+    currentStep = 2;
+    renderStep();
+    return;
+  }
+
+  if (
+    bookingData.group_type !== "doan" &&
+    !document.getElementById("confirm_policy")?.checked
+  ) {
+    showMessage("Bạn phải xác nhận đã gửi chính sách tour cho khách hàng.");
+    return;
+  }
+
+  const finalData = {
+    ...bookingData,
+    status: bookingData.initial_status,
+    finalized_at: new Date().toISOString(),
+  };
+  if (bookingData.group_type === "doan") {
+    finalData.member_list = document.getElementById("member_list").value;
+    finalData.required_quote =
+      document.getElementById("require_quote")?.checked;
+  }
+
+  console.log("--- DỮ LIỆU BOOKING HOÀN TẤT ---", finalData);
+  sessionStorage.removeItem(STORAGE_KEY);
+
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("success-view").classList.remove("hidden");
+  document.getElementById("final-booking-id").textContent =
+    finalData.booking_id;
+  document.getElementById("final-status").textContent = finalData.status
+    ?.toUpperCase()
+    ?.replace("_", " ");
+}
+
+// Khởi tạo khi DOM sẵn sàng
+document.addEventListener("DOMContentLoaded", loadData);
