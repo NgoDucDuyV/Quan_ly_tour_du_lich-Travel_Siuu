@@ -115,6 +115,15 @@ echo match ($act) {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
+    'update_from_booking_status' => (function () {
+        requireAdmin();
+        echo (new BookingController)->UpdateFromBookingStatus($_GET['id'] ?? null);
+    })(),
+    'create_booking_status' => (function () {
+        requireAdmin();
+        echo (new BookingController)->CreateBookingStatus();
+    })(),
+
     'bookingdetail' => (function () {
         requireAdmin();
         require_once "./views/Admin/bookingdetail.php";
@@ -123,6 +132,11 @@ echo match ($act) {
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
+    })(),
+    'createBooking' => (function () {
+        requireAdmin();
+        echo (new BookingController)->createBooking();
+        exit;
     })(),
 
     // call api js booking

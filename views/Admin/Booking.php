@@ -153,11 +153,44 @@
                                             <i class="fa-regular fa-pen-to-square w-5 mr-3"></i> Edit
                                         </a>
 
-                                        <a href="?act=deletecategory&id=<?= $value['id'] ?>"
-                                            class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
-                                            <i class="fa-regular fa-trash-can w-5 mr-3"></i> Xóa bỏ
-                                        </a>
+                                        <?php if ($b['status_code'] == 'HUY') { ?>
+                                            <a href="?act=deletecategory&id=<?= $b['id'] ?>"
+                                                class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
+                                                <i class="fa-regular fa-trash-can w-5 mr-3"></i> Xóa bỏ
+                                            </a>
+                                        <?php } else if ($b['status_code'] == 'HOANTAT') { ?>
+                                            <a href="?act=deletecategory&id=<?= $b['id'] ?>"
+                                                class="flex items-center px-3 py-2 text-green-00 hover:bg-red-50 transition">
+                                                <i class="fa-regular fa-trash-can w-5 mr-3"></i> Lưu Trữ
+                                            </a>
+                                        <?php } else { ?>
+                                            <a href="?act=deletecategory&id=<?= $b['id'] ?>"
+                                                class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
+                                                <i class="fa-regular fa-trash-can w-5 mr-3"></i> Hủy Booking
+                                            </a>
+                                        <?php } ?>
 
+                                        <?php if ($status === 'CHXACNHAN'): ?>
+                                            <a href="?act=update_from_booking_status&id=<?= $b['id'] ?>"
+                                                class="flex items-center px-3 py-2 text-blue-600 hover:bg-blue-50 transition rounded">
+                                                <i class="fa-regular fa-circle-check w-5 mr-3"></i>
+                                                Update Status
+                                            </a>
+                                        <?php elseif ($status === 'DACOC'): ?>
+                                            <a href="?act=chonhdv&id=<?= $b['id'] ?>"
+                                                class="flex items-center px-3 py-2 text-green-600 hover:bg-green-50 transition rounded">
+                                                <i class="fa-regular fa-circle-user w-5 mr-3"></i>
+                                                Chọn HDV
+                                            </a>
+                                            <a href="?act=update_payment_status&id=<?= $b['id'] ?>"
+                                                class="flex items-center px-4 py-2 text-yellow-700 hover:bg-yellow-200 font-medium rounded-lg shadow-sm transition">
+                                                <i class="fa-regular fa-credit-card w-5 h-5 mr-3"></i>
+                                                Update Payment
+                                            </a>
+
+                                        <?php else: ?>
+                                            ''
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
