@@ -11,14 +11,16 @@
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3 bg-">
             <h1 class="text-3xl font-[500] text-slate-900 m-0">Nhà cung cấp</h1>
-            <span class="inline-flex items-center justify-center font-[500] text-white px-2 py-0.5 rounded-full bg-main">
+            <span
+                class="inline-flex items-center justify-center font-[500] text-white px-2 py-0.5 rounded-full bg-main">
                 <?= count($dataSupplier) ?>
             </span>
         </div>
 
         <div class="flex items-center space-x-3">
 
-            <button class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
+            <button
+                class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
                 <i class="fa-solid fa-plus"></i>
                 Tạo mới
             </button>
@@ -26,7 +28,7 @@
             <button class="flex items-center gap-2 px-4 py-2 border rounded-md
                 text-sm text-dark hover:bg-main hover:text-white transition-all duration-200 ease-out">
                 <i class="fa-solid fa-filter"></i>
-                Lọc
+                Lọc 1SSSs
             </button>
         </div>
     </div>
@@ -65,7 +67,8 @@
                                 <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
                             </td>
                             <td class="px-6 py-4">#<?= $value['supplier_id'] ?></td>
-                            <td class="px-6 py-4 font-medium text-slate-900"><?= htmlspecialchars($value['supplier_name']) ?></td>
+                            <td class="px-6 py-4 font-medium text-slate-900"><?= htmlspecialchars($value['supplier_name']) ?>
+                            </td>
                             <td class="px-6 py-4"><?= htmlspecialchars($value['type_name']) ?></td>
                             <td class="px-6 py-4"><?= htmlspecialchars($value['contact_name']) ?></td>
                             <td class="px-6 py-4"><?= htmlspecialchars($value['contact_email']) ?></td>
