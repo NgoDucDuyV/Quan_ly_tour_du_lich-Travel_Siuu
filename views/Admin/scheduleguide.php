@@ -56,13 +56,16 @@
                     </div>
 
                     <?php
-                    $badge = '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">Đã nhận xét</span>';
+                    $guideStatus = $tour['guide_status'] ?? 'pending';  // fallback nếu key không tồn tại
 
-                    if ($tour['guide_status'] === "pending")
+                    if ($guideStatus === "pending") {
                         $badge = '<span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">Đợi đánh giá</span>';
-
-                    if ($tour['guide_status'] === "completed")
+                    } elseif ($guideStatus === "completed") {
                         $badge = '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">Hoàn thành</span>';
+                    } else {
+                        $badge = '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">Đã nhận xét</span>';
+                    }
+
                     ?>
 
                     <?= $badge ?>

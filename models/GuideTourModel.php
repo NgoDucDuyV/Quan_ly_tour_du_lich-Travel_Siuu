@@ -25,32 +25,33 @@ class GuideTourModel
     public function getAllSchedulesByGuideId($guide_id)
     {
         $sql = "
-    SELECT 
-        s.id AS schedule_id,
-        s.tour_id,
-        t.name AS tour_name,
-        t.description AS tour_location, -- dùng description thay cho location
-        t.days,
-        t.nights,
-        g.id AS guide_id,
-        g.name AS guide_name,
-        s.start_date,
-        s.end_date,
-        s.meeting_point,
-        s.vehicle,
-        s.hotel,
-        s.restaurant,
-        s.flight_info,
-        s.status AS schedule_status,
-        s.guide_notes,
-        s.guide_status
-    FROM schedules s
-    JOIN guides g 
-        ON g.id = s.guide_id
-    JOIN tours t
-        ON t.id = s.tour_id
-    WHERE s.guide_id = :guide_id
-    ORDER BY s.start_date ASC
+            SELECT 
+            s.id AS schedule_id,
+            s.tour_id,
+            t.name AS tour_name,
+            t.description AS tour_location,
+            t.days,
+            t.nights,
+            g.id AS guide_id,
+            g.name AS guide_name,
+            s.start_date,
+            s.end_date,
+            s.meeting_point,
+            s.vehicle,
+            s.hotel,
+            s.restaurant,
+            s.flight_info,
+            ss.name AS schedule_status,   -- từ bảng schedule_status
+            s.guide_notes,
+            gs.name AS guide_status       -- từ bảng guide_status
+        FROM schedules s
+        JOIN guides g ON g.id = s.guide_id
+        JOIN tours t ON t.id = s.tour_id
+        JOIN schedule_status ss ON ss.id = s.schedule_status_id
+        JOIN guide_status gs ON gs.id = s.guide_status_id
+        WHERE s.guide_id = :guide_id
+        ORDER BY s.start_date ASC
+        LIMIT 0, 25;
     ";
 
         $stmt = $this->conn->prepare($sql);
@@ -170,11 +171,13 @@ class GuideTourModel
             s.vehicle,
             s.hotel,
             s.restaurant,
-            s.status
+            ss.name AS schedule_status       -- lấy từ bảng schedule_status
         FROM schedules s
         JOIN tours t ON t.id = s.tour_id
+        JOIN schedule_status ss ON ss.id = s.schedule_status_id   -- join bảng trạng thái
         WHERE s.guide_id = :guide_id
         ORDER BY s.start_date ASC
+        LIMIT 0, 25;
     ";
 
         $stmt = $this->conn->prepare($sql);
