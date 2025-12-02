@@ -343,6 +343,7 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->saveAttendance();
     })(),
+
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
         requireAdmin();
@@ -362,6 +363,19 @@ echo match ($act) {
     'add-supplier' => (function () {
         requireAdmin();
         (new AdminSupplierController)->addSupplier();
+    })(),
+
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
     })(),
 
     // sửa nhà cung cấp
