@@ -183,7 +183,7 @@
                                                 Chọn HDV
                                             </a>
                                             <a href="?act=update_payment_status&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-4 py-2 text-yellow-700 hover:bg-yellow-200 font-medium rounded-lg shadow-sm transition">
+                                                class="flex items-center px-3 py-2 text-yellow-500 hover:bg-yellow-50  transition rounded">
                                                 <i class="fa-regular fa-credit-card w-5 h-5 mr-3"></i>
                                                 Update Payment
                                             </a>
