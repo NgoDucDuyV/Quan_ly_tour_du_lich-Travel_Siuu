@@ -213,7 +213,7 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
-    // Trang chủ của HDV
+    // Homeguide
     'homeguide' => (function () {
         requireGuide();
         (new GuideController())->homeGuide();
@@ -259,10 +259,10 @@ echo match ($act) {
         (new GuideController())->deleteDiaryGuide();
     })(),
     // Sửa nhật ký (hiển thị form)
-    // 'editDiaryGuide' => (function () {
-    //     requireGuide();
-    //     (new GuideLayoutController())->editDiaryGuide();
-    // })(),
+    'editDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideController())->editDiaryGuide();
+    })(),
     // Update nhật ký sau khi sửa
     'updateDiaryGuide' => (function () {
         requireGuide();

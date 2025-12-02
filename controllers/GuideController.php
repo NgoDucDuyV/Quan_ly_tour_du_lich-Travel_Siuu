@@ -95,6 +95,7 @@ class GuideController
         $schedule_id = $_POST['schedule_id'];
         $content = $_POST['content'];
         $images = $_FILES['images'];
+        $log_date = $_POST['log_date'];
 
         $uploadDir = "uploads/logs/";
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
@@ -135,19 +136,22 @@ class GuideController
         exit;
     }
     // Chỉnh sửa nhật ký của HDV
-    // public function editDiaryGuide()
-    // {
-    //     $id = $_GET['id'] ?? null;
+    public function editDiaryGuide()
+    {
+        $id = $_GET['id'] ?? null;
 
-    //     if (!$id) die("Thiếu ID!");
+        if (!$id) die("Thiếu ID!");
 
-    //     $model = new GuideTourModel();
+        $model = new GuideTourModel();
 
-    //     $log = $model->getLogById($id);
-    //     $tours = $model->getSchedulesByGuide($_SESSION['admin_logged']['id']);
+        $log = $model->getLogById($id);
 
-    //     require "./views/Admin/editDiaryguide.php";
-    // }
+        // Dùng hàm tồn tại trong Model
+        $tours = $model->getSchedulesForGuide($_SESSION['admin_logged']['id']);
+
+        require "./views/Admin/editDiaryguide.php";
+    }
+
     // Cập nhật nhật ký của HDV
     public function updateDiaryGuide()
     {

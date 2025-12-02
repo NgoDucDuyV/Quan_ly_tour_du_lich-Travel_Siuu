@@ -22,7 +22,6 @@ class GuideTourModel
         return $stmt->fetch(PDO::FETCH_ASSOC); // fetch một row duy nhất
     }
 
-
     public function getAllSchedulesByGuideId($guide_id)
     {
         $sql = "
@@ -60,31 +59,31 @@ class GuideTourModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
-
     // Thêm nhật ký mới
-    public function insertLog($schedule_id, $guide_id, $content, $images)
+    public function insertLog($schedule_id, $guide_id, $log_date, $content, $images)
     {
         $sql = "INSERT INTO tour_logs (schedule_id, guide_id, log_date, content, images)
-                VALUES (:schedule_id, :guide_id, CURDATE(), :content, :images)";
+            VALUES (:schedule_id, :guide_id, :log_date, :content, :images)";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'schedule_id' => $schedule_id,
             'guide_id' => $guide_id,
+            'log_date' => $log_date,
             'content' => $content,
             'images' => json_encode($images)
         ]);
+
         return $this->conn->lastInsertId();
     }
+
+
 
     public function deleteLog($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM tour_logs WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }
-
     public function getLogById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM tour_logs WHERE id = :id");
@@ -95,11 +94,9 @@ class GuideTourModel
     public function updateLog($id, $content)
     {
         $stmt = $this->conn->prepare("
-            UPDATE tour_logs
-            SET content = :content, updated_at = NOW()
-            WHERE id = :id
-        ");
-
+        UPDATE tour_logs
+        SET content = :content, updated_at = NOW()
+        WHERE id = :id");
         return $stmt->execute([
             'id' => $id,
             'content' => $content
@@ -133,16 +130,24 @@ class GuideTourModel
     public function getCustomersBySchedule($schedule_id)
     {
         $sql = "
-            SELECT c.name AS customer_name, a.status, a.id AS attendance_id
-            FROM attendance a
-            JOIN customers c ON c.id = a.customer_id
-            WHERE a.schedule_id = :schedule_id
-        ";
+        SELECT 
+            bc.full_name AS customer_name,
+            bc.birth_year,
+            bc.passport,
+            bc.customer_type_id,
+            a.status,
+            a.id AS attendance_id
+        FROM attendance a
+        JOIN booking_customers bc 
+            ON bc.id = a.customer_id
+        WHERE a.schedule_id = :schedule_id
+    ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['schedule_id' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     // Lấy lịch trình theo HDV
     public function getSchedulesForGuide($guide_id)
     {
@@ -234,7 +239,6 @@ class GuideTourModel
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
     // Lấy danh sách khách hàng theo HDV
     public function getCustomerListByTourid($tour_id, $start_date, $end_date)
     {
@@ -272,7 +276,6 @@ class GuideTourModel
         ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
 
     // Requestguide
     // Lấy yêu cầu của hướng dẫn viên
@@ -365,8 +368,6 @@ class GuideTourModel
         $stmt->execute(['gid' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-
     // Lấy 5 yêu cầu gần đây
     public function getRecentRequests($guide_id)
     {
