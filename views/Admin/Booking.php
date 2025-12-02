@@ -43,6 +43,19 @@
             unset($_SESSION['error']); ?>
         </div>
     <?php endif; ?>
+    <?php
+
+    // Kiểm tra nếu có thông báo
+    if (isset($_SESSION['success_message'])) {
+        echo '<div style="padding:10px; background-color:#d4edda; color:#155724; border:1px solid #c3e6cb; border-radius:5px; margin-bottom:15px;">'
+            . $_SESSION['success_message'] .
+            '</div>';
+
+        // Xóa thông báo sau khi hiển thị
+        unset($_SESSION['success_message']);
+    }
+    ?>
+
 
     <!-- ghi chú trạng thái -->
     <div class="mt-6 flex gap-4 text-xs mb-5">

@@ -252,8 +252,10 @@ class BookingController
 
     public function createBooking()
     {
-        var_dump('lueu okign');
-        die;
+        $_SESSION['success_message'] = "Booking thành công!";
+        // Chuyển hướng sang trang khác
+        header("Location: " . BASE_URL . "?mode=admin&act=booking");
+        exit;
         if (session_status() === PHP_SESSION_NONE) session_start();
 
         //check quyền chỉ admin mới thao tác
