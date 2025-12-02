@@ -115,6 +115,26 @@ echo match ($act) {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
+
+    'updateFromThanhToan' => (function () {
+        requireAdmin();
+        echo (new BookingController)->ShowFromThanhToan($_GET['id'] ?? null);
+    })(),
+
+    'update_from_booking_status' => (function () {
+        requireAdmin();
+        echo (new BookingController)->UpdateFromBookingStatus($_GET['id'] ?? null);
+    })(),
+    'create_booking_status' => (function () {
+        requireAdmin();
+        echo (new BookingController)->CreateBookingStatus();
+    })(),
+
+    'phan_tour_from_guides' => (function () {
+        requireAdmin();
+        echo (new BookingController)->ShowPhanTourFromGuides($_GET['id'] ?? null);
+    })(),
+
     'bookingdetail' => (function () {
         requireAdmin();
         require_once "./views/Admin/bookingdetail.php";
@@ -123,6 +143,11 @@ echo match ($act) {
     'newBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
+    })(),
+    'createBooking' => (function () {
+        requireAdmin();
+        echo (new BookingController)->createBooking();
+        exit;
     })(),
 
     // call api js booking
@@ -312,6 +337,38 @@ echo match ($act) {
     'deleteRequestGuide' => (function () {
         requireGuide();
         (new GuideController())->deleteRequestGuide();
+    })(),
+    //thêm loại dịch vụ
+    'add-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
+    //cập nhật loại dịch vụ
+    'update-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
+    //xóa dịch vụ
+    'delete-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
+    //thêm nhà cung cấp
+    'add-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
     })(),
 
 

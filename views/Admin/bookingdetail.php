@@ -1,4 +1,4 @@
-<div class="max-w-[1600px] mx-auto p-6 space-y-6">
+<div class="max-w-[1600px] mx-auto p-6 space-y-6 font-sans text-slate-800">
 
     <!-- Breadcrumb -->
     <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
@@ -11,11 +11,11 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h1 class="text-3xl font-semibold text-slate-900">Chi Tiết Booking</h1>
-        <span class="px-3 py-1 rounded-full bg-main text-white font-medium text-sm">BK2025-10023</span>
+        <span class="px-4 py-2 rounded-full bg-indigo-600 text-white font-medium text-sm shadow">BK2025-10023</span>
     </div>
 
     <!-- Status badges -->
-    <div class="flex flex-wrap gap-3 text-xs">
+    <div class="flex flex-wrap gap-3 text-xs mt-2">
         <span class="inline-flex items-center px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">Chờ xác nhận</span>
         <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800">Đã cọc</span>
         <span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-800">Hoàn tất</span>
@@ -24,23 +24,23 @@
     </div>
 
     <!-- 1. Thông tin Booking -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">1. Thông tin Booking</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
+    <div class="bg-white rounded-xl shadow-md p-6 space-y-4 border border-slate-100">
+        <h2 class="text-lg font-semibold text-slate-900 mb-2">1. Thông tin Booking</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-slate-700">
             <p><b>Mã Booking:</b> BK2025-10023</p>
             <p><b>Ngày tạo:</b> 28/11/2025 13:00</p>
             <p><b>Trạng thái:</b> <span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">Chờ xác nhận</span></p>
             <p><b>Loại Booking:</b> Khách lẻ</p>
             <p><b>Nguồn tạo:</b> Website</p>
             <p><b>Nhân viên phụ trách:</b> Nguyễn Văn B</p>
-            <p class="col-span-1 sm:col-span-2"><b>Ghi chú:</b> Khách muốn phòng gần biển</p>
+            <p class="col-span-1 sm:col-span-3"><b>Ghi chú:</b> Khách muốn phòng gần biển</p>
         </div>
     </div>
 
     <!-- 2. Thông tin người đặt -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">2. Thông tin người đặt</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
+    <div class="bg-white rounded-xl shadow-md p-6 space-y-4 border border-slate-100">
+        <h2 class="text-lg font-semibold text-slate-900 mb-2">2. Thông tin người đặt</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-slate-700">
             <p><b>Họ tên:</b> Trần Minh Hoàng</p>
             <p><b>SĐT:</b> 0912445778</p>
             <p><b>Email:</b> hoangtm@example.com</p>
@@ -52,8 +52,8 @@
     </div>
 
     <!-- 3. Danh sách hành khách -->
-    <div class="bg-white rounded-xl shadow border border-slate-100 p-6 space-y-4 overflow-x-auto">
-        <h2 class="text-lg font-semibold text-slate-900">3. Danh sách hành khách</h2>
+    <div class="bg-white rounded-xl shadow-md border border-slate-100 p-6 space-y-4 overflow-x-auto">
+        <h2 class="text-lg font-semibold text-slate-900 mb-2">3. Danh sách hành khách</h2>
 
         <h3 class="font-semibold text-slate-700 mt-2 mb-1">Người lớn</h3>
         <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700 mb-4">
@@ -119,9 +119,9 @@
     </div>
 
     <!-- 4. Thông tin Tour -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">4. Thông tin Tour</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
+    <div class="bg-white rounded-xl shadow-md p-6 space-y-4 border border-slate-100">
+        <h2 class="text-lg font-semibold text-slate-900 mb-2">4. Thông tin Tour</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-slate-700">
             <p><b>Tên tour:</b> Tour Hạ Long 3N2Đ – Du thuyền 5 sao</p>
             <p><b>Mã tour:</b> T-HL-3001</p>
             <p><b>Ngày khởi hành:</b> 05/12/2025 07:00</p>
@@ -131,20 +131,20 @@
             <p><b>Phương tiện:</b> Xe 29 chỗ + Du thuyền 5 sao</p>
         </div>
 
-        <!-- Hình ảnh -->
+        <!-- Hình ảnh Tour -->
         <h3 class="font-semibold mt-4 text-slate-700">Hình ảnh Tour</h3>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <img src="https://picsum.photos/200" class="rounded-lg shadow">
-            <img src="https://picsum.photos/201" class="rounded-lg shadow">
-            <img src="https://picsum.photos/202" class="rounded-lg shadow">
+            <img src="https://picsum.photos/300" class="rounded-lg shadow-md w-full object-cover">
+            <img src="https://picsum.photos/301" class="rounded-lg shadow-md w-full object-cover">
+            <img src="https://picsum.photos/302" class="rounded-lg shadow-md w-full object-cover">
         </div>
 
         <!-- Lịch trình -->
         <h3 class="font-semibold mt-4 text-slate-700">Lịch trình theo ngày</h3>
         <div class="space-y-3">
-            <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                 <h4 class="font-semibold">Ngày 1: Hà Nội – Hạ Long</h4>
-                <ul class="list-disc ml-6 text-sm">
+                <ul class="list-disc ml-6 text-sm space-y-1">
                     <li>05:30 – Đón khách tại Hà Nội</li>
                     <li>09:30 – Check-in du thuyền</li>
                     <li>12:00 – Ăn trưa buffet</li>
@@ -152,18 +152,18 @@
                     <li>19:00 – Gala Dinner</li>
                 </ul>
             </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                 <h4 class="font-semibold">Ngày 2: Vịnh Lan Hạ</h4>
-                <ul class="list-disc ml-6 text-sm">
+                <ul class="list-disc ml-6 text-sm space-y-1">
                     <li>06:00 – Tập Tai Chi</li>
                     <li>08:00 – Kayak</li>
                     <li>12:00 – Ăn trưa</li>
                     <li>15:00 – Tắm biển</li>
                 </ul>
             </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                 <h4 class="font-semibold">Ngày 3: Trở về Hà Nội</h4>
-                <ul class="list-disc ml-6 text-sm">
+                <ul class="list-disc ml-6 text-sm space-y-1">
                     <li>06:30 – Ăn sáng</li>
                     <li>08:30 – Tham quan làng chài</li>
                     <li>11:00 – Trả phòng</li>
@@ -171,127 +171,116 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- 5. Giá tour & Dịch vụ thêm -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">5. Giá tour & Dịch vụ thêm</h2>
-        <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700 mb-4">
-            <thead class="bg-slate-50">
-                <tr>
-                    <th class="px-4 py-3 text-left">Loại khách</th>
-                    <th class="px-4 py-3 text-left">Giá</th>
-                    <th class="px-4 py-3 text-left">Số lượng</th>
-                    <th class="px-4 py-3 text-left">Thành tiền</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-slate-200">
-                <tr class="hover:bg-slate-50">
-                    <td class="px-4 py-3">Người lớn</td>
-                    <td class="px-4 py-3">3,500,000</td>
-                    <td class="px-4 py-3">2</td>
-                    <td class="px-4 py-3">7,000,000</td>
-                </tr>
-                <tr class="hover:bg-slate-50">
-                    <td class="px-4 py-3">Trẻ em</td>
-                    <td class="px-4 py-3">2,400,000</td>
-                    <td class="px-4 py-3">1</td>
-                    <td class="px-4 py-3">2,400,000</td>
-                </tr>
-                <tr class="hover:bg-slate-50">
-                    <td class="px-4 py-3">Em bé</td>
-                    <td class="px-4 py-3">500,000</td>
-                    <td class="px-4 py-3">1</td>
-                    <td class="px-4 py-3">500,000</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3 class="font-semibold text-slate-700">Dịch vụ thêm</h3>
-        <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700">
-            <thead class="bg-slate-50">
-                <tr>
-                    <th class="px-4 py-3 text-left">Tên dịch vụ</th>
-                    <th class="px-4 py-3 text-left">SL</th>
-                    <th class="px-4 py-3 text-left">Giá</th>
-                    <th class="px-4 py-3 text-left">Tổng</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-slate-200">
-                <tr class="hover:bg-slate-50">
-                    <td class="px-4 py-3">Kayak</td>
-                    <td class="px-4 py-3">2</td>
-                    <td class="px-4 py-3">150,000</td>
-                    <td class="px-4 py-3">300,000</td>
-                </tr>
-                <tr class="hover:bg-slate-50">
-                    <td class="px-4 py-3">Spa</td>
-                    <td class="px-4 py-3">1</td>
-                    <td class="px-4 py-3">600,000</td>
-                    <td class="px-4 py-3">600,000</td>
-                </tr>
-            </tbody>
-        </table>
+<div class="max-w-5xl mx-auto my-8 p-6 bg-white rounded-2xl shadow-lg">
+    <!-- Header Booking -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Chi tiết Booking</h2>
+        <span class="px-3 py-1 rounded-full font-semibold text-white 
+                    bg-green-500">Trạng thái: <span id="booking-status">DRAFT</span></span>
     </div>
 
-    <!-- 6. Thanh toán -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">6. Thanh toán</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
-            <p><b>Tổng vé người lớn:</b> 7,000,000</p>
-            <p><b>Tổng vé trẻ em:</b> 2,400,000</p>
-            <p><b>Em bé:</b> 500,000</p>
-            <p><b>Dịch vụ thêm:</b> 900,000</p>
-            <p><b>Phụ thu phòng đơn:</b> 900,000</p>
-            <p><b>Ưu đãi:</b> -450,000</p>
-            <p><b>VAT (10%):</b> 540,000</p>
-            <p class="col-span-1 sm:col-span-2 text-lg font-bold text-blue-700">Tổng thanh toán: 11,990,000 VNĐ</p>
-            <p><b>Đã thanh toán:</b> 5,000,000 (Chuyển khoản)</p>
-            <p class="text-red-600 font-semibold">Còn lại: 6,990,000 VNĐ</p>
+    <!-- Thông tin cơ bản -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="space-y-2">
+            <p class="font-semibold text-gray-600">Mã Booking:</p>
+            <p class="text-gray-800" id="booking-code">BK-ABC12345</p>
+        </div>
+        <div class="space-y-2">
+            <p class="font-semibold text-gray-600">Ngày tạo:</p>
+            <p class="text-gray-800" id="booking-created">01/12/2025</p>
         </div>
     </div>
 
-    <!-- 7. Hóa đơn -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">7. Hóa đơn</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
-            <p><b>Xuất hóa đơn:</b> Có</p>
-            <p><b>Công ty:</b> Công ty TNHH ABC</p>
-            <p><b>MST:</b> 0101223344</p>
-            <p><b>Địa chỉ:</b> Cầu Giấy - Hà Nội</p>
-            <p><b>Người nhận:</b> Nguyễn Thu</p>
+    <!-- Thông tin khách hàng -->
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Thông tin khách hàng</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <p class="font-medium text-gray-600">Họ tên:</p>
+                <p class="text-gray-800" id="customer-name">Ngô Đức Duy</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-600">Số điện thoại:</p>
+                <p class="text-gray-800" id="customer-phone">0987654321</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-600">Email:</p>
+                <p class="text-gray-800" id="customer-email">duy@example.com</p>
+            </div>
         </div>
     </div>
 
-    <!-- 8. Nhà cung cấp -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">8. Nhà cung cấp</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
-            <p><b>Tên:</b> Khách sạn 5 sao Hạ Long</p>
-            <p><b>Người liên hệ:</b> Mr. A</p>
-            <p><b>SĐT:</b> 0911222333</p>
-            <p><b>Email:</b> hotelHN@example.com</p>
-            <p><b>Địa chỉ:</b> 12 Vịnh Hạ Long</p>
+    <!-- Thông tin Tour -->
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Thông tin Tour</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <p class="font-medium text-gray-600">Tên Tour:</p>
+                <p class="text-gray-800" id="tour-name">Tour Hà Nội - Hạ Long 3N2Đ</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-600">Phiên bản:</p>
+                <p class="text-gray-800" id="tour-version">VIP</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-600">Ngày khởi hành:</p>
+                <p class="text-gray-800" id="departure-date">05/12/2025</p>
+            </div>
+            <div>
+                <p class="font-medium text-gray-600">Ngày kết thúc:</p>
+                <p class="text-gray-800" id="end-date">08/12/2025</p>
+            </div>
         </div>
     </div>
 
-    <!-- 9. File đính kèm -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">9. File đính kèm</h2>
-        <ul class="list-disc ml-6 text-sm text-slate-700">
-            <li><a href="#" class="text-blue-600 hover:underline">Hợp đồng_2025.pdf</a></li>
-            <li><a href="#" class="text-blue-600 hover:underline">Danh sách hành khách.xlsx</a></li>
-        </ul>
+    <!-- Danh sách dịch vụ -->
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Dịch vụ đã chọn</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full border border-gray-200 text-sm">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-3 py-2 text-left">Dịch vụ</th>
+                        <th class="border px-3 py-2 text-right">Số lượng</th>
+                        <th class="border px-3 py-2 text-right">Đơn giá</th>
+                        <th class="border px-3 py-2 text-right">Tổng</th>
+                    </tr>
+                </thead>
+                <tbody id="service-list">
+                    <tr>
+                        <td class="border px-3 py-2">Vé xe VIP</td>
+                        <td class="border px-3 py-2 text-right">2</td>
+                        <td class="border px-3 py-2 text-right">2,000,000 VND</td>
+                        <td class="border px-3 py-2 text-right">4,000,000 VND</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-3 py-2">Khách sạn 3 sao</td>
+                        <td class="border px-3 py-2 text-right">2</td>
+                        <td class="border px-3 py-2 text-right">1,500,000 VND</td>
+                        <td class="border px-3 py-2 text-right">3,000,000 VND</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- 10. Lịch sử cập nhật -->
-    <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-900">10. Lịch sử cập nhật</h2>
-        <ul class="text-sm text-slate-700 space-y-2">
-            <li>28/11/2025 13:05 - Tạo booking bởi admin</li>
-            <li>28/11/2025 14:20 - Khách cọc 5,000,000 VNĐ</li>
-            <li>28/11/2025 15:00 - Chờ xác nhận</li>
-            <li>28/11/2025 16:10 - Thanh toán 5,000,000 VNĐ</li>
-        </ul>
+    <!-- Ghi chú & Thanh toán -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <p class="font-medium text-gray-600">Ghi chú:</p>
+            <p class="text-gray-800" id="booking-note">Khách yêu cầu phòng hướng biển.</p>
+        </div>
+        <div>
+            <p class="font-medium text-gray-600">Trạng thái thanh toán:</p>
+            <p class="text-gray-800" id="payment-status">Chưa thanh toán</p>
+        </div>
     </div>
 
+    <!-- Tổng tiền -->
+    <div class="flex justify-end items-center">
+        <p class="text-lg font-semibold text-gray-700 mr-4">Tổng thanh toán:</p>
+        <p class="text-xl font-bold text-blue-700" id="total-amount">7,000,000 VND</p>
+    </div>
 </div>
