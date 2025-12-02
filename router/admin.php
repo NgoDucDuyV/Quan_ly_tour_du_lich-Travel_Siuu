@@ -259,10 +259,10 @@ echo match ($act) {
         (new GuideController())->deleteDiaryGuide();
     })(),
     // Sửa nhật ký (hiển thị form)
-    // 'editDiaryGuide' => (function () {
-    //     requireGuide();
-    //     (new GuideLayoutController())->editDiaryGuide();
-    // })(),
+    'editDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideController())->editDiaryGuide();
+    })(),
     // Update nhật ký sau khi sửa
     'updateDiaryGuide' => (function () {
         requireGuide();
@@ -313,6 +313,13 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->deleteRequestGuide();
     })(),
+    // 
+    'saveAttendance' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendance();
+    })(),
+
+
 
 
     default => (function () {
