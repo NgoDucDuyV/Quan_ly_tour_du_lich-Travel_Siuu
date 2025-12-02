@@ -124,6 +124,11 @@ echo match ($act) {
         echo (new BookingController)->CreateBookingStatus();
     })(),
 
+    'phan_tour_from_guides' => (function () {
+        requireAdmin();
+        echo (new BookingController)->ShowPhanTourFromGuides($_GET['id'] ?? null);
+    })(),
+
     'bookingdetail' => (function () {
         requireAdmin();
         require_once "./views/Admin/bookingdetail.php";
@@ -329,20 +334,20 @@ echo match ($act) {
     })(),
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
-    requireAdmin();
-    (new AdminSupplierController)->addSupplierType();
-})(),
-//cập nhật loại dịch vụ
-'update-supplier-type' => (function () {
-    requireAdmin();
-    (new AdminSupplierController)->updateSupplierType();
-})(),
-//xóa dịch vụ
-'delete-supplier-type' => (function () {
-    requireAdmin();
-    (new AdminSupplierController)->deleteSupplierType();
-})(),
-//thêm nhà cung cấp
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
+    //cập nhật loại dịch vụ
+    'update-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
+    //xóa dịch vụ
+    'delete-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
+    //thêm nhà cung cấp
     'add-supplier' => (function () {
         requireAdmin();
         (new AdminSupplierController)->addSupplier();
@@ -381,7 +386,6 @@ if (isset($_SESSION['admin_logged'])) {
     } else if ($_SESSION['admin_role'] === 'guide') {
         $layoutController = new GuideLayoutController();
     }
-    
 }
 // chuyển hướng đến trang 404
 if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {

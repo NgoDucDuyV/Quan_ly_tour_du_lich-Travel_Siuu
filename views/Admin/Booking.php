@@ -177,7 +177,7 @@
                                                 Update Status
                                             </a>
                                         <?php elseif ($status === 'DACOC'): ?>
-                                            <a href="?act=chonhdv&id=<?= $b['id'] ?>"
+                                            <a href="?act=phan_tour_from_guides&id=<?= $b['id'] ?>"
                                                 class="flex items-center px-3 py-2 text-green-600 hover:bg-green-50 transition rounded">
                                                 <i class="fa-regular fa-circle-user w-5 mr-3"></i>
                                                 Chọn HDV

@@ -199,6 +199,10 @@ class BookingController
         require_once "./views/Admin/newBooking.php";
     }
 
+    public function ShowPhanTourFromGuides()
+    {
+        require_once "./views/Admin/phan_tour_guides.php";
+    }
     // call api js
     public function getAllSchedulesByid($requestData)
     {

@@ -693,19 +693,19 @@ if (!empty($tourFullData)) {
                     </div>
 
                     <!-- Box giá tour khách hàng -->
-                    <!-- Box giá tour khách hàng -->
                     <div class="bg-white rounded-2xl border shadow-md p-6 max-w-full mx-auto">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-                            Bảng giá theo <span id="group-name-display text-main">---</span>
+                            Bảng giá theo <span id="group-name-display" class="text-main">---</span>
                         </h2>
 
-                        <?php
-                        $basePrice = (float)$tourFullData['oneTour']['price'];
-                        ?>
+
+                        <?php $basePrice = (float)$tourFullData['oneTour']['price']; ?>
 
                         <div class="mb-4 p-4 bg-indigo-50 rounded-2xl flex justify-between items-center">
                             <span class="text-gray-700 font-medium">Giá cơ bản:</span>
-                            <span class="text-main font-bold text-lg" id="base-price"><?= number_format($basePrice, 0, ',', '.') ?> VNĐ</span>
+                            <span class="text-main font-bold text-lg" id="base-price">
+                                <?= number_format($basePrice, 0, ',', '.') ?> VNĐ
+                            </span>
                         </div>
 
                         <ul id="customer-prices-list" class="divide-y divide-gray-200 text-gray-700">
@@ -720,36 +720,38 @@ if (!empty($tourFullData)) {
                             <?php else: ?>
                                 <li class="py-3 text-red-500 flex justify-between items-center">
                                     <span>Không có dữ liệu khách hàng!</span>
-                                    <button onclick="location.reload()" class="ml-4 px-3 py-1 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600">Load lại</button>
+                                    <button onclick="location.reload()" class="ml-4 px-3 py-1 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600">
+                                        Load lại
+                                    </button>
                                 </li>
                             <?php endif; ?>
                         </ul>
                     </div>
 
                     <script>
-                        // Khi chọn group_type, cập nhật bảng giá + hiển thị tên nhóm
                         const groupSelect = document.getElementById('group_type');
                         const groupNameDisplay = document.getElementById('group-name-display');
 
                         groupSelect.addEventListener('change', function() {
                             const selectedOption = this.selectedOptions[0];
+
                             const groupName = selectedOption ? selectedOption.text : '---';
                             const percent = selectedOption ? parseFloat(selectedOption.dataset.percent) : 0;
 
-                            // Cập nhật tiêu đề
+                            // Cập nhật tên loại nhóm
                             groupNameDisplay.textContent = groupName;
 
-                            // Cập nhật giá niêm yết
+                            // Update giá theo từng loại khách
                             const listItems = document.querySelectorAll('#customer-prices-list li[data-base-price]');
                             listItems.forEach(li => {
                                 const basePrice = parseFloat(li.dataset.basePrice);
-                                const newPrice = basePrice + basePrice * (percent / 100);
-                                li.querySelector('span.font-semibold').textContent = newPrice.toLocaleString('vi-VN') + ' VNĐ';
+                                const newPrice = basePrice + (basePrice * percent / 100);
+
+                                const priceTag = li.querySelector('.font-semibold');
+                                priceTag.textContent = newPrice.toLocaleString('vi-VN') + ' VNĐ';
                             });
                         });
                     </script>
-
-
 
                     <!-- Hành khách -->
                     <div class="space-y-4 mt-6">
