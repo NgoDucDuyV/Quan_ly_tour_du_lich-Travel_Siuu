@@ -26,23 +26,34 @@ class GuideController
 
     // ListGuide
     // Danh sách khách của HDV
-    public function listGuide($tour_id = null, $start_date = null, $end_date = null)
+    public function listGuide()
     {
-        $guide_id = $_SESSION['admin_logged']['id'];
+        $user_id = $_SESSION['admin_logged']['id'];
 
         $model = new GuideTourModel();
 
-        if (empty($tour_id)) {
-            $datacustomers = $model->getCustomerListByTourid($tour_id, $start_date, $end_date);
-        }
-        // Lấy dữ liệu khách theo hướng dẫn viên
+        // Lấy đúng guide_id từ bảng guides
+        $guide = $model->getGuideUserid($user_id);
+        $guide_id = $guide['id'];
 
-        // echo "<pre>";
-        // var_dump($datacustomers);
-        // echo "<pre>";
-        // die;
+        // Lấy tour hôm nay của HDV
+        $todayTour = $model->getTodayTour($guide_id);
+
+        $datacustomers = [];
+
+        // Nếu hôm nay có tour → lấy danh sách khách
+        if ($todayTour) {
+            $tour_id = $todayTour['tour_id'];
+            $start = $todayTour['start_date'];
+            $end   = $todayTour['end_date'];
+
+            $datacustomers = $model->getCustomerListByTourid($tour_id, $start, $end);
+        }
+
+
         require "./views/Admin/listguide.php";
     }
+
 
     // ScheduleGuide
     // Lịch trình của HDV

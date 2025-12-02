@@ -108,21 +108,19 @@ class GuideTourModel
         $sql = "
         SELECT 
             s.id AS schedule_id,
+            s.tour_id,
             t.name AS tour_name,
             s.start_date,
             s.end_date,
             (
                 SELECT COUNT(*)
-                FROM booking_customers bc
-                JOIN bookings b ON b.id = bc.booking_id
-                WHERE b.tour_id = s.tour_id
-                AND DATE(b.start_date) = DATE(s.start_date)
-                AND DATE(b.end_date) = DATE(s.end_date)
+                FROM attendance a
+                WHERE a.schedule_id = s.id
             ) AS total_customers
         FROM schedules s
         JOIN tours t ON t.id = s.tour_id
         WHERE s.guide_id = :guide_id
-        AND CURDATE() BETWEEN DATE(s.start_date) AND DATE(s.end_date)
+          AND DATE(s.start_date) = CURDATE()
         LIMIT 1
     ";
 
@@ -132,65 +130,29 @@ class GuideTourModel
     }
 
 
+
+
     // Lấy danh sách khách hàng theo lịch trình
     public function getCustomersBySchedule($schedule_id)
     {
-        // Lấy thông tin schedule
-        $s = $this->conn->prepare("
-        SELECT tour_id, start_date, end_date 
-        FROM schedules 
-        WHERE id = :id
-    ");
-        $s->execute(['id' => $schedule_id]);
-        $schedule = $s->fetch(PDO::FETCH_ASSOC);
-
-        // Lấy danh sách khách
         $sql = "
         SELECT 
             bc.id AS customer_id,
             bc.full_name AS customer_name,
             a.id AS attendance_id,
             a.status AS attendance_status
-        FROM booking_customers bc
-        JOIN bookings b ON b.id = bc.booking_id
-        LEFT JOIN attendance a 
-            ON a.customer_id = bc.id
-            AND a.schedule_id = :sid
-        WHERE b.tour_id = :tour_id
-        AND DATE(b.start_date) = DATE(:start)
-        AND DATE(b.end_date) = DATE(:end)
+        FROM attendance a
+        JOIN booking_customers bc ON bc.id = a.customer_id
+        WHERE a.schedule_id = :sid
+        ORDER BY bc.full_name ASC
     ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            'sid' => $schedule_id,
-            'tour_id' => $schedule['tour_id'],
-            'start' => $schedule['start_date'],
-            'end' => $schedule['end_date']
-        ]);
-
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Tạo attendance nếu chưa có
-        foreach ($rows as &$cus) {
-            if ($cus['attendance_id'] === null) {   // CHỈ INSERT KHI CHƯA HỀ TỒN TẠI
-                $ins = $this->conn->prepare("
-            INSERT INTO attendance(schedule_id, customer_id, status, checked_at)
-            VALUES(:sid, :cid, 'absent', NOW())
-        ");
-                $ins->execute([
-                    'sid' => $schedule_id,
-                    'cid' => $cus['customer_id']
-                ]);
-
-                $cus['attendance_id'] = $this->conn->lastInsertId();
-                $cus['attendance_status'] = 'absent';
-            }
-        }
-
-
-        return $rows;
+        $stmt->execute(['sid' => $schedule_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 
 
 
@@ -290,29 +252,30 @@ class GuideTourModel
     public function getCustomerListByTourid($tour_id, $start_date, $end_date)
     {
         $sql = "
-    SELECT 
-        b.id AS booking_id,
-        b.booking_code,
-        b.tour_id,
-        b.start_date AS booking_start,
-        b.end_date AS booking_end,
-        b.customer_name AS main_customer,
-        b.customer_phone,
-        b.customer_email,
-        b.group_type,
-        b.number_of_people,
-        bc.id AS customer_id,
-        bc.full_name AS customer_full_name,
-        bc.birth_year,
-        bc.passport,
-        bc.customer_type_id
-    FROM bookings b
-    LEFT JOIN booking_customers bc
-        ON bc.booking_id = b.id
-    WHERE b.tour_id = :tour_id
-    AND b.start_date >= :start_date
-    AND b.end_date <= :end_date
-    ORDER BY b.id, bc.id
+        SELECT 
+            b.id AS booking_id,
+            b.booking_code,
+            b.tour_id,
+            t.name AS tour_name,
+            b.start_date AS booking_start,
+            b.end_date AS booking_end,
+            b.customer_name AS main_customer,
+            b.customer_phone,
+            b.customer_email,
+            b.group_type,
+            b.number_of_people,
+            bc.id AS customer_id,
+            bc.full_name AS customer_full_name,
+            bc.birth_year,
+            bc.passport,
+            bc.customer_type_id
+        FROM bookings b
+        LEFT JOIN booking_customers bc ON bc.booking_id = b.id
+        JOIN tours t ON t.id = b.tour_id
+        WHERE b.tour_id = :tour_id
+        AND b.start_date >= :start_date
+        AND b.end_date <= :end_date
+        ORDER BY b.id, bc.id
     ";
 
         $stmt = $this->conn->prepare($sql);
@@ -321,8 +284,10 @@ class GuideTourModel
             'start_date' => $start_date,
             'end_date' => $end_date
         ]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     // CheckGuide
     public function updateAttendance($id, $status)
     {
