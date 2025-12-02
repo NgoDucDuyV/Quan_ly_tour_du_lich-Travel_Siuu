@@ -182,7 +182,7 @@
                                                 <i class="fa-regular fa-circle-user w-5 mr-3"></i>
                                                 Chọn HDV
                                             </a>
-                                            <a href="?act=update_payment_status&id=<?= $b['id'] ?>"
+                                            <a href="?act=updateFromThanhToan&id=<?= $b['id'] ?>"
                                                 class="flex items-center px-3 py-2 text-yellow-500 hover:bg-yellow-50  transition rounded">
                                                 <i class="fa-regular fa-credit-card w-5 h-5 mr-3"></i>
                                                 Update Payment

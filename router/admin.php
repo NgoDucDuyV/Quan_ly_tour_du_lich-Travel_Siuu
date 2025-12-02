@@ -115,6 +115,12 @@ echo match ($act) {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
+
+    'updateFromThanhToan' => (function () {
+        requireAdmin();
+        echo (new BookingController)->ShowFromThanhToan($_GET['id'] ?? null);
+    })(),
+
     'update_from_booking_status' => (function () {
         requireAdmin();
         echo (new BookingController)->UpdateFromBookingStatus($_GET['id'] ?? null);

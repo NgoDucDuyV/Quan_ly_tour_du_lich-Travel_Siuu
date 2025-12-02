@@ -2,6 +2,7 @@
 class BookingModel
 {
     private $conn;
+    protected $table = 'bookings';
 
     public function __construct()
     {
@@ -127,21 +128,32 @@ class BookingModel
     }
 
 
-    public function updateBooking($booking_id, array $data)
+    public function updateBooking(int $booking_id, array $data): bool
     {
-        // $fields = [];
-        // $params = [':id' => $booking_id];
+        if (empty($data) || !$booking_id) return false;
 
-        // foreach ($data as $key => $value) {
-        //     $fields[] = "`$key` = :$key"; // tạo câu lệnh SET `field` = :field
-        //     $params[":$key"] = $value;     // bind giá trị
-        // }
+        $fields = [];
+        $params = [':id' => $booking_id];
 
-        // $sql = "UPDATE `{$this->table}` SET " . implode(', ', $fields) . " WHERE `id` = :id";
-        // $stmt = $this->conn->prepare($sql);
+        // Chỉ update 4 cột cần thiết
+        $validColumns = ['status_id', 'payment_status_id', 'status_code', 'payment_status_code'];
 
-        // return $stmt->execute($params); // trả về true/false
+        foreach ($data as $key => $value) {
+            if (in_array($key, $validColumns)) {
+                $fields[] = "`$key` = :$key";
+                $params[":$key"] = $value;
+            }
+        }
+
+        if (empty($fields)) return false; // Không có trường hợp hợp lệ để update
+
+        $sql = "UPDATE `{$this->table}` SET " . implode(', ', $fields) . ", `updated_at` = NOW() WHERE `id` = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute($params);
     }
+
+
 
     // Tạo booking mới
     public function create($data)

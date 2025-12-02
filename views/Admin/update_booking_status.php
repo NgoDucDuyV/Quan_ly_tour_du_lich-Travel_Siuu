@@ -126,12 +126,11 @@ unset($_SESSION['old_data']);
                 </div>
 
                 <div class="md:col-span-2">
-                    <label class="block font-semibold mb-2 text-blue-700">Phương thức thanh toán</label>
-                    <select name="payment_method" class="w-full p-3 border rounded-xl shadow-sm">
-                        <option value="">-- Chọn phương thức --</option>
+                    <label class="block font-semibold mb-2 text-blue-700">Trạng thái thannh toán</label>
+                    <select name="payment_method_id" class="w-full p-3 border rounded-xl shadow-sm">
+                        <option value="">-- Chọn trạng thái --</option>
                         <?php foreach ($dataPaymentTypes as $payment): ?>
-                            <?php $selected_method = $old_data['payment_method'] ?? $databooking['payment_method'] ?? ''; ?>
-                            <option value="<?= $payment['code'] ?>" <?= $selected_method == $payment['code'] ? 'selected' : '' ?>>
+                            <option value="<?= $payment['id'] ?>">
                                 <?= htmlspecialchars($payment['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -146,6 +145,18 @@ unset($_SESSION['old_data']);
                     <?php endif; ?>
                 </div>
 
+                <div class="md:col-span-2">
+                    <label class="block font-semibold mb-2 text-blue-700">Phương thức thanh toán</label>
+                    <select name="payment_status_id" class="w-full p-3 border rounded-xl shadow-sm">
+                        <option value="">-- Chọn phương thức --</option>
+                        <?php foreach ($datagetPaymentModel as $payment): ?>
+                            <option value="<?= $payment['id'] ?>"
+                                <?= (isset($old_data['payment_status_id']) && $old_data['payment_status_id'] == $payment['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($payment['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
                 <div class="md:col-span-2">
                     <label class="block font-semibold mb-2 text-blue-700">Ghi chú thanh toán</label>
                     <textarea name="payment_description" rows="3" class="w-full p-3 border rounded-xl shadow-sm" placeholder="Nhập ghi chú về thanh toán (nếu có)"><?= htmlspecialchars($old_data['payment_description'] ?? $databooking['payment_description'] ?? '') ?></textarea>

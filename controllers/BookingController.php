@@ -9,6 +9,21 @@ class BookingController
         require_once "./views/Admin/booking.php";
     }
 
+    public function ShowFromThanhToan($booking_id = null)
+    {
+        $dataBookingStatusType = (new BookingStatusModel())->getBookingStatusType();
+
+        $dataPaymentTypes = (new BookingStatusModel())->getPaymentTypes();
+
+        $datagetBookinglogsbyid = (new BookingStatusModel())->getBookinglogsbyid($booking_id);
+
+        $dataBookingServicesWithSuppliers = (new BookingModel())->getBookingServicesWithSuppliers($booking_id);
+
+        $datagetPaymentModel = (new PaymentModel())->getPaymentModel();
+
+        require_once "./views/Admin/update_from_thanh_toan.php";
+    }
+
     public function UpdateFromBookingStatus($booking_id)
     {
         // Nếu không có booking, chuyển hướng về trang danh sách
@@ -27,8 +42,10 @@ class BookingController
         $datagetBookinglogsbyid = (new BookingStatusModel())->getBookinglogsbyid($booking_id);
 
         $dataBookingServicesWithSuppliers = (new BookingModel())->getBookingServicesWithSuppliers($booking_id);
+
+        $datagetPaymentModel = (new PaymentModel())->getPaymentModel();
         // echo "<pre>";
-        // var_dump('$databooking = ' . print_r($databooking, true));
+        // var_dump('$datagetPaymentModel = ' . print_r($datagetPaymentModel, true));
         // var_dump('$dataBookingStatusType = ' . print_r($dataBookingStatusType, true));
         // var_dump('$dataPaymentTypes = ' . print_r($dataPaymentTypes, true));
         // var_dump('$datagetBookinglogsbyid = ' . print_r($datagetBookinglogsbyid, true));
@@ -38,99 +55,104 @@ class BookingController
         require_once "./views/Admin/update_booking_status.php";
     }
 
-    public function CreateBookingStatus()
+    public function createBookingStatus()
     {
-        // echo 'demo';
-        // die;
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;
 
-            $errors = [];
+        $errors = [];
+        $booking_id = $_POST['booking_id'] ?? null;
+        $old_status = $_POST['old_status'] ?? null;
+        $booking_status = $_POST['booking_status'] ?? 'CHXACNHAN';
+        $note = trim($_POST['note'] ?? '');
 
-            // Lấy dữ liệu từ form
-            $booking_id = $_POST['booking_id'] ?? null;
-            $old_status = $_POST['old_status'] ?? null;
-            $booking_status = $_POST['booking_status'] ?? 'CHXACNHAN';
-            $note = trim($_POST['note'] ?? '');
+        if (!$booking_id) $errors[] = "Booking không hợp lệ.";
+        if (!$booking_status) $errors[] = "Vui lòng chọn trạng thái booking.";
 
-            if (!$booking_id) $errors[] = "Booking không hợp lệ.";
-            if (!$booking_status) $errors[] = "Vui lòng chọn trạng thái booking.";
+        // Thông tin thanh toán
+        $payer_name = $deposit_amount = $payment_method_id = $payment_description = $payment_image = null;
 
-            // Thông tin thanh toán khi DACOC
-            $payer_name = $deposit_amount = $payment_method = $payment_description = null;
-            $payment_image = null;
+        if ($booking_status === 'DACOC') {
+            $payer_name = trim($_POST['payer_name'] ?? '');
+            $deposit_amount = trim($_POST['deposit_amount'] ?? '');
+            $payment_method_id = $_POST['payment_method_id'] ?? '';
+            $payment_description = trim($_POST['payment_description'] ?? '');
 
-            if ($booking_status === 'DACOC') {
-                $payer_name = trim($_POST['payer_name'] ?? '');
-                $deposit_amount = trim($_POST['deposit_amount'] ?? '');
-                $payment_method = $_POST['payment_method'] ?? '';
-                $payment_description = trim($_POST['payment_description'] ?? '');
+            if (!$payer_name) $errors[] = "Vui lòng nhập tên người thanh toán.";
+            if (!$deposit_amount || !is_numeric($deposit_amount) || $deposit_amount <= 0) $errors[] = "Số tiền cọc không hợp lệ.";
+            if (!$payment_method_id) $errors[] = "Vui lòng chọn phương thức thanh toán.";
 
-                if (!$payer_name) $errors[] = "Vui lòng nhập tên người thanh toán.";
-                if (!$deposit_amount || !is_numeric($deposit_amount) || $deposit_amount <= 0) $errors[] = "Số tiền cọc không hợp lệ.";
-                if (!$payment_method) $errors[] = "Vui lòng chọn phương thức thanh toán.";
+            // Upload ảnh thanh toán
+            if (isset($_FILES['payment_image']) && $_FILES['payment_image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = "./uploads/payment_images/";
+                if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
 
-                // Xử lý file upload
-                if (!isset($_FILES['payment_image']) || $_FILES['payment_image']['error'] !== UPLOAD_ERR_OK) {
-                    $errors[] = "Vui lòng upload hình ảnh chuyển tiền.";
+                $filename = time() . "_" . basename($_FILES['payment_image']['name']);
+                $targetFile = $uploadDir . $filename;
+
+                if (move_uploaded_file($_FILES['payment_image']['tmp_name'], $targetFile)) {
+                    $payment_image = $filename;
                 } else {
-                    $uploadDir = "./uploads/payment_images/";
-                    if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
-
-                    $filename = time() . "_" . basename($_FILES['payment_image']['name']);
-                    $targetFile = $uploadDir . $filename;
-
-                    if (move_uploaded_file($_FILES['payment_image']['tmp_name'], $targetFile)) {
-                        $payment_image = $filename;
-                    } else {
-                        $errors[] = "Upload hình ảnh thất bại.";
-                    }
+                    $errors[] = "Upload hình ảnh thất bại.";
                 }
-            }
-
-            // Nếu có lỗi, lưu session và redirect
-            if (!empty($errors)) {
-                $_SESSION['errors'] = $errors;
-                $_SESSION['old_data'] = $_POST;
-                header("Location: ?mode=admin&act=update_from_booking_status&id=" . $booking_id);
-                exit;
-            }
-
-            // Lưu log
-            (new BookingModel())->addBookingLog([
-                'booking_id' => $booking_id,
-                'old_status' => $old_status,
-                'new_status' => $booking_status,
-                'description' => "Cập nhật trạng thái từ form",
-                'updated_by' => $_SESSION['admin_id'] ?? 0,
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
-
-            // Cập nhật booking
-            $updateData = [
-                'status_code' => $booking_status,
-                'note' => $note,
-            ];
-
-            if ($booking_status === 'DACOC') {
-                $updateData['payment_status_code'] = 'DEPOSIT';
-                $updateData['payer_name'] = $payer_name;
-                $updateData['deposit_amount'] = $deposit_amount;
-                $updateData['payment_method'] = $payment_method;
-                $updateData['payment_description'] = $payment_description;
-                $updateData['payment_image'] = $payment_image;
-            }
-
-            $updated = (new BookingModel())->updateBooking($booking_id, $updateData);
-
-            if ($updated) {
-                $_SESSION['success'] = "Cập nhật trạng thái booking thành công!";
             } else {
-                $_SESSION['errors'] = ["Cập nhật thất bại, vui lòng thử lại."];
+                $errors[] = "Vui lòng upload hình ảnh chuyển tiền.";
             }
+        }
 
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old_data'] = $_POST;
             header("Location: ?mode=admin&act=update_from_booking_status&id=" . $booking_id);
             exit;
         }
+
+        // Lưu log trạng thái
+        (new BookingModel())->addBookingLog([
+            'booking_id' => $booking_id,
+            'old_status' => $old_status,
+            'new_status' => $booking_status,
+            'description' => $payment_description ?: $note,
+            'updated_by' => $_SESSION['admin_logged']['id'] ?? 0,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        // --- Xử lý status ---
+        $status_id = null;
+        $dataBookingStatusType = (new BookingStatusModel())->getBookingStatusType();
+        foreach ($dataBookingStatusType as $status) {
+            if ($status['code'] === $booking_status) {
+                $status_id = $status['id'];
+                break;
+            }
+        }
+
+        // --- Cập nhật booking ---
+        $updateData = ['status_code' => $booking_status, 'status_id' => $status_id];
+
+        if ($booking_status === 'DACOC') {
+            $updateData['payment_status_id'] = $payment_method_id;
+            $updateData['payment_status_code'] = $payment_method_id;
+        }
+
+        (new BookingModel())->updateBooking($booking_id, $updateData);
+
+        // --- Lưu thông tin thanh toán vào booking_payments ---
+        if ($booking_status === 'DACOC') {
+            $paymentModel = new PaymentModel();
+            $paymentModel->createPayment([
+                'booking_id' => $booking_id,
+                'amount' => $deposit_amount,
+                'payment_method_id' => $payment_method_id,
+                'payment_type_id' => 1, // 1 = deposit
+                'transaction_code' => 'TXN' . time(),
+                'payment_image' => $payment_image,
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+
+        $_SESSION['success'] = "Cập nhật trạng thái booking thành công!";
+        header("Location: ?mode=admin&act=update_from_booking_status&id=" . $booking_id);
+        exit;
     }
 
     public function ShowFromNewBooking($tour_id = null)
