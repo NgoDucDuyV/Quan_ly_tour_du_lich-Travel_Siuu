@@ -8,6 +8,7 @@ class SupplierModel
         $this->conn = connectDB();
     }
 
+    // Lấy danh sách nhà cung cấp (có tên loại dịch vụ)
     public function getallSupplier()
     {
         $stmt = $this->conn->query("
@@ -116,4 +117,123 @@ class SupplierModel
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Lấy loại dịch vụ theo id
+    public function getSupplierTypeById($id)
+    {
+        $sql = "SELECT * FROM supplier_types WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Thêm mới loại dịch vụ 
+    public function addSupplierType($name, $description = '', $stars = 3, $quality = 'Tốt')
+    {
+        $name        = addslashes($name);
+        $description = addslashes($description);
+        $now = date('Y-m-d H:i:s');
+
+        $sql = "INSERT INTO supplier_types 
+                (name, description, stars, quality, created_at, updated_at) 
+                VALUES 
+                ('$name', '$description', '$stars', '$quality', '$now', '$now')";
+
+        return $this->conn->query($sql);
+    }
+
+    // Sửa loại dịch vụ 
+    public function updateSupplierType($id, $name, $description = '', $stars = 3, $quality = 'Tốt')
+    {
+        $id          = (int)$id;
+        $name        = addslashes($name);
+        $description = addslashes($description);
+        $now         = date('Y-m-d H:i:s');
+
+        $sql = "UPDATE supplier_types SET
+                name        = '$name',
+                description = '$description',
+                stars       = '$stars',
+                quality     = '$quality',
+                updated_at  = '$now'
+                WHERE id = $id";
+
+        return $this->conn->query($sql);
+    }
+
+    public function deleteSupplierType($id)
+    {
+        try {
+            $check = $this->conn->prepare("SELECT COUNT(*) FROM suppliers WHERE supplier_types_id = ?");
+            $check->execute([$id]);
+            if ($check->fetchColumn() > 0) {
+                return false;
+            }
+
+            $sql = "DELETE FROM supplier_types WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    // Lấy thông tin 1 nhà cung cấp theo ID (dùng cho Edit)
+    public function getSupplierById($id)
+    {
+        $sql = "SELECT s.*, st.name AS type_name 
+                FROM suppliers s 
+                LEFT JOIN supplier_types st ON s.supplier_types_id = st.id 
+                WHERE s.id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Thêm nhà cung cấp
+    public function addSupplier($data)
+    {
+        $sql = "INSERT INTO suppliers 
+                (name, supplier_types_id, contact_name, contact_email, contact_phone, address, description, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            $data['name'],
+            $data['supplier_types_id'],
+            $data['contact_name'] ?? null,
+            $data['contact_email'] ?? null,
+            $data['contact_phone'] ?? null,
+            $data['address'] ?? null,
+            $data['description'] ?? null
+        ]);
+    }
+
+    // Sửa nhà cung cấp
+    public function updateSupplier($id, $data)
+    {
+        $sql = "UPDATE suppliers SET 
+                name = ?, supplier_types_id = ?, contact_name = ?, contact_email = ?, 
+                contact_phone = ?, address = ?, description = ?, updated_at = NOW()
+                WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            $data['name'],
+            $data['supplier_types_id'],
+            $data['contact_name'] ?? null,
+            $data['contact_email'] ?? null,
+            $data['contact_phone'] ?? null,
+            $data['address'] ?? null,
+            $data['description'] ?? null,
+            $id
+        ]);
+    }
+
+    // Xóa nhà cung cấp
+    public function deleteSupplier($id)
+    {
+        $sql = "DELETE FROM suppliers WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$id]);
+    }
 }
+?>

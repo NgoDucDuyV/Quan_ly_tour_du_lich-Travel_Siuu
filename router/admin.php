@@ -327,6 +327,38 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->deleteRequestGuide();
     })(),
+    //thêm loại dịch vụ
+    'add-supplier-type' => (function () {
+    requireAdmin();
+    (new AdminSupplierController)->addSupplierType();
+})(),
+//cập nhật loại dịch vụ
+'update-supplier-type' => (function () {
+    requireAdmin();
+    (new AdminSupplierController)->updateSupplierType();
+})(),
+//xóa dịch vụ
+'delete-supplier-type' => (function () {
+    requireAdmin();
+    (new AdminSupplierController)->deleteSupplierType();
+})(),
+//thêm nhà cung cấp
+    'add-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
 
 
     default => (function () {
@@ -349,6 +381,7 @@ if (isset($_SESSION['admin_logged'])) {
     } else if ($_SESSION['admin_role'] === 'guide') {
         $layoutController = new GuideLayoutController();
     }
+    
 }
 // chuyển hướng đến trang 404
 if ($act == '/' || $act == 'showformSigninAdmin' || $act == '404') {
