@@ -72,7 +72,8 @@
 
                             <tr class="border-b hover:bg-gray-50 transition">
                                 <td class="p-4 font-medium text-gray-900">
-                                    <?= htmlspecialchars($c['customer_name']) ?>
+                                    <?= htmlspecialchars($c['customer_name'] ?? $c['full_name'] ?? 'Không tên') ?>
+
                                 </td>
 
                                 <td class="p-4">

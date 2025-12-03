@@ -22,43 +22,32 @@ class GuideTourModel
         return $stmt->fetch(PDO::FETCH_ASSOC); // fetch một row duy nhất
     }
 
-    public function getAllSchedulesByGuideId($guide_id)
+    public function getCustomerListByScheduleId($schedule_id)
     {
         $sql = "
-            SELECT 
-            s.id AS schedule_id,
-            s.tour_id,
+        SELECT 
+            bc.id AS customer_id,
+            bc.full_name,
+            bc.birth_year,
+            bc.passport,
+            bc.customer_type_id,
             t.name AS tour_name,
-            t.description AS tour_location,
-            t.days,
-            t.nights,
-            g.id AS guide_id,
-            g.name AS guide_name,
             s.start_date,
-            s.end_date,
-            s.meeting_point,
-            s.vehicle,
-            s.hotel,
-            s.restaurant,
-            s.flight_info,
-            ss.name AS schedule_status,   -- từ bảng schedule_status
-            s.guide_notes,
-            gs.name AS guide_status       -- từ bảng guide_status
-        FROM schedules s
-        JOIN guides g ON g.id = s.guide_id
+            s.end_date
+        FROM attendance a
+        JOIN booking_customers bc ON bc.id = a.customer_id
+        JOIN schedules s ON s.id = a.schedule_id
         JOIN tours t ON t.id = s.tour_id
-        JOIN schedule_status ss ON ss.id = s.schedule_status_id
-        JOIN guide_status gs ON gs.id = s.guide_status_id
-        WHERE s.guide_id = :guide_id
-        ORDER BY s.start_date ASC
-        LIMIT 0, 25;
+        WHERE a.schedule_id = :sid
+        ORDER BY bc.full_name ASC
     ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':guide_id', $guide_id, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute(['sid' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 
     // Thêm nhật ký mới
     public function insertLog($schedule_id, $guide_id, $content, $images)
@@ -157,6 +146,8 @@ class GuideTourModel
 
 
 
+
+
     // Lấy lịch trình theo HDV
     public function getSchedulesForGuide($guide_id)
     {
@@ -171,19 +162,18 @@ class GuideTourModel
             s.vehicle,
             s.hotel,
             s.restaurant,
-            ss.name AS schedule_status       -- lấy từ bảng schedule_status
+            s.status AS schedule_status
         FROM schedules s
         JOIN tours t ON t.id = s.tour_id
-        JOIN schedule_status ss ON ss.id = s.schedule_status_id   -- join bảng trạng thái
         WHERE s.guide_id = :guide_id
         ORDER BY s.start_date ASC
-        LIMIT 0, 25;
     ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     // Lấy nhật ký theo HDV
     public function getLogsByGuide($guide_id)
     {
