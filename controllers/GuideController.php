@@ -26,23 +26,34 @@ class GuideController
 
     // ListGuide
     // Danh sách khách của HDV
-    public function listGuide($tour_id = null, $start_date = null, $end_date = null)
+    public function listGuide()
     {
-        $guide_id = $_SESSION['admin_logged']['id'];
+        $user_id = $_SESSION['admin_logged']['id'];
 
         $model = new GuideTourModel();
 
-        if (empty($tour_id)) {
-            $datacustomers = $model->getCustomerListByTourid($tour_id, $start_date, $end_date);
-        }
-        // Lấy dữ liệu khách theo hướng dẫn viên
+        // Lấy đúng guide_id từ bảng guides
+        $guide = $model->getGuideUserid($user_id);
+        $guide_id = $guide['id'];
 
-        // echo "<pre>";
-        // var_dump($datacustomers);
-        // echo "<pre>";
-        // die;
+        // Lấy tour hôm nay của HDV
+        $todayTour = $model->getTodayTour($guide_id);
+
+        $datacustomers = [];
+
+        // Nếu hôm nay có tour → lấy danh sách khách
+        if ($todayTour) {
+            $tour_id = $todayTour['tour_id'];
+            $start = $todayTour['start_date'];
+            $end   = $todayTour['end_date'];
+
+            $datacustomers = $model->getCustomerListByTourid($tour_id, $start, $end);
+        }
+
+
         require "./views/Admin/listguide.php";
     }
+
 
     // ScheduleGuide
     // Lịch trình của HDV
@@ -86,11 +97,19 @@ class GuideController
             'diary' => $diary,
             'tours' => $tours
         ];
+        // echo "<pre>";
+        // print_r($guide);
+        // die;
     }
     // Thêm nhật ký mới cho HDV
     public function saveDiaryGuide()
     {
-        $guide_id = $_SESSION['admin_logged']['id'];
+        // Lấy user_id đang đăng nhập
+        $user_id = $_SESSION['admin_logged']['id'];
+
+        // Lấy đúng guide_id từ bảng guides
+        $guide = (new GuideTourModel())->getGuideUserid($user_id);
+        $guide_id = $guide['id'];  // <-- Luôn = 2
 
         $schedule_id = $_POST['schedule_id'];
         $content = $_POST['content'];
@@ -112,13 +131,14 @@ class GuideController
 
         (new GuideTourModel())->insertLog(
             $schedule_id,
-            $guide_id,
+            $guide_id,   // <-- bây giờ đúng: 2
             $content,
             $uploadedImages
         );
 
         header("Location: ?mode=admin&act=diaryguide");
     }
+
     // Xóa nhật ký của HDV
     public function deleteDiaryGuide()
     {
@@ -135,19 +155,19 @@ class GuideController
         exit;
     }
     // Chỉnh sửa nhật ký của HDV
-    // public function editDiaryGuide()
-    // {
-    //     $id = $_GET['id'] ?? null;
+    public function editDiaryGuide()
+    {
+        $id = $_GET['id'] ?? null;
 
-    //     if (!$id) die("Thiếu ID!");
+        if (!$id) die("Thiếu ID!");
 
-    //     $model = new GuideTourModel();
+        $model = new GuideTourModel();
 
-    //     $log = $model->getLogById($id);
-    //     $tours = $model->getSchedulesByGuide($_SESSION['admin_logged']['id']);
+        $log = $model->getLogById($id);
+        $tours = $model->getSchedulesForGuide($_SESSION['admin_logged']['id']);
 
-    //     require "./views/Admin/editDiaryguide.php";
-    // }
+        require "./views/Admin/editDiaryguide.php";
+    }
     // Cập nhật nhật ký của HDV
     public function updateDiaryGuide()
     {
@@ -164,10 +184,16 @@ class GuideController
     // Check-in và điểm danh của HDV
     public function checkGuide()
     {
-        $guide_id = $_SESSION['admin_logged']['id'];
+        // Lấy user_id
+        $user_id = $_SESSION['admin_logged']['id'];
+
+        // Lấy đúng guide_id từ bảng guides
+        $guide = (new GuideTourModel())->getGuideUserid($user_id);
+        $guide_id = $guide['id'];   // luôn = 2 đối với Lê Văn Hưng
 
         $model = new GuideTourModel();
 
+        // Lấy tour hôm nay
         $todayTour = $model->getTodayTour($guide_id);
 
         $customers = [];
@@ -180,6 +206,27 @@ class GuideController
             'customers' => $customers
         ];
     }
+    // Lưu điểm danh 
+    public function saveAttendance()
+    {
+        // Đọc dữ liệu JSON từ fetch()
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!$data || !is_array($data)) {
+            echo "Không nhận được dữ liệu!";
+            return;
+        }
+
+        $model = new GuideTourModel();
+
+        foreach ($data as $attendanceId => $status) {
+            $model->updateAttendance($attendanceId, $status);
+        }
+
+        echo "success";
+    }
+
+
 
     // RequestGuide
     // Yêu cầu đặc biệt của HDV

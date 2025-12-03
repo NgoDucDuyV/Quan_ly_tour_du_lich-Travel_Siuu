@@ -284,10 +284,10 @@ echo match ($act) {
         (new GuideController())->deleteDiaryGuide();
     })(),
     // Sửa nhật ký (hiển thị form)
-    // 'editDiaryGuide' => (function () {
-    //     requireGuide();
-    //     (new GuideLayoutController())->editDiaryGuide();
-    // })(),
+    'editDiaryGuide' => (function () {
+        requireGuide();
+        (new GuideController())->editDiaryGuide();
+    })(),
     // Update nhật ký sau khi sửa
     'updateDiaryGuide' => (function () {
         requireGuide();
@@ -338,6 +338,12 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->deleteRequestGuide();
     })(),
+    // 
+    'saveAttendance' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendance();
+    })(),
+
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
         requireAdmin();
@@ -359,6 +365,7 @@ echo match ($act) {
         (new AdminSupplierController)->addSupplier();
     })(),
 
+
     // sửa nhà cung cấp
     'update-supplier' => (function () {
         requireAdmin();
@@ -371,7 +378,17 @@ echo match ($act) {
         (new AdminSupplierController)->deleteSupplier();
     })(),
 
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
 
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
         exit;
