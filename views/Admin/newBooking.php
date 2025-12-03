@@ -335,20 +335,28 @@ if (!empty($tourFullData)) {
                         </div>
                         <div>
                             <label class="block text-sm font-medium">Loại nhóm *</label>
-                            <select
-                                name="group_type_id"
-                                id="group_type"
-                                class="w-full p-4 border rounded-xl"
-                                required>
+                            <select name="group_type_id" id="group_type" class="w-full p-4 border rounded-xl" required>
                                 <option value="">-- Chọn loại nhóm --</option>
-                                <?php foreach ($dataGroupType as $group): ?>
-                                    <option
-                                        value="<?= $group['id'] ?>"
-                                        data-percent="<?= $group['price_change_percent'] ?>">
-                                        <?= ucfirst(str_replace('_', ' ', $group['group_name'])) ?>
-                                        (<?= $group['price_change_percent'] >= 0 ? '+' : '' ?><?= $group['price_change_percent'] ?>% người)
+
+                                <?php if (!empty($dataGroupType) && is_array($dataGroupType)): ?>
+                                    <?php foreach ($dataGroupType as $group): ?>
+                                        <?php
+                                        // Bảo vệ dữ liệu: đảm bảo các key tồn tại
+                                        $id       = $group['id'] ?? '';
+                                        $percent  = $group['price_change_percent'] ?? 0;
+                                        $name     = $group['group_name'] ?? 'Không tên';
+                                        ?>
+                                        <option value="<?= htmlspecialchars($id) ?>"
+                                            data-percent="<?= htmlspecialchars($percent) ?>">
+                                            <?= htmlspecialchars(ucfirst(str_replace('_', ' ', $name))) ?>
+                                            (<?= $percent >= 0 ? '+' : '' ?><?= htmlspecialchars($percent) ?>% người)
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="" disabled class="text-red-600">
+                                        Không có dữ liệu loại nhóm
                                     </option>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             </select>
                         </div>
 
@@ -364,275 +372,332 @@ if (!empty($tourFullData)) {
                         </div>
                     </div>
 
-                    <div id="schedule-box" class="mt-6" style="display:none;">
-                        <h6 class="text-xl font-bold text-hover mb-5">Chọn lịch trình</h6>
-                        <select id="schedule-select" name="schedule_id"
-                            class="w-full p-3 border rounded-xl shadow focus:ring-blue-500 focus:border-blue-500"
-                            onchange="showScheduleDates(this)" required>
-                            <option value="">-- Chọn lịch trình Theo Tour --</option>
 
-                            <?php foreach ($dataSchedulesByTourId as $s): ?>
-                                <option value="<?= $s['id'] ?>"
-                                    data-start="<?= $s['start_date'] ?>"
-                                    data-end="<?= $s['end_date'] ?>">
-                                    <?= $s['start_date'] ?> → <?= $s['end_date'] ?> | HDV #<?= $s['guide_id'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                    <?php
+                    // LỌC + SẮP XẾP AN TOÀN – KHÔNG BAO GIỜ LỖI
+                    $validSchedules = [];
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    if (!empty($dataSchedulesByTourId) && is_array($dataSchedulesByTourId)) {
+                        $validSchedules = array_filter($dataSchedulesByTourId, function ($s) {
+                            return !empty($s['start_date'])
+                                && !empty($s['end_date'])
+                                && strtotime($s['end_date']) >= strtotime($s['start_date'])
+                                && isset($s['schedule_status_id'])
+                                && in_array((int)$s['schedule_status_id'], [1, 2, 3]);
+                        });
+
+                        // Sắp xếp theo ngày tăng dần
+                        usort($validSchedules, fn($a, $b) => strtotime($a['start_date']) <=> strtotime($b['start_date']));
+                    }
+                    ?>
+
+                    <div id="schedule-box" class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200" style="display:none;">
+                        <h6 class="text-2xl font-bold text-main mb-6 flex items-center gap-3">
+                            Chọn Lịch Trình Có Sẵn (Dành riêng cho Khách lẻ)
+                        </h6>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Ngày bắt đầu</label>
-                                <input type="date" id="start-date-display" class="w-full p-3 border rounded-xl shadow bg-gray-100 cursor-not-allowed" readonly>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Lịch khả dụng</label>
+                                <select id="schedule-select" name="schedule_id"
+                                    class="w-full p-4 border-2 border-slate-300 rounded-xl focus:border-main focus:ring-4 focus:ring-main/20 transition">
+                                    <option value="">-- Chọn lịch trình --</option>
+
+                                    <?php if (!empty($validSchedules)): ?>
+                                        <?php foreach ($validSchedules as $s): ?>
+                                            <?php
+                                            $start  = date('d/m/Y', strtotime($s['start_date']));
+                                            $end    = date('d/m/Y', strtotime($s['end_date']));
+                                            $status = $s['schedule_status_id'] == 1 ? 'Sẵn sàng' : ($s['schedule_status_id'] == 2 ? 'Đang xử lý' : 'Đã khóa');
+                                            $color  = $s['schedule_status_id'] == 1 ? 'text-emerald-700' : ($s['schedule_status_id'] == 2 ? 'text-orange-700' : 'text-red-700');
+                                            $guide  = $s['guide_id'] ?? 'Chưa có';
+                                            ?>
+                                            <option value="<?= $s['id'] ?>"
+                                                data-start="<?= $s['start_date'] ?>"
+                                                data-end="<?= $s['end_date'] ?>">
+                                                <?= $start ?> to <?= $end ?> | HDV #<?= htmlspecialchars($guide) ?>
+                                                <span class="<?= $color ?> font-medium">(<?= $status ?>)</span>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="" disabled class="text-gray-500">
+                                            Không có lịch khả dụng
+                                        </option>
+                                    <?php endif; ?>
+                                </select>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Ngày kết thúc</label>
-                                <input type="date" id="end-date-display" class="w-full p-3 border rounded-xl shadow bg-gray-100 cursor-not-allowed" readonly>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày khởi hành</label>
+                                    <input type="text" id="start-date-display"
+                                        class="w-full p-4 bg-white border-2 border-slate-300 rounded-xl font-bold text-main"
+                                        readonly placeholder="Chưa chọn">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày kết thúc</label>
+                                    <input type="text" id="end-date-display"
+                                        class="w-full p-4 bg-white border-2 border-slate-300 rounded-xl font-bold text-main"
+                                        readonly placeholder="Chưa chọn">
+                                </div>
+                            </div>
+
+                            <div class="bg-white/80 rounded-xl p-5 border border-blue-200">
+                                <p class="text-sm text-slate-600">Chọn lịch để xem chi tiết dịch vụ bên dưới</p>
                             </div>
                         </div>
+
+                        <!-- Khu vực hiển thị chi tiết dịch vụ -->
+                        <div id="schedule-detail-container" class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
                     </div>
-                    <div id="schedule-detail-container" class="mt-4 grid gap-4 md:grid-cols-2"></div>
-
-
-                    <script>
-                        function showScheduleDates(select) {
-                            const option = select.options[select.selectedIndex];
-
-                            const start = option.getAttribute("data-start");
-                            const end = option.getAttribute("data-end");
-
-                            // Gán vào input
-                            document.getElementById("start-date-display").value = start || "";
-                            document.getElementById("end-date-display").value = end || "";
-                        }
-                    </script>
-
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
                             const groupTypeSelect = document.getElementById("group_type");
-
-                            // Các khối muốn ẩn/hiện
-                            const blocks = {
-                                schedule: document.getElementById("schedule-box"),
-                                service: document.getElementById("tour-service-box"),
-                                departure: document.getElementById("departure-box")
-                            };
-
+                            const scheduleBox = document.getElementById("schedule-box");
+                            const serviceBox = document.getElementById("tour-service-box");
+                            const departureBox = document.getElementById("departure-box");
                             const scheduleSelect = document.getElementById("schedule-select");
                             const scheduleContainer = document.getElementById("schedule-detail-container");
 
-                            const servicehtml = document.getElementById("tour-service-box").innerHTML;
-                            const departurehtml = document.getElementById("departure-box").innerHTML;
+                            // Lưu nội dung gốc
+                            const serviceHTML = serviceBox?.innerHTML || '';
+                            const departureHTML = departureBox?.innerHTML || '';
 
-                            function toggleBlocks(value) {
-                                // Nếu là khách lẻ hoặc khách lẻ theo yêu cầu
-                                if (value == "1") {
-                                    blocks.schedule.style.display = "block";
-                                    blocks.service.style.display = "none";
-                                    blocks.departure.style.display = "none";
-                                    blocks.service.innerHTML = "";
-                                    blocks.departure.innerHTML = "";
-                                    scheduleSelect.disabled = false;
-                                } else {
-                                    blocks.schedule.style.display = "none";
-                                    blocks.service.style.display = "block";
-                                    blocks.departure.style.display = "block";
-                                    blocks.service.innerHTML = servicehtml;
-                                    blocks.departure.innerHTML = departurehtml;
-                                    loadBookedDates();
-                                    loadSupplierServices();
-                                    scheduleSelect.disabled = true;
-                                    scheduleSelect.value = "";
+                            function toggleSchedule() {
+                                const value = groupTypeSelect?.value || '';
+
+                                if (value === "1") { // Khách lẻ
+                                    scheduleBox.style.display = "block";
+                                    if (serviceBox) {
+                                        serviceBox.style.display = "none";
+                                        serviceBox.innerHTML = "";
+                                    }
+                                    if (departureBox) {
+                                        departureBox.style.display = "none";
+                                        departureBox.innerHTML = "";
+                                    }
+                                    if (scheduleSelect) scheduleSelect.disabled = false;
+                                } else { // Đoàn
+                                    scheduleBox.style.display = "none";
+                                    if (serviceBox) {
+                                        serviceBox.style.display = "block";
+                                        serviceBox.innerHTML = serviceHTML;
+                                    }
+                                    if (departureBox) {
+                                        departureBox.style.display = "block";
+                                        departureBox.innerHTML = departureHTML;
+                                    }
+
+                                    // Reset
+                                    if (scheduleSelect) {
+                                        scheduleSelect.value = "";
+                                        scheduleSelect.disabled = true;
+                                    }
                                     scheduleContainer.innerHTML = "";
+                                    document.getElementById("start-date-display").value = "";
+                                    document.getElementById("end-date-display").value = "";
+
+                                    if (typeof loadBookedDates === 'function') loadBookedDates();
+                                    if (typeof loadSupplierServices === 'function') loadSupplierServices();
                                 }
                             }
 
-                            // Khi chọn nhóm
-                            groupTypeSelect.addEventListener("change", function() {
-                                toggleBlocks(this.value);
+                            groupTypeSelect?.addEventListener("change", toggleSchedule);
+                            toggleSchedule();
+
+                            // Hiển thị ngày + load dịch vụ
+                            scheduleSelect?.addEventListener("change", function() {
+                                const option = this.selectedOptions[0];
+                                if (!option || !option.value) {
+                                    document.getElementById("start-date-display").value = "";
+                                    document.getElementById("end-date-display").value = "";
+                                    scheduleContainer.innerHTML = "";
+                                    return;
+                                }
+
+                                const start = option.dataset.start;
+                                const end = option.dataset.end;
+                                document.getElementById("start-date-display").value = start ? start.split('-').reverse().join('/') : "";
+                                document.getElementById("end-date-display").value = end ? end.split('-').reverse().join('/') : "";
+
+                                loadScheduleDetails(option.value);
                             });
 
-                            // Khởi tạo khi load page
-                            toggleBlocks(groupTypeSelect.value);
+                            function loadScheduleDetails(scheduleId) {
+                                if (!scheduleId) return;
 
-                            // Khi chọn lịch, gọi API lấy dịch vụ + nhà cung cấp
-                            scheduleSelect.addEventListener("change", function() {
-                                const selectedId = this.value;
-                                scheduleContainer.innerHTML = "";
-
-                                if (!selectedId) return;
+                                scheduleContainer.innerHTML = `<div class="col-span-full text-center py-12"><i class="fa-solid fa-spinner fa-spin text-4xl text-main"></i></div>`;
 
                                 axios.post(`${BASE_URL}?mode=admin&act=getAllSchedulesByid`, {
-                                        schedules_id: selectedId
+                                        schedules_id: scheduleId
                                     })
                                     .then(({
                                         data
                                     }) => {
-                                        console.log(data);
-
-                                        scheduleContainer.innerHTML = ''; // Reset trước khi append dữ liệu
-
+                                        scheduleContainer.innerHTML = "";
                                         if (!data || data.length === 0) {
-                                            scheduleContainer.innerHTML = `<p class="text-gray-500 italic">Không có dịch vụ nào.</p>`;
+                                            scheduleContainer.innerHTML = `<div class="col-span-full text-center py-16 text-slate-500 text-lg">Chưa có dịch vụ nào cho lịch này</div>`;
                                             return;
                                         }
 
                                         data.forEach(item => {
                                             scheduleContainer.innerHTML += `
-                                                <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200 transition hover:shadow-xl mb-4">
-                                                    <h3 class="text-xl font-bold text-main mb-4">${item.service_name}</h3>
-
-                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                                                        <div>
-                                                            <p class="text-gray-500 font-medium">Số lượng:</p>
-                                                            <p class="text-gray-800">${item.service_quantity}</p>
-                                                        </div>
-                                                        <div>
-                                                            <p class="text-gray-500 font-medium">Giá dịch vụ:</p>
-                                                            <p class="text-main font-semibold">${Number(item.service_price).toLocaleString()} VNĐ</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-4">
-                                                        <p class="text-gray-500 font-medium">Nhà cung cấp:</p>
-                                                        <p class="text-gray-800 font-medium">${item.supplier_name}</p>
-                                                        <p class="text-gray-600 text-sm">${item.address}</p>
-                                                    </div>
-
-                                                    <div>
-                                                        <p class="text-gray-500 font-medium">Liên hệ:</p>
-                                                        <p class="text-gray-800">${item.contact_name} | ${item.contact_phone}</p>
-                                                        <p class="text-gray-600 text-sm">${item.contact_email}</p>
-                                                    </div>
-                                                </div>
-                                            `;
+                            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 hover:shadow-2xl transition">
+                                <h3 class="text-xl font-bold text-main mb-4">${item.service_name || 'Dịch vụ'}</h3>
+                                <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                                    <div><strong>Số lượng:</strong> ${item.service_quantity || 1}</div>
+                                    <div><strong>Giá:</strong> <span class="text-main font-bold text-lg">${Number(item.service_price || 0).toLocaleString('vi-VN')} VNĐ</span></div>
+                                </div>
+                                <hr class="border-dashed border-slate-300 my-4">
+                                <div class="text-sm space-y-2">
+                                    <p class="font-bold text-slate-800">${item.supplier_name || 'Chưa có NCC'}</p>
+                                    <p class="text-xs text-slate-600">${item.address || ''}</p>
+                                    <p class="text-slate-700">${item.contact_name || ''} | ${item.contact_phone || ''}</p>
+                                </div>
+                            </div>`;
                                         });
                                     })
-                                    .catch(error => {
-                                        console.error("Lỗi khi lấy chi tiết dịch vụ:", error);
-                                        scheduleContainer.innerHTML = `<p class="text-red-500">Không thể tải dịch vụ. Vui lòng thử lại.</p>`;
+                                    .catch(() => {
+                                        scheduleContainer.innerHTML = `<div class="col-span-full text-center py-12 text-red-600">Lỗi tải dịch vụ!</div>`;
                                     });
-                            });
+                            }
                         });
                     </script>
                     <?php
-                    $bookedDates = [];
-                    $bookingDetails = []; // map ngày -> chi tiết booking chưa hoàn tất
+                    $bookedDates     = [];
+                    $bookingDetails  = [];
 
-                    foreach ($databookingbytourid as $booking) {
-                        if (!in_array($booking['status_code'], ['HOANTAT'])) {
-                            $bookedDates[] = $booking['start_date'];
-                            $bookingDetails[$booking['start_date']][] = [
-                                'booking_code' => $booking['booking_code'],
-                                'customer_name' => $booking['customer_name'],
-                                'number_of_people' => $booking['number_of_people'],
-                                'status_code' => $booking['status_code'],
-                                'payment_status_code' => $booking['payment_status_code']
+                    if (!empty($databookingbytourid) && is_array($databookingbytourid)) {
+                        foreach ($databookingbytourid as $b) {
+                            // Kiểm tra trạng thái an toàn
+                            $statusCode = $b['status_code'] ?? $b['booking_status'] ?? $b['status'] ?? '';
+                            if (in_array(strtoupper($statusCode), ['HOANTAT', 'HUY', 'COMPLETED', 'CANCELLED'])) {
+                                continue;
+                            }
+
+                            $startDate = $b['start_date'] ?? null;
+                            if (!$startDate || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $startDate)) {
+                                continue;
+                            }
+
+                            $bookedDates[] = $startDate;
+
+                            $bookingDetails[$startDate][] = [
+                                'code'     => $b['booking_code'] ?? 'N/A',
+                                'name'     => $b['customer_name'] ?? 'Khách đoàn',
+                                'people'   => (int)($b['number_of_people'] ?? 0),
+                                'status'   => $b['status_name'] ?? $statusCode,
+                                'payment'  => $b['payment_status_name'] ?? $b['payment_status_code'] ?? 'Chưa rõ',
+                                'phone'    => $b['customer_phone'] ?? '',
                             ];
                         }
                     }
 
-                    $numberOfDays = $tourFullData['oneTour']['days'];
+                    // Loại trùng ngày
+                    $bookedDates = array_unique($bookedDates);
+
+                    // Thông tin tour – bảo vệ dữ liệu
+                    $numberOfDays = $tourFullData['oneTour']['days'] ?? 1;
                     $today = date('Y-m-d');
                     ?>
 
-                    <div id="departure-box" class="mb-6 p-4 bg-white rounded-2xl shadow-md">
-                        <h6 class="text-xl font-bold text-hover mb-5">Chọn ngày khởi hành</h6>
+                    <div id="departure-box" class="mb-6 p-5 bg-white rounded-2xl shadow-lg border">
+                        <h6 class="text-lg font-bold text-main mb-4">Chọn ngày khởi hành</h6>
 
-                        <label for="departure_date" class="block text-sm font-semibold text-gray-700 mb-2">Ngày khởi hành *</label>
-                        <input type="date" id="departure_date" name="departure_date"
-                            class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition-colors hover:border-indigo-300 cursor-pointer"
-                            min="<?= $today ?>" required>
-
-                        <label for="end_date" class="block text-sm font-semibold text-gray-700 mt-4 mb-2">Ngày kết thúc</label>
-                        <input type="date" id="end_date" name="end_date"
-                            class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition-colors hover:border-indigo-300 cursor-pointer" required>
-
-                        <div id="date-warning" class="mt-2 hidden space-y-1">
-                            <p id="past-warning" class="text-red-500 text-sm">Ngày này đã qua!</p>
-                            <p id="booked-warning" class="text-red-500 text-sm">Ngày này đã có booking chưa hoàn tất!</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ngày khởi hành *</label>
+                                <input type="date" id="departure_date" name="departure_date"
+                                    class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-main focus:border-main transition"
+                                    min="<?= $today ?>" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ngày kết thúc (tự động)</label>
+                                <input type="date" id="end_date" name="end_date"
+                                    class="w-full p-3 border rounded-xl bg-gray-50 font-medium text-main" readonly>
+                            </div>
                         </div>
 
-                        <div id="booking-details" class="mt-3 p-3 border rounded-xl bg-red-50 hidden"></div>
+                        <div id="conflict-info" class="mt-4 hidden">
+                            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-xl p-5">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <svg class="w-7 h-7 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.366-.446.982-.446 1.348 0l6.726 8.214c.367.447.16 1.09-.404 1.09H3.375c-.564 0-.77-.643-.404-1.09l6.726-8.214zM10 7.5a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0v-3A.75.75 0 0110 7.5zm.75 5.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-bold text-amber-900 text-lg">Ngày này đã có đoàn khác đặt</h4>
+                                        <p class="text-sm text-amber-800">Vẫn có thể tạo booking mới – vui lòng kiểm tra kỹ thông tin bên dưới</p>
+                                    </div>
+                                </div>
+                                <div id="conflict-details" class="space-y-3"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <script>
                         function loadBookedDates() {
-                            const bookedDates = <?= json_encode($bookedDates); ?>;
-                            const bookingDetails = <?= json_encode($bookingDetails); ?>;
-                            const numberOfDays = <?= $numberOfDays; ?>;
+                            const bookedDates = <?= json_encode(array_values($bookedDates)) ?>;
+                            const bookingDetails = <?= json_encode($bookingDetails) ?>;
+                            const numberOfDays = <?= (int)$numberOfDays ?>;
+                            const today = '<?= $today ?>';
 
-                            const dateInput = document.getElementById('departure_date');
-                            const endDateInput = document.getElementById('end_date');
-                            const dateWarning = document.getElementById('date-warning');
-                            const pastWarning = document.getElementById('past-warning');
-                            const bookedWarning = document.getElementById('booked-warning');
-                            const detailsDiv = document.getElementById('booking-details');
+                            const departureInput = document.getElementById('departure_date');
+                            const endInput = document.getElementById('end_date');
+                            const conflictInfo = document.getElementById('conflict-info');
+                            const conflictDetails = document.getElementById('conflict-details');
 
-                            // Hàm format ngày YYYY-MM-DD
-                            function formatDate(date) {
-                                const d = new Date(date);
-                                const day = String(d.getDate()).padStart(2, '0');
-                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                const year = d.getFullYear();
-                                return `${year}-${month}-${day}`;
+                            if (!departureInput) return; // Bảo vệ nếu không có element
+
+                            function calcEndDate(start) {
+                                if (!start) return '';
+                                const d = new Date(start);
+                                d.setDate(d.getDate() + numberOfDays);
+                                return d.toISOString().split('T')[0];
                             }
 
-                            // Khi chọn ngày khởi hành
-                            dateInput.addEventListener('change', function() {
-                                const selectedDate = this.value;
-                                const today = formatDate(new Date());
+                            departureInput.addEventListener('change', function() {
+                                const selected = this.value;
 
-                                // Reset cảnh báo
-                                dateWarning.classList.add('hidden');
-                                pastWarning.style.display = 'none';
-                                bookedWarning.style.display = 'none';
-                                detailsDiv.classList.add('hidden');
-                                detailsDiv.innerHTML = '';
-                                this.classList.remove('border-red-500');
+                                // Reset
+                                conflictInfo.classList.add('hidden');
+                                conflictDetails.innerHTML = '';
+                                endInput.value = '';
 
-                                if (!selectedDate) return;
+                                if (!selected) return;
 
-                                if (selectedDate < today) {
-                                    dateWarning.classList.remove('hidden');
-                                    pastWarning.style.display = 'block';
-                                    this.classList.add('border-red-500');
-                                    endDateInput.value = '';
-                                    return;
-                                }
+                                endInput.value = calcEndDate(selected);
 
-                                // Gợi ý ngày kết thúc = ngày khởi hành + số ngày tour
-                                const startDate = new Date(selectedDate);
-                                const suggestedEnd = new Date(startDate);
-                                suggestedEnd.setDate(suggestedEnd.getDate() + numberOfDays);
+                                // Kiểm tra trùng ngày
+                                if (bookedDates.includes(selected)) {
+                                    conflictInfo.classList.remove('hidden');
 
-                                endDateInput.value = formatDate(suggestedEnd);
+                                    const bookings = bookingDetails[selected] || [];
+                                    let html = '';
 
-                                // Kiểm tra booking trùng
-                                if (bookedDates.includes(selectedDate)) {
-                                    dateWarning.classList.remove('hidden');
-                                    bookedWarning.style.display = 'block';
-                                    this.classList.add('border-red-500');
+                                    bookings.forEach((b, i) => {
+                                        const statusText = (b.status || '').replace(/_/g, ' ').toUpperCase() || 'CHƯA XÁC ĐỊNH';
+                                        const statusColor = b.status === 'da_coc' ? 'bg-blue-100 text-blue-800' :
+                                            b.status === 'cho_xac_nhan' ? 'bg-yellow-100 text-yellow-800' :
+                                            b.status === 'hoan_tat' ? 'bg-green-100 text-green-800' :
+                                            'bg-gray-100 text-gray-700';
 
-                                    const bookings = bookingDetails[selectedDate];
-                                    let html = '<h4 class="font-semibold mb-2 text-red-600">Chi tiết booking trùng:</h4>';
-                                    html += '<table class="w-full border-collapse text-sm">';
-                                    html += '<thead><tr class="bg-red-100"><th class="border px-2 py-1">Mã booking</th><th class="border px-2 py-1">Khách hàng</th><th class="border px-2 py-1">Số lượng</th><th class="border px-2 py-1">Trạng thái</th><th class="border px-2 py-1">Thanh toán</th></tr></thead>';
-                                    html += '<tbody>';
-                                    bookings.forEach(b => {
-                                        html += `<tr class="bg-white hover:bg-red-50">
-                                        <td class="border px-2 py-1">${b.booking_code}</td>
-                                        <td class="border px-2 py-1">${b.customer_name}</td>
-                                        <td class="border px-2 py-1">${b.number_of_people}</td>
-                                        <td class="border px-2 py-1 capitalize">${b.status_code.replace('_',' ')}</td>
-                                        <td class="border px-2 py-1">${b.payment_status_code}</td>
-                                    </tr>`;
+                                        html += `
+                        <div class="bg-white rounded-lg border border-amber-200 p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-bold text-main">#${i+1} • ${b.code || 'N/A'}</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor}">${statusText}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div><span class="text-gray-500">Khách:</span> <strong>${b.name || '—'}</strong></div>
+                                <div><span class="text-gray-500">Số khách:</span> <strong class="text-orange-600">${b.people || 0} người</strong></div>
+                                <div><span class="text-gray-500">Thanh toán:</span> <strong>${b.payment || '—'}</strong></div>
+                                <div><span class="text-gray-500">Liên hệ:</span> <strong>${b.phone || '—'}</strong></div>
+                            </div>
+                        </div>`;
                                     });
-                                    html += '</tbody></table>';
-                                    detailsDiv.innerHTML = html;
-                                    detailsDiv.classList.remove('hidden');
+
+                                    conflictDetails.innerHTML = html;
                                 }
                             });
                         }

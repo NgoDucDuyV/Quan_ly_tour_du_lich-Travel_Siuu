@@ -11,13 +11,20 @@ class SchedulesModel
     public function getAllSchedulesByTourId($tour_id)
     {
         $sql = "
-        SELECT sch.*
+        SELECT 
+        sch.*
         FROM schedules sch
-        JOIN bookings b 
-        ON sch.tour_id = b.tour_id 
-        AND sch.start_date <= b.start_date 
-        AND sch.end_date >= b.end_date
-        WHERE sch.tour_id = :tour_id AND b.group_type = 'doan'
+        WHERE sch.tour_id = :tour_id
+        -- Chỉ lấy những lịch CHƯA bị Đoàn nào chiếm giữ
+        AND NOT EXISTS (
+            SELECT 1
+            FROM bookings b
+            INNER JOIN group_type gt ON b.group_type_id = gt.id
+            WHERE b.tour_id = sch.tour_id
+                AND gt.group_code = 'DOAN'
+                AND b.start_date <= sch.end_date
+                AND b.end_date   >= sch.start_date
+        )
         ORDER BY sch.start_date ASC;
         ";
         $stmt = $this->conn->prepare($sql);

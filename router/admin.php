@@ -142,12 +142,12 @@ echo match ($act) {
     })(),
     'newBooking' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
+        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : "");
     })(),
+
     'createBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->createBooking();
-        exit;
     })(),
 
     // call api js booking
