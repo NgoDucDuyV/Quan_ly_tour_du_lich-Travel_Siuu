@@ -1,209 +1,175 @@
 <div class="max-w-[1900px] mx-auto p-6">
-    <!-- breadcrumb -->
+    <!-- Breadcrumb -->
     <nav class="text-sm text-slate-500 mb-4" aria-label="Breadcrumb">
-        <ul class="inline-flex items-center space-x-2">
+        <ol class="inline-flex items-center space-x-2">
             <li>Quản trị viên</li>
-            <li class="before:content-['/'] before:px-2 before:text-slate-300 text-slate-400">Quản lý booking</li>
-        </ul>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300">Quản lý booking</li>
+        </ol>
     </nav>
+
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center space-x-3 bg-">
-            <h1 class="text-3xl font-[500] text-slate-900 m-0">Danh Sách Booking</h1>
-            <span class="inline-flex items-center justify-center font-[500] text-white px-2 py-0.5 rounded-full bg-main">
-                <?= count($bookings) ?>
+        <div class="flex items-center space-x-4">
+            <h1 class="text-3xl font-semibold text-slate-900">Danh Sách Booking</h1>
+            <span class="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-main text-white font-medium text-sm">
+                <?= count($bookings) ?> booking
             </span>
         </div>
-
-        <div class="flex items-center space-x-3">
-
-            <a href="?mode=admin&act=newBooking" class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
-                <i class="fa-solid fa-plus"></i>
-                Tạo mới Booking
+        <div class="flex items-center gap-3">
+            <a href="<?= BASE_URL ?>?act=newBooking" class="flex items-center gap-2 px-5 py-2.5 bg-main hover:bg-hover text-white rounded-lg text-sm font-medium transition">
+                <i class="fa-solid fa-plus"></i> Tạo Booking Mới
             </a>
-
-            <button class="flex items-center gap-2 px-4 py-2 border rounded-md
-                text-sm text-dark hover:bg-main hover:text-white transition-all duration-200 ease-out">
-                <i class="fa-solid fa-filter"></i>
-                Lọc
+            <button class="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-lg text-sm hover:bg-slate-50">
+                <i class="fa-solid fa-filter"></i> Lọc
             </button>
         </div>
     </div>
 
-    <!-- thông báo -->
+    <!-- Thông báo -->
     <?php if (isset($_SESSION['success'])): ?>
-        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-md border border-green-300 text-sm font-medium">
-            <?= $_SESSION['success'];
-            unset($_SESSION['success']); ?>
+        <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success'];
+                                                        unset($_SESSION['success']); ?>
         </div>
     <?php endif; ?>
     <?php if (isset($_SESSION['error'])): ?>
-        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md border border-red-300 text-sm font-medium">
-            <?= $_SESSION['error'];
-            unset($_SESSION['error']); ?>
+        <div class="mb-5 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-xmark-circle"></i> <?= $_SESSION['error'];
+                                                        unset($_SESSION['error']); ?>
         </div>
     <?php endif; ?>
-    <?php
 
-    // Kiểm tra nếu có thông báo
-    if (isset($_SESSION['success_message'])) {
-        echo '<div style="padding:10px; background-color:#d4edda; color:#155724; border:1px solid #c3e6cb; border-radius:5px; margin-bottom:15px;">'
-            . $_SESSION['success_message'] .
-            '</div>';
-
-        // Xóa thông báo sau khi hiển thị
-        unset($_SESSION['success_message']);
-    }
-    ?>
-
-
-    <!-- ghi chú trạng thái -->
-    <div class="mt-6 flex gap-4 text-xs mb-5">
-        <span class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-yellow-100"></div> chờ xác nhận
-        </span>
-        <span class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-blue-100"></div> đã cọc
-        </span>
-        <span class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-green-100"></div> hoàn tất
-        </span>
-        <span class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-purple-100"></div> đoàn
-        </span>
-        <span class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-blue-100"></div> lẻ
-        </span>
+    <!-- Chú thích màu sắc (cập nhật chính xác 100% theo DB) -->
+    <div class="mb-6 p-5 bg-slate-50 rounded-xl border border-slate-200">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-xs font-medium">
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-yellow-100"></span> Chờ xác nhận</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-orange-100"></span> Đã đặt cọc</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-emerald-100"></span> Đã thanh toán đủ</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-gray-100"></span> Chưa thanh toán</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-sky-100"></span> Khách lẻ</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-purple-100"></span> Đoàn tiêu chuẩn</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-amber-100"></span> VIP - Cao cấp</div>
+        </div>
     </div>
-    <!-- bảng booking -->
-    <div class="bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden">
+
+    <!-- Bảng Booking Siêu Đẹp -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left w-10">
-                            <input type="checkbox"
-                                class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ID</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">tour id</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">tên khách hàng</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">số điện thoại</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">email</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">loại nhóm</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">số người</th>
-                        <!-- <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">ghi chú</th> -->
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">trạng thái</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">ngày tạo</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">cập nhật</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase w-5">hành động</th>
+                        <th class="px-6 py-4 text-left"><input type="checkbox" class="rounded border-slate-300"></th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Mã Booking</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Khách hàng</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Liên hệ</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Loại nhóm</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase text-center">Số người</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Trạng thái</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Thanh toán</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Tạo lúc</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase">Hành động</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-slate-200 text-sm">
+                <tbody class="bg-white divide-y divide-slate-100 text-sm">
                     <?php if (empty($bookings)): ?>
                         <tr>
-                            <td colspan="12" class="px-6 py-16 text-center text-slate-500 text-base">
-                                chưa có booking nào trong hệ thống
+                            <td colspan="10" class="text-center py-16 text-slate-500 text-lg">
+                                <i class="fa-regular fa-calendar-xmark text-4xl mb-3 block text-slate-300"></i>
+                                Chưa có booking nào
                             </td>
                         </tr>
                         <?php else: foreach ($bookings as $b): ?>
-                            <tr class="hover:bg-slate-50 transition">
-                                <td class="px-6 py-4">
-                                    <input type="checkbox" class="h-4 w-4 text-indigo-600 border-slate-200 rounded" />
-                                </td>
-                                <td class="px-4 py-4 font-medium text-slate-900">#<?= $b['id'] ?></td>
-                                <td class="px-4 py-4"><?= $b['tour_id'] ?> <small class="text-slate-500">(v<?= $b['tour_version_id'] ?? '-' ?>)</small></td>
-                                <td class="px-4 py-4 font-medium"><?= htmlspecialchars($b['customer_name']) ?></td>
-                                <td class="px-4 py-4"><?= htmlspecialchars($b['customer_phone']) ?></td>
-                                <td class="px-4 py-4 text-slate-600"><?= htmlspecialchars($b['customer_email']) ?></td>
+                            <tr class="hover:bg-slate-50 transition duration-150">
+                                <td class="px-6 py-4"><input type="checkbox" class="rounded border-slate-300"></td>
+
+                                <!-- Mã booking -->
                                 <td class="px-4 py-4">
-                                    <span class="px-2 py-1 text-xs rounded-full 
-                                    <?= $b['group_type'] == 'le' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' ?>">
-                                        <?= $b['group_type'] == 'le' ? 'lẻ' : 'đoàn' ?>
+                                    <div class="font-bold text-main text-base"><?= $b['booking_code'] ?></div>
+                                    <div class="text-xs text-slate-500">Tour #<?= $b['tour_id'] ?> • <?= date('d/m/Y', strtotime($b['start_date'])) ?></div>
+                                </td>
+
+                                <!-- Tên khách -->
+                                <td class="px-4 py-4">
+                                    <div class="font-semibold text-slate-900"><?= htmlspecialchars($b['customer_name']) ?></div>
+                                </td>
+
+                                <!-- SĐT + Email -->
+                                <td class="px-4 py-4 text-slate-600">
+                                    <div class="font-medium"><?= $b['customer_phone'] ?></div>
+                                    <div class="text-xs text-slate-500"><?= $b['customer_email'] ?></div>
+                                </td>
+
+                                <!-- Loại nhóm (dùng đúng màu + tên + % từ DB) -->
+                                <td class="px-4 py-4">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold <?= $b['group_color'] ?? 'bg-gray-100 text-gray-800' ?>">
+                                        <?= $b['group_name'] ?? 'Chưa xác định' ?>
+                                        <?php if (!empty($b['price_change_percent']) && $b['price_change_percent'] != 0): ?>
+                                            <span class="ml-1.5 <?= $b['price_change_percent'] > 0 ? 'text-emerald-700' : 'text-red-700' ?>">
+                                                (<?= $b['price_change_percent'] > 0 ? '+' : '' ?><?= $b['price_change_percent'] ?>%)
+                                            </span>
+                                        <?php endif; ?>
                                     </span>
                                 </td>
-                                <td class="px-4 py-4 text-center font-medium"><?= $b['number_of_people'] ?></td>
-                                <!-- <td class="px-4 py-4 text-slate-600 max-w-xs truncate" title="<?= htmlspecialchars($b['note'] ?? '') ?>">
-                                    <?= $b['note'] ? htmlspecialchars($b['note']) : '<span class="text-slate-400">không có</span>' ?>
-                                </td> -->
+
+                                <!-- Số người -->
+                                <td class="px-4 py-4 text-center font-bold text-lg text-slate-700">
+                                    <?= $b['number_of_people'] ?>
+                                </td>
+
+                                <!-- Trạng thái Booking -->
                                 <td class="px-4 py-4">
                                     <?php
-                                    $status = $b['status_code'] ?? 'CHXACNHAN';
-                                    $statusText = $status == 'CHXACNHAN' ? 'chờ xác nhận' : ($status == 'DACOC' ? 'đã cọc' : ($status == 'HOANTAT' ? 'hoàn tất' : $status));
-                                    $statusColor = $status == 'HOANTAT' ? 'bg-green-100 text-green-800' : ($status == 'DACOC' ? 'bg-blue-100 text-blue-800' :
-                                        'bg-yellow-100 text-yellow-800');
+                                    $statusColor = match ($b['status_type_code_master'] ?? 'PENDING') {
+                                        'PENDING'   => 'bg-yellow-100 text-yellow-800',
+                                        'DEPOSITED' => 'bg-orange-100 text-orange-800',
+                                        'COMPLETED' => 'bg-emerald-100 text-emerald-800',
+                                        'CANCELLED' => 'bg-red-100 text-red-800',
+                                        default     => 'bg-gray-100 text-gray-800'
+                                    };
                                     ?>
-                                    <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full <?= $statusColor ?>">
-                                        <?= ucwords(str_replace('_', ' ', $statusText)) ?>
+                                    <span class="inline-flex px-3 py-1.5 rounded-full text-xs font-bold <?= $statusColor ?>">
+                                        <?= $b['status_type_name'] ?? 'Chờ xác nhận' ?>
                                     </span>
                                 </td>
-                                <td class="px-4 py-4 text-slate-600 text-xs">
-                                    <?= date('d/m/Y H:i', strtotime($b['created_at'])) ?>
+
+                                <!-- Thanh toán (dùng đúng màu từ DB) -->
+                                <td class="px-4 py-4">
+                                    <span class="inline-flex px-3 py-1.5 rounded-full text-xs font-bold <?= $b['payment_type_color'] ?? 'bg-gray-100 text-gray-800' ?>">
+                                        <?= $b['payment_type_name'] ?? 'Chưa thanh toán' ?>
+                                    </span>
                                 </td>
-                                <td class="px-4 py-4 text-slate-600 text-xs">
-                                    <?= $b['updated_at'] ? date('d/m/Y H:i', strtotime($b['updated_at'])) : '-' ?>
+
+                                <!-- Ngày tạo -->
+                                <td class="px-4 py-4 text-xs text-slate-600">
+                                    <div class="font-medium"><?= date('d/m/Y', strtotime($b['booking_created_at'])) ?></div>
+                                    <div class="text-slate-400"><?= date('H:i', strtotime($b['booking_created_at'])) ?></div>
                                 </td>
-                                <td class="px-6 py-4 text-right relative flex justify-end group">
 
-                                    <button class="py-1 px-2 flex items-center justify-center rounded-lg text-slate-600 
-                                        hover:bg-slate-200 transition duration-150 focus:outline-none">
-                                        <i class="fa-solid fa-ellipsis-vertical text-lg"></i>
-                                    </button>
-
-                                    <div class="absolute right-0 top-0 mt-2 w-40 bg-white border border-slate-200 
-                                    rounded-md shadow-lg text-sm py-1 
-                                    opacity-0 invisible 
-                                    group-hover:opacity-100 group-hover:visible 
-                                    transition-all duration-200 z-20 overflow-hidden">
-
-                                        <a href="?act=bookingdetail&booking_id=<?= $b['id'] ?>"
-                                            class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
-                                            <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
-                                        </a>
-
-                                        <a href="?act=booking&edit_id=<?= $b['id'] ?>"
-                                            class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
-                                            <i class="fa-regular fa-pen-to-square w-5 mr-3"></i> Edit
-                                        </a>
-
-                                        <?php if ($b['status_code'] == 'HUY') { ?>
-                                            <a href="?act=deletecategory&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
-                                                <i class="fa-regular fa-trash-can w-5 mr-3"></i> Xóa bỏ
+                                <!-- Hành động -->
+                                <td class="px-4 py-4 text-right">
+                                    <div class="inline-block text-left group">
+                                        <button class="p-2 rounded-lg hover:bg-slate-100 transition">
+                                            <i class="fa-solid fa-ellipsis-vertical text-slate-600"></i>
+                                        </button>
+                                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-slate-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                            <a href="?act=bookingdetail&booking_id=<?= $b['booking_id'] ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
+                                                <i class="fa-regular fa-eye text-blue-600"></i> Xem chi tiết
                                             </a>
-                                        <?php } else if ($b['status_code'] == 'HOANTAT') { ?>
-                                            <a href="?act=deletecategory&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-3 py-2 text-green-00 hover:bg-red-50 transition">
-                                                <i class="fa-regular fa-trash-can w-5 mr-3"></i> Lưu Trữ
+                                            <a href="?act=booking&edit_id=<?= $b['booking_id'] ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
+                                                <i class="fa-regular fa-pen-to-square text-indigo-600"></i> Chỉnh sửa
                                             </a>
-                                        <?php } else { ?>
-                                            <a href="?act=deletecategory&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-3 py-2 text-red-600 hover:bg-red-50 transition">
-                                                <i class="fa-regular fa-trash-can w-5 mr-3"></i> Hủy Booking
-                                            </a>
-                                        <?php } ?>
-
-                                        <?php if ($status === 'CHXACNHAN'): ?>
-                                            <a href="?act=update_from_booking_status&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-3 py-2 text-blue-600 hover:bg-blue-50 transition rounded">
-                                                <i class="fa-regular fa-circle-check w-5 mr-3"></i>
-                                                Update Status
-                                            </a>
-                                        <?php elseif ($status === 'DACOC'): ?>
-                                            <a href="?act=phan_tour_from_guides&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-3 py-2 text-green-600 hover:bg-green-50 transition rounded">
-                                                <i class="fa-regular fa-circle-user w-5 mr-3"></i>
-                                                Chọn HDV
-                                            </a>
-                                            <a href="?act=updateFromThanhToan&id=<?= $b['id'] ?>"
-                                                class="flex items-center px-3 py-2 text-yellow-500 hover:bg-yellow-50  transition rounded">
-                                                <i class="fa-regular fa-credit-card w-5 h-5 mr-3"></i>
-                                                Update Payment
-                                            </a>
-
-                                        <?php else: ?>
-                                            ''
-                                        <?php endif; ?>
+                                            <?php if ($b['status_type_code_master'] !== 'CANCELLED'): ?>
+                                                <a href="?act=cancelBooking&id=<?= $b['booking_id'] ?>" onclick="return confirm('Hủy booking này?')" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
+                                                    <i class="fa-regular fa-ban"></i> Hủy booking
+                                                </a>
+                                            <?php endif; ?>
+                                            <?php if ($b['status_type_code_master'] === 'PENDING'): ?>
+                                                <hr class="my-2 border-slate-200">
+                                                <a href="?act=confirmBooking&id=<?= $b['booking_id'] ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm text-emerald-600 hover:bg-emerald-50">
+                                                    <i class="fa-regular fa-circle-check"></i> Xác nhận đặt chỗ
+                                                </a>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

@@ -6,6 +6,10 @@ class BookingController
     {
         $bookingModel = new BookingModel();
         $bookings = $bookingModel->getAllBookings();
+        // echo "<pre>";
+        // var_dump($bookings);
+        // echo "<pre>";
+        // die;
         require_once "./views/Admin/booking.php";
     }
 
@@ -188,6 +192,7 @@ class BookingController
 
             $dataSchedulesByTourId = (new SchedulesModel())->getallSchedulesByTourId($tour_id);
 
+            // $data
             $tourFullData = [
                 'tourDetail'    => $dataTourDetai ?? [],
                 'oneTour'       => $dataOneTour ?? [],
@@ -209,11 +214,10 @@ class BookingController
                 }
             }
         }
-        // $dataSchedulesByid = (new SchedulesModel())->getAllSchedulesByid(1);
 
         // if (isset($tourFullData)) {
         //     echo "<pre>";
-        //     var_dump($dataCustomerTypes);
+        //     var_dump($dataSchedulesByTourId);
         //     echo "<pre>";
         //     die;
         // }
