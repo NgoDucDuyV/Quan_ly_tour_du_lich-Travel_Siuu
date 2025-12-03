@@ -122,3 +122,7 @@
             if (keyword === "") rows.forEach(r => r.style.display = "");
         });
     </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
