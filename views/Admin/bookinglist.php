@@ -216,7 +216,7 @@
                                             <?php endif; ?>
 
                                             <?php if ($current === 'DEPOSITED'): ?>
-                                                <a href="?act=assignGuide&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=phan_tour_from_guides&id=<?= $b['booking_id'] ?>"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-purple-600 hover:bg-purple-50">
                                                     <i class="fa-solid fa-user-tie"></i> Phân hướng dẫn viên
                                                 </a>

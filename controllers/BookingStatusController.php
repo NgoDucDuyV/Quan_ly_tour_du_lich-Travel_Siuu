@@ -71,6 +71,6 @@ class BookingStatusController
         // die(); // dừng lại để debug
 
 
-        require_once "./views/Admin/confirm_booking_deposit.php";
+        require_once "./views/Admin/update_booking_status.php";
     }
 }

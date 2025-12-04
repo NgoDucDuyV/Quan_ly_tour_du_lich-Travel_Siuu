@@ -163,7 +163,7 @@ echo match ($act) {
 
     'bookingdetail' => (function () {
         requireAdmin();
-        require_once "./views/Admin/bookingdetail.php";
+        echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
         // echo (new BookingController)->ShowBooking();
     })(),
     'newBooking' => (function () {
