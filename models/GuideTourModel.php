@@ -26,32 +26,51 @@ class GuideTourModel
     {
         $sql = "
             SELECT 
-            s.id AS schedule_id,
-            s.tour_id,
-            t.name AS tour_name,
-            t.description AS tour_location,
-            t.days,
-            t.nights,
-            g.id AS guide_id,
-            g.name AS guide_name,
-            s.start_date,
-            s.end_date,
-            s.meeting_point,
-            s.vehicle,
-            s.hotel,
-            s.restaurant,
-            s.flight_info,
-            ss.name AS schedule_status,   -- từ bảng schedule_status
-            s.guide_notes,
-            gs.name AS guide_status       -- từ bảng guide_status
-        FROM schedules s
-        JOIN guides g ON g.id = s.guide_id
-        JOIN tours t ON t.id = s.tour_id
-        JOIN schedule_status ss ON ss.id = s.schedule_status_id
-        JOIN guide_status gs ON gs.id = s.guide_status_id
-        WHERE s.guide_id = :guide_id
-        ORDER BY s.start_date ASC
-        LIMIT 0, 25;
+                s.id AS schedule_id,
+                s.tour_id,
+                s.guide_id,
+                s.schedule_status_id,
+                s.start_date,
+                s.end_date,
+                s.meeting_point,
+                s.vehicle,
+                s.hotel,
+                s.restaurant,
+                s.flight_info,
+                s.guide_notes,
+
+                t.name AS tour_name,
+                t.code AS tour_code,
+                t.description AS tour_description,
+                t.days AS tour_days,
+                t.nights AS tour_nights,
+
+                g.name AS guide_name,
+                g.phone AS guide_phone,
+                g.email AS guide_email,
+
+                ss.guide_status_id,
+                ss.schedule_status_type_id,
+
+                gs.name AS guide_status_name,
+                gs.code AS guide_status_code,
+
+                sst.name AS schedule_status_name,
+                sst.code AS schedule_status_code
+
+            FROM schedules s
+            LEFT JOIN tours t 
+                ON t.id = s.tour_id
+            LEFT JOIN guides g 
+                ON g.id = s.guide_id
+            LEFT JOIN schedule_status ss 
+                ON ss.id = s.schedule_status_id
+            LEFT JOIN guide_status gs 
+                ON gs.id = ss.guide_status_id
+            LEFT JOIN schedule_status_types sst 
+                ON sst.id = ss.schedule_status_type_id
+            WHERE s.guide_id = :guide_id     
+            ORDER BY s.start_date ASC;
     ";
 
         $stmt = $this->conn->prepare($sql);

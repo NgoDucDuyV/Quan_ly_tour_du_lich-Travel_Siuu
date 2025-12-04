@@ -158,7 +158,7 @@
       </details>
 
       <!-- Active item (Thể loại) -->
-      <a href="?act=booking" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
+      <a href="?act=bookinglist" class="clickloadAdminPage relative group flex items-center gap-3 px-3 py-2 rounded-md text-slate-700 hover:bg-indigo-50 transition">
         <i class="fa-solid fa-calendar-check text-xl"></i>
         <span>Quản lý booking</span>
         <p class="absolute left-[120%] top-1/2 -translate-y-1/2 w-48 bg-white text-black rounded-md shadow-lg p-2 text-sm

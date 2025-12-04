@@ -10,7 +10,7 @@ class BookingStatusModel
 
     public function getBookingStatusType()
     {
-        $sql = "SELECT * FROM status_type";
+        $sql = "SELECT * FROM booking_status_type ORDER BY id ASC";
         $stmt = $this->conn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

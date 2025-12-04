@@ -26,6 +26,13 @@
     </div>
 
     <!-- Thông báo -->
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success_message']; ?>
+            <?php unset($_SESSION['success_message']); ?>
+        </div>
+    <?php endif; ?>
+
     <?php if (isset($_SESSION['success'])): ?>
         <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
             <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success'];
@@ -147,28 +154,108 @@
 
                                 <!-- Hành động -->
                                 <td class="px-4 py-4 text-right">
-                                    <div class="inline-block text-left group">
+                                    <div class="inline-block text-left relative group">
                                         <button class="p-2 rounded-lg hover:bg-slate-100 transition">
                                             <i class="fa-solid fa-ellipsis-vertical text-slate-600"></i>
                                         </button>
-                                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-slate-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                                            <a href="?act=bookingdetail&booking_id=<?= $b['booking_id'] ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
+
+                                        <div class="absolute right-[-10px] mt-2 w-60 bg-white rounded-lg shadow-xl border border-slate-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+
+                                            <!-- 1. Luôn hiển thị: Xem chi tiết -->
+                                            <a href="?act=bookingdetail&booking_id=<?= $b['booking_id'] ?>"
+                                                class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
                                                 <i class="fa-regular fa-eye text-blue-600"></i> Xem chi tiết
                                             </a>
-                                            <a href="?act=booking&edit_id=<?= $b['booking_id'] ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
-                                                <i class="fa-regular fa-pen-to-square text-indigo-600"></i> Chỉnh sửa
-                                            </a>
-                                            <?php if ($b['status_type_code_master'] !== 'CANCELLED'): ?>
-                                                <a href="?act=cancelBooking&id=<?= $b['booking_id'] ?>" onclick="return confirm('Hủy booking này?')" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
+
+                                            <!-- 2. Chỉnh sửa: chỉ cho phép ở các trạng thái chưa bắt đầu -->
+                                            <?php if (in_array($b['status_type_code_master'], ['PENDING', 'DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMINGS'])): ?>
+                                                <a href="?act=booking&edit_id=<?= $b['booking_id'] ?>"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
+                                                    <i class="fa-regular fa-pen-to-square text-indigo-600"></i> Chỉnh sửa
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <!-- 3. Các hành động chuyển trạng thái tiếp theo (chỉ hiển thị 1 cái phù hợp) -->
+                                            <?php
+                                            $current = $b['status_type_code_master'];
+                                            $hasAction = false;
+                                            ?>
+
+                                            <?php if ($current === 'PENDING'): ?>
+                                                <?php $hasAction = true; ?>
+                                                <a href="?act=confirmBooking&id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('Xác nhận khách đã thanh toán/đặt chỗ?')"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-emerald-600 hover:bg-emerald-50">
+                                                    <i class="fa-regular fa-circle-check"></i> Xác nhận đặt chỗ (DEPOSITED)
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <?php if ($current === 'DEPOSITED'): ?>
+                                                <?php $hasAction = true; ?>
+                                                <a href="?act=assignGuide&id=<?= $b['booking_id'] ?>"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-purple-600 hover:bg-purple-50">
+                                                    <i class="fa-solid fa-user-tie"></i> Phân hướng dẫn viên
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <?php if ($current === 'ASSIGN_GUIDE'): ?>
+                                                <?php $hasAction = true; ?>
+                                                <a href="?act=markUpcoming&id=<?= $b['booking_id'] ?>"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-orange-600 hover:bg-orange-50">
+                                                    <i class="fa-solid fa-calendar-check"></i> Đánh dấu Sắp diễn ra
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <?php if ($current === 'UPCOMINGS'): ?>
+                                                <?php $hasAction = true; ?>
+                                                <a href="?act=startTour&id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('Bắt đầu tour ngay bây giờ?')"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-green-600 hover:bg-green-50">
+                                                    <i class="fa-solid fa-play"></i> Bắt đầu tour (Đang diễn ra)
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <?php if ($current === 'IN_PROGRESS'): ?>
+                                                <?php $hasAction = true; ?>
+                                                <a href="?act=completeTour&id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('Tour đã hoàn thành?')"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-cyan-600 hover:bg-cyan-50">
+                                                    <i class="fa-solid fa-trophy"></i> Hoàn thành tour
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <?php if ($current === 'COMPLETED'): ?>
+                                                <?php $hasAction = true; ?>
+                                                <a href="?act=closeBooking&id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('Đóng booking và chuyển sang lưu trữ?')"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
+                                                    <i class="fa-solid fa-box-archive"></i> Đóng booking (Kết thúc)
+                                                </a>
+                                            <?php endif; ?>
+
+                                            <!-- 4. Hủy booking: chỉ hiển thị khi chưa kết thúc -->
+                                            <?php if (!in_array($current, ['CANCELED', 'CLOSED', 'COMPLETED'])): ?>
+                                                <?php if ($hasAction): ?>
+
+                                                <?php else: ?>
+                                                    <?php $hasAction = true; ?>
+                                                <?php endif; ?>
+                                                <a href="?act=cancelBooking&id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('HỦY booking này?\nHành động không thể hoàn tác!')"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
                                                     <i class="fa-regular fa-ban"></i> Hủy booking
                                                 </a>
                                             <?php endif; ?>
-                                            <?php if ($b['status_type_code_master'] === 'PENDING'): ?>
-                                                <hr class="my-2 border-slate-200">
-                                                <a href="?act=confirmBooking&id=<?= $b['booking_id'] ?>" class="flex items-center gap-3 px-4 py-2.5 text-sm text-emerald-600 hover:bg-emerald-50">
-                                                    <i class="fa-regular fa-circle-check"></i> Xác nhận đặt chỗ
+
+                                            <!-- 5. Khôi phục (tùy chọn) - chỉ khi đã hủy -->
+                                            <?php if ($current === 'CANCELED'): ?>
+                                                <a href="?act=restoreBooking&id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('Khôi phục booking về trạng thái trước khi hủy?')"
+                                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-amber-600 hover:bg-amber-50">
+                                                    <i class="fa-solid fa-rotate-left"></i> Khôi phục booking
                                                 </a>
                                             <?php endif; ?>
+
                                         </div>
                                     </div>
                                 </td>
