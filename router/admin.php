@@ -70,9 +70,34 @@ echo match ($act) {
         require_once "./views/Admin/home.php";
     })(),
     'categoriestour' => (function () {
-        requireAdmin();
-        (new CategoryController)->listCategories();
-    })(),
+    requireAdmin();
+    (new CategoryController)->list();
+})(),
+
+'addcategory_add' => (function () {
+    requireAdmin();
+    (new CategoryController)->add();
+})(),
+
+'category_store' => (function () {
+    requireAdmin();
+    (new CategoryController)->store();
+})(),
+
+'category_edit' => (function () {
+    requireAdmin();
+    (new CategoryController)->edit($_GET['id'] ?? 0);
+})(),
+
+'category_update' => (function () {
+    requireAdmin();
+    (new CategoryController)->update();
+})(),
+
+'category_delete' => (function () {
+    requireAdmin();
+    (new CategoryController)->delete($_GET['id'] ?? 0);
+})(),
     'admintour' => (function () {
         requireAdmin();
         if (isset($_GET['tour_id'])) {
