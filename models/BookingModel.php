@@ -13,7 +13,51 @@ class BookingModel
     public function getAllBookings()
     {
 
-        $sql = "SELECT * FROM bookings ORDER BY created_at DESC";
+        $sql = "SELECT 
+            b.id AS booking_id,
+            b.booking_code,
+            b.tour_id,
+            b.tour_version_id,
+            b.start_date,
+            b.end_date,
+            b.customer_name,
+            b.customer_phone,
+            b.customer_email,
+            b.group_type_id,
+            b.number_of_people,
+            b.total_price,
+            b.service_prices,
+            b.passenger_prices,
+            b.note,
+            b.created_at AS booking_created_at,
+            b.updated_at AS booking_updated_at,
+
+            -- Trạng thái booking (chờ xác nhận, đã cọc, hoàn tất, hủy...)
+            bst.id AS status_type_id_master,
+            bst.code AS status_type_code_master,
+            bst.name AS status_type_name,
+
+            -- Trạng thái thanh toán
+            pst.id AS payment_type_id_master,
+            pst.code AS payment_type_code_master,
+            pst.name AS payment_type_name,
+            pst.description AS payment_type_description,
+            pst.color AS payment_type_color,
+
+            -- Thông tin loại nhóm (mới thêm)
+            gt.group_name,
+            gt.group_code,
+            gt.price_change_percent,
+            gt.color AS group_color
+
+        FROM bookings b
+        LEFT JOIN booking_status bs ON b.id = bs.booking_id
+        LEFT JOIN booking_status_type bst ON bs.booking_status_type_id = bst.id
+        LEFT JOIN payment_status_type pst ON bs.payment_status_type_id = pst.id
+        LEFT JOIN group_type gt ON b.group_type_id = gt.id
+
+        ORDER BY b.created_at DESC;
+        ";
         $stmt = $this->conn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

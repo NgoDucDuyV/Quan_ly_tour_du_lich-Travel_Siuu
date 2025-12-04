@@ -74,15 +74,130 @@
     </section>
 
     <!-- LỊCH TRÌNH HÔM NAY -->
+    <!-- LỊCH TRÌNH HÔM NAY -->
     <section class="bg-white p-6 rounded-2xl shadow">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <i data-lucide="map"></i> Lịch trình hôm nay
+            <span class="text-sm font-normal text-gray-500">(<?= date('d/m/Y') ?>)</span>
         </h2>
 
-        <div class="p-4 border rounded-xl bg-blue-50 hover:bg-blue-100 transition">
-            <h3 class="font-semibold text-gray-800">Tour Hạ Long – 26 khách</h3>
-            <p class="text-gray-600 text-sm">Bắt đầu lúc 7:30 AM – Kết thúc 5:00 PM</p>
-        </div>
+        <?php
+        $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
+        $todayTours = [];
+
+        foreach ($dataSchedulesByGuideId as $schedule) {
+            $start = $schedule['start_date'];
+            $end   = $schedule['end_date'];
+
+            // Kiểm tra tour có diễn ra trong hôm nay không
+            if ($today >= $start && $today <= $end) {
+                $todayTours[] = $schedule;
+            }
+        }
+
+        if (empty($todayTours)): ?>
+            <div class="p-8 text-center text-gray-500 bg-gray-50 rounded-xl">
+                <i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-3 text-gray-400"></i>
+                <p>Hôm nay bạn không có lịch hướng dẫn nào.</p>
+                <p class="text-sm mt-2">Nghỉ ngơi thật tốt nhé!</p>
+            </div>
+        <?php else: ?>
+            <div class="space-y-4">
+                <?php foreach ($todayTours as $schedule):
+                    $startFormatted = date('d/m/Y', strtotime($schedule['start_date']));
+                    $endFormatted   = date('d/m/Y', strtotime($schedule['end_date']));
+                    $isOngoing = ($today > $schedule['start_date'] && $today < $schedule['end_date']) ||
+                        ($today == $schedule['start_date']) ||
+                        ($today == $schedule['end_date']);
+
+                    // Trạng thái hôm nay
+                    $todayStatus = $today == $schedule['start_date'] ? "Bắt đầu hôm nay" : ($today == $schedule['end_date'] ? "Kết thúc hôm nay" : "Đang diễn ra");
+                ?>
+                    <div class="border rounded-xl overflow-hidden bg-gradient-to-br from-indigo-50 to-blue-50 hover:shadow-lg transition-all duration-300">
+                        <!-- Tiêu đề tour - Có thể click để mở chi tiết -->
+                        <div class="p-5 cursor-pointer flex justify-between items-center bg-white bg-opacity-70 hover:bg-opacity-100 transition"
+                            onclick="this.closest('.border').querySelector('.details').classList.toggle('hidden')">
+                            <div>
+                                <h3 class="font-bold text-lg text-indigo-800">
+                                    <?= htmlspecialchars($schedule['tour_name']) ?>
+                                    <span class="text-sm font-medium text-indigo-600">(<?= $schedule['tour_code'] ?>)</span>
+                                </h3>
+                                <p class="text-gray-700 mt-1 flex items-center gap-4 text-sm">
+                                    <span class="flex items-center gap-1">
+                                        <i data-lucide="calendar"></i>
+                                        <?= $startFormatted ?> → <?= $endFormatted ?>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <i data-lucide="map-pin"></i>
+                                        <?= htmlspecialchars($schedule['meeting_point'] ?? 'Chưa xác định') ?>
+                                    </span>
+                                </p>
+                                <p class="text-green-600 font-semibold text-sm mt-2">
+                                    <i data-lucide="clock"></i> <?= $todayStatus ?>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-4 py-2 rounded-full bg-green-100 text-green-700 font-bold text-sm">
+                                    ĐANG HOẠT ĐỘNG
+                                </span>
+                                <i data-lucide="chevron-down" class="w-6 h-6 text-gray-500 ml-3 transition-transform"
+                                    id="arrow-<?= $schedule['schedule_id'] ?>"></i>
+                            </div>
+                        </div>
+
+                        <!-- Phần chi tiết (mở rộng khi click) -->
+                        <div class="details hidden bg-white border-t border-gray-200 p-6 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><strong>Thời gian tour:</strong></p>
+                                    <p class="font-medium"><?= $schedule['tour_days'] ?> ngày <?= $schedule['tour_nights'] ?> đêm</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Điểm đón:</strong></p>
+                                    <p class="font-medium"><?= htmlspecialchars($schedule['meeting_point'] ?? 'Chưa có') ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Khách sạn:</strong></p>
+                                    <p class="font-medium"><?= htmlspecialchars($schedule['hotel'] ?? 'Chưa đặt') ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Phương tiện:</strong></p>
+                                    <p class="font-medium"><?= htmlspecialchars($schedule['vehicle'] ?? 'Chưa có') ?></p>
+                                </div>
+                                <?php if (!empty($schedule['restaurant'])): ?>
+                                    <div>
+                                        <p class="text-gray-600"><strong>Nhà hàng:</strong></p>
+                                        <p class="font-medium"><?= htmlspecialchars($schedule['restaurant']) ?></p>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($schedule['flight_info'])): ?>
+                                    <div>
+                                        <p class="text-gray-600"><strong>Chuyến bay:</strong></p>
+                                        <p class="font-medium"><?= htmlspecialchars($schedule['flight_info']) ?></p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if (!empty($schedule['guide_notes'])): ?>
+                                <div class="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                    <p class="font-semibold text-amber-800 flex items-center gap-2">
+                                        <i data-lucide="alert-circle"></i> Ghi chú từ điều hành
+                                    </p>
+                                    <p class="text-amber-900 mt-2"><?= nl2br(htmlspecialchars($schedule['guide_notes'])) ?></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="text-right mt-4">
+                                <button onclick="this.closest('.details').classList.add('hidden')"
+                                    class="text-sm text-gray-500 hover:text-gray-700 underline">
+                                    Đóng chi tiết ↑
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </section>
 
     <section id="schedulenewquyj" class="bg-white p-6 rounded-2xl shadow">
@@ -90,58 +205,74 @@
             <i data-lucide="compass"></i> Tour tiếp theo
         </h2>
 
-        <div class="flex flex-col gap-4">
-            <?php foreach ($dataSchedulesByGuideId as $schedule): ?>
+        <?php if (empty($dataSchedulesByGuideId)): ?>
+            <p class="text-gray-500 italic">Chưa có lịch hướng dẫn nào sắp tới.</p>
+        <?php else: ?>
+            <div class="flex flex-col gap-4">
                 <?php
-                // Format ngày
-                $start = date('d/m/Y', strtotime($schedule['start_date']));
-                $end = date('d/m/Y', strtotime($schedule['end_date']));
+                // Sắp xếp theo ngày bắt đầu gần nhất
+                usort($dataSchedulesByGuideId, function ($a, $b) {
+                    return strtotime($a['start_date']) <=> strtotime($b['start_date']);
+                });
 
-                // Trạng thái màu
-                $status_color = match ($schedule['schedule_status']) {
-                    'planned' => 'text-yellow-600',
-                    'ongoing' => 'text-green-600',
-                    'completed' => 'text-gray-400',
-                    default => 'text-gray-600',
-                };
+                foreach ($dataSchedulesByGuideId as $schedule):
+                    // Format ngày tháng
+                    $start = date('d/m/Y', strtotime($schedule['start_date']));
+                    $end   = date('d/m/Y', strtotime($schedule['end_date']));
 
-                // Thông tin tour
-                $tour_name = $schedule['tour_name'] ?? "Tour ID " . $schedule['tour_id'];
-                $tour_location = $schedule['tour_location'] ?? 'Chưa có địa điểm';
-                $days = $schedule['days'] ?? '';
-                $nights = $schedule['nights'] ?? '';
-
-                // Thông tin chi tiết
-                $meeting_point = $schedule['meeting_point'] ?? 'Chưa có điểm gặp';
-                $hotel = $schedule['hotel'] ?? 'Chưa có khách sạn';
-                $vehicle = $schedule['vehicle'] ?? 'Chưa có phương tiện';
-                $restaurant = $schedule['restaurant'] ?? 'Chưa có nhà hàng';
-                $flight_info = $schedule['flight_info'] ?? 'Chưa có thông tin bay';
-                $guide_notes = $schedule['guide_notes'] ?? '';
-                $num_customers = $schedule['num_customers'] ?? 0; // nếu có dữ liệu số khách
+                    // Xác định trạng thái và màu sắc
+                    $status_info = match ((int)$schedule['schedule_status_id']) {
+                        1 => ['name' => 'Sắp tới',      'color' => 'text-yellow-600 bg-yellow-100'],
+                        2 => ['name' => 'Đang diễn ra', 'color' => 'text-green-600 bg-green-100'],
+                        3 => ['name' => 'Hoàn thành',   'color' => 'text-gray-500 bg-gray-100'],
+                        4 => ['name' => 'Đã hủy',       'color' => 'text-red-600 bg-red-100'],
+                        default => ['name' => 'Chưa xác định', 'color' => 'text-gray-600 bg-gray-100'],
+                    };
                 ?>
-                <div class="p-4 border rounded-xl bg-blue-50 hover:bg-blue-100 transition group relative">
-                    <h3 class="font-semibold text-gray-800"><?= htmlspecialchars($tour_name) ?> – <?= $num_customers ?> khách</h3>
-                    <p class="text-gray-600 text-sm"><?= $start ?> - <?= $end ?> • <?= htmlspecialchars($meeting_point) ?></p>
-                    <span class="<?= $status_color ?> font-medium"><?= ucfirst($schedule['schedule_status']) ?></span>
+                    <div class="relative p-5 border rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 group cursor-pointer">
+                        <!-- Thông tin chính -->
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg text-gray-800">
+                                    <?= htmlspecialchars($schedule['tour_name']) ?>
+                                    <span class="text-sm font-medium text-blue-600">(<?= htmlspecialchars($schedule['tour_code']) ?>)</span>
+                                </h3>
+                                <p class="text-gray-600 mt-1">
+                                    <i data-lucide="calendar"></i> <?= $start ?> → <?= $end ?>
+                                    <span class="mx-2">•</span>
+                                    <i data-lucide="map-pin"></i> <?= htmlspecialchars($schedule['meeting_point'] ?? 'Chưa xác định') ?>
+                                </p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <?= $schedule['tour_days'] ?> ngày <?= $schedule['tour_nights'] ?> đêm
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold <?= $status_info['color'] ?>">
+                                    <?= $status_info['name'] ?>
+                                </span>
+                            </div>
+                        </div>
 
-                    <!-- Hover chi tiết -->
-                    <div class="absolute left-0 top-full mt-2 w-full p-4 bg-white border rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                        <p><strong>Địa điểm tour:</strong> <?= htmlspecialchars($tour_location) ?></p>
-                        <p><strong>Thời gian:</strong> <?= $days ?> ngày <?= $nights ?> đêm</p>
-                        <p><strong>Điểm gặp:</strong> <?= htmlspecialchars($meeting_point) ?></p>
-                        <p><strong>Khách sạn:</strong> <?= htmlspecialchars($hotel) ?></p>
-                        <p><strong>Phương tiện:</strong> <?= htmlspecialchars($vehicle) ?></p>
-                        <p><strong>Nhà hàng:</strong> <?= htmlspecialchars($restaurant) ?></p>
-                        <p><strong>Thông tin bay:</strong> <?= htmlspecialchars($flight_info) ?></p>
-                        <?php if ($guide_notes): ?>
-                            <p><strong>Ghi chú hướng dẫn:</strong> <?= htmlspecialchars($guide_notes) ?></p>
-                        <?php endif; ?>
-                        <p><strong>Trạng thái:</strong> <span class="<?= $status_color ?> font-medium"><?= ucfirst($schedule['schedule_status']) ?></span></p>
+                        <!-- Hover chi tiết -->
+                        <div class="absolute left-0 right-0 top-full mt-2 p-5 bg-white border border-gray-200 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 pointer-events-none group-hover:pointer-events-auto">
+                            <h4 class="font-bold text-gray-800 mb-3">Chi tiết lịch hướng dẫn</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                <p><strong>Khách sạn:</strong> <?= htmlspecialchars($schedule['hotel'] ?? 'Chưa có thông tin') ?></p>
+                                <p><strong>Phương tiện:</strong> <?= htmlspecialchars($schedule['vehicle'] ?? 'Chưa có') ?></p>
+                                <p><strong>Nhà hàng:</strong> <?= htmlspecialchars($schedule['restaurant'] ?? 'Chưa có') ?></p>
+                                <p><strong>Chuyến bay:</strong> <?= htmlspecialchars($schedule['flight_info'] ?? 'Không có') ?></p>
+                                <?php if (!empty($schedule['guide_notes'])): ?>
+                                    <p class="md:col-span-2"><strong>Ghi chú HDV:</strong> <?= nl2br(htmlspecialchars($schedule['guide_notes'])) ?></p>
+                                <?php endif; ?>
+                                <p class="md:col-span-2 text-xs text-gray-500 mt-3 italic">
+                                    Cập nhật lần cuối: <?= date('H:i, d/m/Y') ?>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </section>
 
 

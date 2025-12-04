@@ -44,7 +44,6 @@
                         <?php foreach ($datacustomers as $c): ?>
 
                             <?php
-                            // Màu theo loại khách
                             $typeColor = match ($c['customer_type_id'] ?? 'default') {
                                 1 => 'bg-blue-100 text-blue-700',   // adult
                                 2 => 'bg-orange-100 text-orange-700', // child
@@ -54,21 +53,47 @@
                             ?>
 
                             <tr class="border-b hover:bg-gray-50 transition">
-                                <td class="p-3 font-medium text-gray-900"><?= $c['customer_full_name'] ?></td>
-                                <td class="p-3"><?= $c['birth_year'] ?></td>
+                                <td class="p-3 font-medium text-gray-900">
+                                    <?= $c['customer_full_name'] ?>
+                                </td>
 
-                                <!-- TYPE HIỆN MÀU -->
                                 <td class="p-3">
+                                    <?= $c['birth_year'] ?>
+                                </td>
+
+                                <td class="p-3">
+                                    <?php
+                                    $typeName = match ($c['customer_type_id']) {
+                                        1 => 'Người lớn',
+                                        2 => 'Trẻ em',
+                                        3 => 'Em bé',
+                                        default => 'Không rõ'
+                                    };
+                                    $typeColor = match ($c['customer_type_id']) {
+                                        1 => 'bg-blue-100 text-blue-700',
+                                        2 => 'bg-orange-100 text-orange-700',
+                                        3 => 'bg-red-100 text-red-700',
+                                        default => 'bg-gray-100 text-gray-700'
+                                    };
+                                    ?>
+
                                     <span class="px-3 py-1 rounded-full text-sm font-semibold <?= $typeColor ?>">
-                                        <?= ucfirst($c['type'] ?? 'Unknown') ?>
+                                        <?= $typeName ?>
                                     </span>
                                 </td>
 
-                                <td class="p-3"><?= $c['passport'] ?></td>
-                                <td class="p-3 font-semibold text-blue-700 hover:underline cursor-pointer">
-                                    <?= $c['tour_name'] ?? '-' ?>
+                                <td class="p-3">
+                                    <?= $c['passport'] ?>
                                 </td>
-                                <td class="p-3"><?= !empty($c['start_date']) ? date('d/m/Y', strtotime($c['start_date'])) : '-' ?></td>
+
+                                <td class="p-3 font-semibold text-blue-700 hover:underline cursor-pointer">
+                                    <?= $c['tour_name'] ?>
+                                </td>
+
+                                <td class="p-3">
+                                    <?= date("d/m/Y", strtotime($c['booking_start'])) ?>
+                                </td>
+
                             </tr>
 
                         <?php endforeach; ?>

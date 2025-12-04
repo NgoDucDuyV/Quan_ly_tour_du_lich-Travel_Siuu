@@ -44,6 +44,7 @@
                         class="w-full border border-gray-300 rounded-xl px-4 py-2">
                 </div>
 
+
                 <button class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
                     Lưu nhật ký
                 </button>
@@ -68,7 +69,16 @@
             <?php foreach ($diary as $log): ?>
                 <div class="p-5 rounded-xl border bg-gray-50 shadow-sm">
 
-                    <h3 class="font-bold"><?= $log['log_date'] ?></h3>
+                    <?php
+                    $time = $log['updated_at']
+                        ? $log['updated_at']
+                        : $log['log_date'];
+                    ?>
+
+                    <h3 class="font-bold">
+                        <?= date("Y-m-d H:i:s", strtotime($time)) ?>
+                    </h3>
+
 
                     <p><?= nl2br($log['content']) ?></p>
 

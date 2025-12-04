@@ -7,10 +7,12 @@
         </h1>
     </header>
 
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- GRID 2 CỘT -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start justify-center">
 
         <!-- FORM GỬI YÊU CẦU -->
-        <div class="bg-white p-6 rounded-2xl shadow space-y-5 border border-gray-100">
+        <div class="bg-white p-6 rounded-2xl shadow space-y-5 border border-gray-100 
+                    w-full mx-auto max-w-[600px]">
 
             <h2 class="text-2xl font-semibold text-gray-800 mb-3">
                 ➕ Gửi yêu cầu mới
@@ -37,7 +39,8 @@
 
                 <div>
                     <label class="text-sm text-gray-600 font-medium">Ngày mong muốn</label>
-                    <input type="date" name="desired_date" class="w-full border rounded-xl px-4 py-3 mt-1">
+                    <input type="date" name="desired_date"
+                        class="w-full border rounded-xl px-4 py-3 mt-1">
                 </div>
 
                 <div>
@@ -59,10 +62,12 @@
 
                 <div>
                     <label class="text-sm text-gray-600 font-medium">Tệp đính kèm (nếu có)</label>
-                    <input type="file" name="attachment" class="w-full border rounded-xl px-4 py-2">
+                    <input type="file" name="attachment"
+                        class="w-full border rounded-xl px-4 py-2">
                 </div>
 
-                <button class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
+                <button
+                    class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
                     Gửi yêu cầu
                 </button>
             </form>
@@ -70,11 +75,13 @@
         </div>
 
         <!-- DANH SÁCH YÊU CẦU -->
-        <div class="bg-white p-6 rounded-2xl shadow space-y-5 border border-gray-100
-            max-h-[80vh] overflow-y-auto scrollbar-thin 
-            scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div class="bg-white p-6 rounded-2xl shadow space-y-5 border border-gray-100 
+            max-h-[calc(100vh-220px)] overflow-y-auto scrollbar-thin 
+            scrollbar-thumb-gray-300 scrollbar-track-gray-100 
+            w-full mx-auto max-w-[600px]">
 
-            <div class="flex items-center justify-between">
+
+            <div class="flex items-center justify-between mb-2">
                 <h2 class="text-2xl font-semibold text-gray-800">📌 Yêu cầu đã gửi</h2>
 
                 <a href="?mode=admin&act=requestguide_all"
@@ -90,8 +97,9 @@
             <?php foreach ($requests as $req): ?>
                 <div class="p-5 rounded-xl border bg-gray-50 shadow-sm">
 
-                    <div class="flex justify-between items-start">
-                        <div>
+                    <div class="flex justify-between items-start gap-4">
+                        <!-- LEFT -->
+                        <div class="flex-1">
                             <h3 class="font-bold text-lg text-gray-800">
                                 <?= htmlspecialchars($req['title']) ?>
                             </h3>
@@ -105,6 +113,7 @@
                             </p>
                         </div>
 
+                        <!-- STATUS -->
                         <?php
                         $status = $req['status'];
                         $color = [
@@ -137,6 +146,7 @@
             <?php endforeach; ?>
 
         </div>
+
     </section>
 
 </main>
