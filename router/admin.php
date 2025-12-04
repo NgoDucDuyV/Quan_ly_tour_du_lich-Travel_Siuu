@@ -111,7 +111,7 @@ echo match ($act) {
         (new AdminSupplierController)->showSupplierTypesList();
     })(),
 
-    'booking' => (function () {
+    'bookinglist' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),

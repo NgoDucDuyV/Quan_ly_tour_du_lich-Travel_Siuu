@@ -25,21 +25,52 @@ class GuideTourModel
     public function getCustomerListByScheduleId($schedule_id)
     {
         $sql = "
-        SELECT 
-            bc.id AS customer_id,
-            bc.full_name,
-            bc.birth_year,
-            bc.passport,
-            bc.customer_type_id,
-            t.name AS tour_name,
-            s.start_date,
-            s.end_date
-        FROM attendance a
-        JOIN booking_customers bc ON bc.id = a.customer_id
-        JOIN schedules s ON s.id = a.schedule_id
-        JOIN tours t ON t.id = s.tour_id
-        WHERE a.schedule_id = :sid
-        ORDER BY bc.full_name ASC
+            SELECT 
+                s.id AS schedule_id,
+                s.tour_id,
+                s.guide_id,
+                s.schedule_status_id,
+                s.start_date,
+                s.end_date,
+                s.meeting_point,
+                s.vehicle,
+                s.hotel,
+                s.restaurant,
+                s.flight_info,
+                s.guide_notes,
+
+                t.name AS tour_name,
+                t.code AS tour_code,
+                t.description AS tour_description,
+                t.days AS tour_days,
+                t.nights AS tour_nights,
+
+                g.name AS guide_name,
+                g.phone AS guide_phone,
+                g.email AS guide_email,
+
+                ss.guide_status_id,
+                ss.schedule_status_type_id,
+
+                gs.name AS guide_status_name,
+                gs.code AS guide_status_code,
+
+                sst.name AS schedule_status_name,
+                sst.code AS schedule_status_code
+
+            FROM schedules s
+            LEFT JOIN tours t 
+                ON t.id = s.tour_id
+            LEFT JOIN guides g 
+                ON g.id = s.guide_id
+            LEFT JOIN schedule_status ss 
+                ON ss.id = s.schedule_status_id
+            LEFT JOIN guide_status gs 
+                ON gs.id = ss.guide_status_id
+            LEFT JOIN schedule_status_types sst 
+                ON sst.id = ss.schedule_status_type_id
+            WHERE s.guide_id = :guide_id     
+            ORDER BY s.start_date ASC;
     ";
 
         $stmt = $this->conn->prepare($sql);

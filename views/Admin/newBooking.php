@@ -360,14 +360,20 @@ if (!empty($tourFullData)) {
                             </select>
                         </div>
 
-
                         <div>
                             <label class="block text-sm font-medium">Trạng thái *</label>
-                            <select name="status" class="w-full p-4 border rounded-xl" required>
-                                <option value="cho_xac_nhan">Chờ xác nhận</option>
-                                <option value="da_coc">Đã cọc</option>
-                                <option value="hoan_tat">Hoàn tất</option>
-                                <option value="huy">Hủy</option>
+                            <select name="booking_status_type_id" class="w-full p-4 border rounded-xl" required>
+                                <option value="">-- Chọn trạng thái --</option>
+
+                                <?php if (!empty($dataBookingStatusType)): ?>
+                                    <?php foreach ($dataBookingStatusType as $item): ?>
+                                        <option value="<?= $item['id'] ?>"
+                                            <?= $item['code'] === 'PENDING' ? 'selected' : '' ?>>
+                                            <?= $item['name'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+
                             </select>
                         </div>
                     </div>
@@ -390,7 +396,6 @@ if (!empty($tourFullData)) {
                         usort($validSchedules, fn($a, $b) => strtotime($a['start_date']) <=> strtotime($b['start_date']));
                     }
                     ?>
-
                     <div id="schedule-box" class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200" style="display:none;">
                         <h6 class="text-2xl font-bold text-main mb-6 flex items-center gap-3">
                             Chọn Lịch Trình Có Sẵn (Dành riêng cho Khách lẻ)
@@ -423,7 +428,7 @@ if (!empty($tourFullData)) {
                                         <option value="" disabled class="text-gray-500">
                                             Không có lịch khả dụng
                                         </option>
-                                    <?php endif; ?>
+                                        <?php endif; ?>h
                                 </select>
                             </div>
 
@@ -763,7 +768,6 @@ if (!empty($tourFullData)) {
                             Bảng giá theo <span id="group-name-display" class="text-main">---</span>
                         </h2>
 
-
                         <?php $basePrice = (float)$tourFullData['oneTour']['price']; ?>
 
                         <div class="mb-4 p-4 bg-indigo-50 rounded-2xl flex justify-between items-center">
@@ -872,7 +876,6 @@ if (!empty($tourFullData)) {
                                         }
                                         ?>
                                         <label class="font-medium"><?= $typeName ?></label>
-
                                         <div id="suppliers-container">
                                             <!-- Block mẫu -->
                                             <div class="grid grid-cols-1 md:grid-cols-4 gap-2 supplier-block">

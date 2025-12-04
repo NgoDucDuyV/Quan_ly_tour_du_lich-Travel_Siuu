@@ -8,9 +8,9 @@ class BookingController
         $bookings = $bookingModel->getAllBookings();
         // echo "<pre>";
         // var_dump($bookings);
-        // echo "<pre>";
+        // echo "</pre>";
         // die;
-        require_once "./views/Admin/booking.php";
+        require_once "./views/Admin/bookinglist.php";
     }
 
     public function ShowFromThanhToan($booking_id = null)
@@ -168,8 +168,10 @@ class BookingController
         $dataCustomerTypes = (new BookingCustomers())->getCustomerTypes();
 
         $dataGroupType = (new BookingModel())->getAlGroupType();
+
+        $dataBookingStatusType = (new BookingStatusModel())->getBookingStatusType();
         // echo "<pre>";
-        // var_dump($dataGroupType);
+        // var_dump($dataBookingStatusType);
         // echo "<pre>";
         // die;
         if (!empty($tour_id)) {
@@ -258,49 +260,34 @@ class BookingController
     {
         $_SESSION['success_message'] = "Booking thành công!";
         // Chuyển hướng sang trang khác
-        header("Location: " . BASE_URL . "?mode=admin&act=booking");
+        header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
         exit;
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        //check quyền chỉ admin mới thao tác
-        if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_role'] !== 'admin') {
-            $_SESSION['error'] = "bạn không có quyền!";
-            header("Location: ?mode=admin&act=booking");
-            exit;
-        }
+        // Lấy dữ liệu từ form
+        $customerTypes   = $_POST['customer_type'] ?? [];
+        $servicesSelected = $_POST['services'] ?? [];
+        $tourId           = $_POST['tour_id'] ?? null;
+        $tourVersionId    = $_POST['tour_version_id'] ?? null;
+        $customerName     = $_POST['customer_name'] ?? '';
+        $customerPhone    = $_POST['customer_phone'] ?? '';
+        $customerEmail    = $_POST['customer_email'] ?? '';
+        $bookingCode      = $_POST['booking_code'] ?? '';
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: ?mode=admin&act=booking");
-            exit;
-        }
+        // Hiển thị dữ liệu
+        echo "<pre>";
+        echo "Tour ID: $tourId\n";
+        echo "Tour Version ID: $tourVersionId\n";
+        echo "Customer Name: $customerName\n";
+        echo "Customer Phone: $customerPhone\n";
+        echo "Customer Email: $customerEmail\n";
+        echo "Booking Code: $bookingCode\n";
 
-        $data = [
-            'tour_id'          => (int)($_POST['tour_id'] ?? 0),
-            'tour_version_id'  => (int)($_POST['tour_version_id'] ?? 0),
-            'customer_name'    => trim($_POST['customer_name'] ?? ''),
-            'customer_phone'   => trim($_POST['customer_phone'] ?? ''),
-            'customer_email'   => trim($_POST['customer_email'] ?? ''),
-            'group_type'       => $_POST['group_type'] ?? 'le', // le hoặc doan
-            'number_of_people' => (int)($_POST['number_of_people'] ?? 1),
-            'note'             => trim($_POST['note'] ?? ''),
-            'status'           => $_POST['status'] ?? 'cho_xac_nhan', // mặc định chờ xác nhận
-        ];
+        echo "\nCustomer Types:\n";
+        print_r($customerTypes);
 
-        // check validate
-        if (empty($data['tour_id']) || empty($data['customer_name']) || empty($data['customer_phone']) || empty($data['customer_email'])) {
-            $_SESSION['error'] = "vui lòng điền đầy đủ các trường bắt buộc!";
-            header("Location: ?mode=admin&act=newBooking");
-            exit;
-        }
-
-        $bookingModel = new BookingModel();
-        if ($bookingModel->create($data)) {
-            $_SESSION['success'] = "Tạo booking thành công!";
-        } else {
-            $_SESSION['error'] = "Tạo booking thất bại, vui lòng thử lại!";
-        }
-
-        header("Location: ?mode=admin&act=booking");
-        exit;
+        echo "\nSelected Services:\n";
+        print_r($servicesSelected);
+        echo "</pre>";
     }
 }
