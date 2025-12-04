@@ -74,15 +74,130 @@
     </section>
 
     <!-- LỊCH TRÌNH HÔM NAY -->
+    <!-- LỊCH TRÌNH HÔM NAY -->
     <section class="bg-white p-6 rounded-2xl shadow">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <i data-lucide="map"></i> Lịch trình hôm nay
+            <span class="text-sm font-normal text-gray-500">(<?= date('d/m/Y') ?>)</span>
         </h2>
 
-        <div class="p-4 border rounded-xl bg-blue-50 hover:bg-blue-100 transition">
-            <h3 class="font-semibold text-gray-800">Tour Hạ Long – 26 khách</h3>
-            <p class="text-gray-600 text-sm">Bắt đầu lúc 7:30 AM – Kết thúc 5:00 PM</p>
-        </div>
+        <?php
+        $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
+        $todayTours = [];
+
+        foreach ($dataSchedulesByGuideId as $schedule) {
+            $start = $schedule['start_date'];
+            $end   = $schedule['end_date'];
+
+            // Kiểm tra tour có diễn ra trong hôm nay không
+            if ($today >= $start && $today <= $end) {
+                $todayTours[] = $schedule;
+            }
+        }
+
+        if (empty($todayTours)): ?>
+            <div class="p-8 text-center text-gray-500 bg-gray-50 rounded-xl">
+                <i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-3 text-gray-400"></i>
+                <p>Hôm nay bạn không có lịch hướng dẫn nào.</p>
+                <p class="text-sm mt-2">Nghỉ ngơi thật tốt nhé!</p>
+            </div>
+        <?php else: ?>
+            <div class="space-y-4">
+                <?php foreach ($todayTours as $schedule):
+                    $startFormatted = date('d/m/Y', strtotime($schedule['start_date']));
+                    $endFormatted   = date('d/m/Y', strtotime($schedule['end_date']));
+                    $isOngoing = ($today > $schedule['start_date'] && $today < $schedule['end_date']) ||
+                        ($today == $schedule['start_date']) ||
+                        ($today == $schedule['end_date']);
+
+                    // Trạng thái hôm nay
+                    $todayStatus = $today == $schedule['start_date'] ? "Bắt đầu hôm nay" : ($today == $schedule['end_date'] ? "Kết thúc hôm nay" : "Đang diễn ra");
+                ?>
+                    <div class="border rounded-xl overflow-hidden bg-gradient-to-br from-indigo-50 to-blue-50 hover:shadow-lg transition-all duration-300">
+                        <!-- Tiêu đề tour - Có thể click để mở chi tiết -->
+                        <div class="p-5 cursor-pointer flex justify-between items-center bg-white bg-opacity-70 hover:bg-opacity-100 transition"
+                            onclick="this.closest('.border').querySelector('.details').classList.toggle('hidden')">
+                            <div>
+                                <h3 class="font-bold text-lg text-indigo-800">
+                                    <?= htmlspecialchars($schedule['tour_name']) ?>
+                                    <span class="text-sm font-medium text-indigo-600">(<?= $schedule['tour_code'] ?>)</span>
+                                </h3>
+                                <p class="text-gray-700 mt-1 flex items-center gap-4 text-sm">
+                                    <span class="flex items-center gap-1">
+                                        <i data-lucide="calendar"></i>
+                                        <?= $startFormatted ?> → <?= $endFormatted ?>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <i data-lucide="map-pin"></i>
+                                        <?= htmlspecialchars($schedule['meeting_point'] ?? 'Chưa xác định') ?>
+                                    </span>
+                                </p>
+                                <p class="text-green-600 font-semibold text-sm mt-2">
+                                    <i data-lucide="clock"></i> <?= $todayStatus ?>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-4 py-2 rounded-full bg-green-100 text-green-700 font-bold text-sm">
+                                    ĐANG HOẠT ĐỘNG
+                                </span>
+                                <i data-lucide="chevron-down" class="w-6 h-6 text-gray-500 ml-3 transition-transform"
+                                    id="arrow-<?= $schedule['schedule_id'] ?>"></i>
+                            </div>
+                        </div>
+
+                        <!-- Phần chi tiết (mở rộng khi click) -->
+                        <div class="details hidden bg-white border-t border-gray-200 p-6 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><strong>Thời gian tour:</strong></p>
+                                    <p class="font-medium"><?= $schedule['tour_days'] ?> ngày <?= $schedule['tour_nights'] ?> đêm</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Điểm đón:</strong></p>
+                                    <p class="font-medium"><?= htmlspecialchars($schedule['meeting_point'] ?? 'Chưa có') ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Khách sạn:</strong></p>
+                                    <p class="font-medium"><?= htmlspecialchars($schedule['hotel'] ?? 'Chưa đặt') ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Phương tiện:</strong></p>
+                                    <p class="font-medium"><?= htmlspecialchars($schedule['vehicle'] ?? 'Chưa có') ?></p>
+                                </div>
+                                <?php if (!empty($schedule['restaurant'])): ?>
+                                    <div>
+                                        <p class="text-gray-600"><strong>Nhà hàng:</strong></p>
+                                        <p class="font-medium"><?= htmlspecialchars($schedule['restaurant']) ?></p>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($schedule['flight_info'])): ?>
+                                    <div>
+                                        <p class="text-gray-600"><strong>Chuyến bay:</strong></p>
+                                        <p class="font-medium"><?= htmlspecialchars($schedule['flight_info']) ?></p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if (!empty($schedule['guide_notes'])): ?>
+                                <div class="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                    <p class="font-semibold text-amber-800 flex items-center gap-2">
+                                        <i data-lucide="alert-circle"></i> Ghi chú từ điều hành
+                                    </p>
+                                    <p class="text-amber-900 mt-2"><?= nl2br(htmlspecialchars($schedule['guide_notes'])) ?></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="text-right mt-4">
+                                <button onclick="this.closest('.details').classList.add('hidden')"
+                                    class="text-sm text-gray-500 hover:text-gray-700 underline">
+                                    Đóng chi tiết ↑
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </section>
 
     <section id="schedulenewquyj" class="bg-white p-6 rounded-2xl shadow">

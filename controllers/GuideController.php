@@ -91,7 +91,7 @@ class GuideController
         $model = new GuideTourModel();
 
         $diary = $model->getLogsByGuide($getGuideUserid['id']);
-        $tours = $model->getSchedulesForGuide($getGuideUserid['id']);
+        $tours = $model->getAllSchedulesByGuideId($getGuideUserid['id']);
 
         return [
             'diary' => $diary,
