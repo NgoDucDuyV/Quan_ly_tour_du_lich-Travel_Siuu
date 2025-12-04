@@ -1,6 +1,7 @@
 <?php
 class GuideController
 {
+    // HomeGuide
     public function homeGuide()
     {
         $user_id = $_SESSION['admin_logged']['id'];
@@ -53,7 +54,6 @@ class GuideController
 
         require "./views/Admin/listguide.php";
     }
-
 
     // ScheduleGuide
     // Lịch trình của HDV
@@ -138,7 +138,6 @@ class GuideController
 
         header("Location: ?mode=admin&act=diaryguide");
     }
-
     // Xóa nhật ký của HDV
     public function deleteDiaryGuide()
     {
@@ -225,8 +224,6 @@ class GuideController
 
         echo "success";
     }
-
-
 
     // RequestGuide
     // Yêu cầu đặc biệt của HDV
