@@ -42,6 +42,12 @@ class BookingController
         $paymentLogs = (new PaymentModel())->getPaymentlogsbyid($booking_id);
 
         // 8. Giá booking
+        $bookingPrices = (new PaymentModel())->getBookingPricesByBookingId($booking_id);
+
+        // echo "<pre>";
+        // var_dump($bookingPrices);
+        // echo "</pre>";
+        // die;
         require_once "./views/Admin/bookingdetail.php";
     }
 
@@ -51,7 +57,7 @@ class BookingController
 
         $dataCustomerTypes = (new BookingModel())->getAlCustomerTypes();
 
-        $dataCustomerTypes = (new BookingCustomers())->getCustomerTypes();
+        $dataCustomerTypes = (new BookingCustomersModel())->getCustomerTypes();
 
         $dataGroupType = (new BookingModel())->getAlGroupType();
 
@@ -144,36 +150,146 @@ class BookingController
 
     public function createBooking()
     {
-        $_SESSION['success_message'] = "Booking thành công!";
-        // Chuyển hướng sang trang khác
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $_SESSION['success_message'] = "Mời điền đầy đủ thông tin booking!";
+            header("Location: " . BASE_URL . "?mode=admin&act=newBooking");
+            exit;
+        }
+
+        // 1. Nhận dữ liệu POST + FILES
+        $data = $_POST;
+        $data['files'] = $_FILES;
+
+        // 2. Lấy START - END DATE, đảm bảo NULL nếu rỗng
+        $startDate = !empty($data['start_date'][1]) ? $data['start_date'][1] : null;
+        $endDate   = !empty($data['end_date'][1]) ? $data['end_date'][1] : null;
+
+        // 3. Xử lý passenger_prices
+        $passengerRaw = $data['passenger_prices'] ?? '[]';
+        $passengerArr = is_string($passengerRaw) ? json_decode($passengerRaw, true) : $passengerRaw;
+        $passengerTotal = 0;
+        if (is_array($passengerArr)) {
+            foreach ($passengerArr as $item) {
+                $passengerTotal += $item['total_price'] ?? 0;
+            }
+        }
+
+        // 4. Xử lý service_prices
+        $serviceRaw = $data['service_prices'] ?? '[]';
+        $serviceArr = is_string($serviceRaw) ? json_decode($serviceRaw, true) : $serviceRaw;
+        $serviceTotal = 0;
+        if (is_array($serviceArr)) {
+            foreach ($serviceArr as $item) {
+                $serviceTotal += $item['total_price'] ?? 0;
+            }
+        }
+
+        // 5. Chuẩn dữ liệu booking
+        $bookingData = [
+            'booking_code'     => $data['booking_code'] ?? null,
+            'tour_id'          => $data['tour_id'] ?? null,
+            'tour_version_id'  => $data['tour_version_id'] ?? null,
+            'start_date'       => $startDate,
+            'end_date'         => $endDate,
+            'customer_name'    => $data['customer_name'] ?? null,
+            'customer_phone'   => $data['customer_phone'] ?? null,
+            'customer_email'   => $data['customer_email'] ?? null,
+            'group_type_id'    => $data['group_type_id'] ?? null,
+            'number_of_people' => $data['number_of_people'] ?? 0,
+            'total_price'      => $data['total_price'] ?? 0,
+            'service_prices'   => $serviceTotal,
+            'passenger_prices' => $passengerTotal,
+            'note'             => $data['note'] ?? null,
+        ];
+
+        // 6. Insert Booking, trả về booking_id
+        $bookingModel = new BookingModel();
+        $bookingId = $bookingModel->InsertBooking($bookingData);
+        echo "New Booking ID: " . $bookingId;
+        // if (!$bookingId) {
+        //     die("Lỗi insert booking!");
+        // }
+
+        // 7. Chuẩn dữ liệu booking_prices
+        $bookingPricesData = [
+            'booking_id'       => $bookingId,
+            'passenger_prices' => $passengerTotal,
+            'service_prices'   => $serviceTotal,
+            'total_price'      => $data['total_price'] ?? 0,
+            'paid_amount'      => $data['paid_amount'] ?? 0,
+            'remaining_amount' => ($data['total_price'] ?? 0) - ($data['paid_amount'] ?? 0),
+            'currency'         => $data['currency'] ?? 'VND',
+            'notes'            => $data['booking_price_note'] ?? null,
+        ];
+
+        $bookingPricesId = (new PaymentModel())->InsertBookingPrices($bookingPricesData);
+        // echo "New BookingPrices ID: " . $bookingPricesId;
+        // die;
+        // 8. Xử lý passengers
+        $passengers = [];
+        if (!empty($data['passenger_full_name'])) {
+            for ($i = 0; $i < count($data['passenger_full_name']); $i++) {
+                if (trim($data['passenger_full_name'][$i]) === '') continue;
+                $passengers[] = [
+                    'booking_id'       => $bookingId,
+                    'full_name'        => $data['passenger_full_name'][$i],
+                    'birth_year'       => $data['passenger_birth_date'][$i] ?? null,
+                    'passport'         => $data['passenger_passport'][$i] ?? null,
+                    'note'             => $data['passenger_note'][$i] ?? null,
+                    'customer_type_id' => $data['passenger_type'][$i] ?? 1,
+                ];
+            }
+        }
+
+        $idBookingCustomersModel = (new BookingCustomersModel())->insertPassengers($passengers);
+        // echo "New BookingCustomers ID: " . $idBookingCustomersModel;
+        // die;
+        // 9. Xử lý services đầy đủ
+        $services = [];
+        $maxCount = max(
+            count($serviceArr ?? []),
+            count($data['supplier_id'] ?? []),
+            count($data['supplier_type_id'] ?? []),
+            count($data['service_quantity'] ?? []),
+            count($data['service_price'] ?? []),
+            count($data['service_note'] ?? [])
+        );
+
+        for ($i = 0; $i < $maxCount; $i++) {
+            $services[] = [
+                'booking_id'       => $bookingId,
+                'supplier_id'      => $data['supplier_id'][$i] ?? null,
+                'supplier_type_id' => $data['supplier_type_id'][$i] ?? null,
+                'service_name'     => $serviceArr[$i]['service'] ?? '',
+                'service_quantity' => $data['service_quantity'][$i] ?? 1,
+                'service_price'    => $data['service_price'][$i] ?? 0,
+                'service_note'     => $data['service_note'][$i] ?? null,
+                'created_at'       => date('Y-m-d H:i:s'),
+                'updated_at'       => date('Y-m-d H:i:s'),
+            ];
+        }
+        $dataBookingServicesModel = (new BookingServicesModel())->insertServices($services);
+        if ($dataBookingServicesModel) {
+            echo "lưu dịch vụ thành công dataBookingServicesModel";
+        }
+        // 10. Upload files
+        $uploadedFiles = [];
+        if (isset($data['files']['attachments'])) {
+            for ($i = 0; $i < count($data['files']['attachments']['name']); $i++) {
+                $uploadedFiles[] = [
+                    'booking_id' => $bookingId,
+                    'name'       => $data['files']['attachments']['name'][$i],
+                    'tmp_name'   => $data['files']['attachments']['tmp_name'][$i],
+                    'type'       => $data['files']['attachments']['type'][$i],
+                    'size'       => $data['files']['attachments']['size'][$i],
+                ];
+            }
+        }
+
+        (new BookingStatusModel())->insertBookingStatusDefault($bookingId);
+
+        $_SESSION['success_message'] = "Tạo Booking thành công! (Mã Booking: " . ($data['booking_code'] ?? '') . ")";
         header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
         exit;
-        if (session_status() === PHP_SESSION_NONE) session_start();
-
-        // Lấy dữ liệu từ form
-        $customerTypes   = $_POST['customer_type'] ?? [];
-        $servicesSelected = $_POST['services'] ?? [];
-        $tourId           = $_POST['tour_id'] ?? null;
-        $tourVersionId    = $_POST['tour_version_id'] ?? null;
-        $customerName     = $_POST['customer_name'] ?? '';
-        $customerPhone    = $_POST['customer_phone'] ?? '';
-        $customerEmail    = $_POST['customer_email'] ?? '';
-        $bookingCode      = $_POST['booking_code'] ?? '';
-
-        // Hiển thị dữ liệu
-        echo "<pre>";
-        echo "Tour ID: $tourId\n";
-        echo "Tour Version ID: $tourVersionId\n";
-        echo "Customer Name: $customerName\n";
-        echo "Customer Phone: $customerPhone\n";
-        echo "Customer Email: $customerEmail\n";
-        echo "Booking Code: $bookingCode\n";
-
-        echo "\nCustomer Types:\n";
-        print_r($customerTypes);
-
-        echo "\nSelected Services:\n";
-        print_r($servicesSelected);
-        echo "</pre>";
     }
 }

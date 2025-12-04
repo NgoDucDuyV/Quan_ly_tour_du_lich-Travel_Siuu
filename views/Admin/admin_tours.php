@@ -41,6 +41,12 @@
                 </button>
             </div>
         </div>
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
+                <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success_message']; ?>
+                <?php unset($_SESSION['success_message']); ?>
+            </div>
+        <?php endif; ?>
         <div class="w-full mb-10">
             <main class="w-full">
                 <section class="

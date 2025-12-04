@@ -260,25 +260,39 @@ class BookingModel
 
 
     // Tạo booking mới
-    public function create($data)
+    public function InsertBooking($data)
     {
         $sql = "INSERT INTO bookings 
-                (tour_id, tour_version_id, customer_name, customer_phone, customer_email, 
-                group_type, number_of_people, note, status, created_at, updated_at) 
-                VALUES 
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            (booking_code, tour_id, tour_version_id, start_date, end_date, customer_name, 
+            customer_phone, customer_email, group_type_id, number_of_people, total_price, 
+            service_prices, passenger_prices, note, created_at, updated_at) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['tour_id'],
-            $data['tour_version_id'],
-            $data['customer_name'],
-            $data['customer_phone'],
-            $data['customer_email'],
-            $data['group_type'],
-            $data['number_of_people'],
-            $data['note'],
-            $data['status']
-        ]);
+
+        try {
+            $stmt->execute([
+                $data['booking_code'] ?? null,
+                $data['tour_id'] ?? null,
+                $data['tour_version_id'] ?? null,
+                $data['start_date'] ?? null,
+                $data['end_date'] ?? null,
+                $data['customer_name'] ?? null,
+                $data['customer_phone'] ?? null,
+                $data['customer_email'] ?? null,
+                $data['group_type_id'] ?? null,
+                $data['number_of_people'] ?? 0,
+                $data['total_price'] ?? 0,
+                $data['service_prices'] ?? 0,
+                $data['passenger_prices'] ?? 0,
+                $data['note'] ?? null
+            ]);
+
+            return $this->conn->lastInsertId();
+        } catch (PDOException $e) {
+            echo "Lỗi insert booking: " . $e->getMessage();
+            return false;
+        }
     }
 }

@@ -14,6 +14,7 @@ require_once __DIR__ . '/models/BookingModel.php';
 require_once __DIR__ . '/models/BookingCustomersModel.php';
 require_once __DIR__ . '/models/BookingStatusModel.php';
 require_once __DIR__ . '/models/PaymentModel.php';
+require_once __DIR__ . '/models/BookingServicesModel.php';
 require_once __DIR__ . '/models/GuideTourModel.php';
 require_once __DIR__ . '/models/SchedulesModel.php';
 
