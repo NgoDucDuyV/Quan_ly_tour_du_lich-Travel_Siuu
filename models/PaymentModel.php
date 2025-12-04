@@ -9,7 +9,8 @@ class PaymentModel
         $this->conn = connectDB();
     }
 
-    public function getPaymentModel(): array
+    // Lấy danh sách phương thức thanh toán
+    public function getPaymentMethods(): array
     {
         $sql = "SELECT * FROM `payment_methods` ORDER BY `id` ASC";
         $stmt = $this->conn->prepare($sql);
@@ -17,21 +18,41 @@ class PaymentModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function createPayment(array $data): bool
+    // Lấy thông tin giá theo booking_id
+    public function getBookingPricesByBookingId($booking_id): array
     {
-        $sql = "INSERT INTO {$this->table} 
-            (booking_id, amount, payment_method_id, payment_type_id, transaction_code, payment_image, created_at)
-            VALUES (:booking_id, :amount, :payment_method_id, :payment_type_id, :transaction_code, :payment_image, :created_at)";
+        $sql = "SELECT * FROM `booking_prices`
+            WHERE booking_id = :booking_id
+            ORDER BY id ASC";
 
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            ':booking_id' => $data['booking_id'],
-            ':amount' => $data['amount'],
-            ':payment_method_id' => $data['payment_method_id'],
-            ':payment_type_id' => $data['payment_type_id'],
-            ':transaction_code' => $data['transaction_code'],
-            ':payment_image' => $data['payment_image'],
-            ':created_at' => $data['created_at'],
-        ]);
+        $stmt->bindParam(':booking_id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // lịch sử thanh toán theo booking_id
+    public function getPaymentlogsbyid($booking_id)
+    {
+        $sql = "SELECT * FROM payments_logs WHERE booking_id = :booking_id ORDER BY created_at ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':booking_id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Lấy tất cả loại hình thanh toán
+    public function getPaymentTypes()
+    {
+        $sql = "SELECT * FROM payment_type ORDER BY id ASC";
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lấy tất cả trạng thái thanh toán
+    public function getPaymentStatusType()
+    {
+        $sql = "SELECT * FROM payment_status_type ORDER BY id ASC";
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -21,6 +21,7 @@ require_once __DIR__ . '/models/SchedulesModel.php';
 // admin Controller
 require_once __DIR__ . '/controllers/AdminAuthController.php';
 require_once __DIR__ . '/controllers/BookingController.php';
+require_once __DIR__ . '/controllers/BookingStatusController.php';
 require_once __DIR__ . '/controllers/PaymentController.php';
 require_once __DIR__ . '/controllers/CategoryController.php';
 

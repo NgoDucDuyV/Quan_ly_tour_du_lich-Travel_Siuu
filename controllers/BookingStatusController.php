@@ -1,15 +1,8 @@
 <?php
-class PaymentController
+class BookingStatusController
 {
 
-    // public function PaymentController()
-    // {
-    //     $paymentModel = new PaymentModel();
-    //     $payments = $paymentModel->getPaymentModel();
-    //     require_once "./views/Admin/payment .php";
-    // }
-
-    public function ShowFromThanhToan($booking_id)
+    public function UpdateFromBookingStatus($booking_id)
     {
         // 1. Lấy thông tin booking
         $databooking = (new BookingModel())->getBookingById($booking_id);
@@ -39,6 +32,45 @@ class PaymentController
 
         // 8. Giá booking
         $bookingPrices = (new PaymentModel())->getBookingPricesByBookingId($booking_id);
-        require_once "./views/Admin/update_from_thanh_toan.php";
+
+
+        // ====================
+        //   ECHO toàn bộ dữ liệu
+        // ====================
+
+        // echo "<pre>";
+
+        // echo "=== Booking (FULL) ===\n";
+        // print_r($databooking);
+
+        // echo "\n=== Booking Status Types ===\n";
+        // print_r($bookingStatusTypes);
+
+        // echo "\n=== Booking Status Types ===\n";
+        // print_r($bookingStatusTypes);
+
+        // echo "\n=== Booking Logs ===\n";
+        // print_r($bookingLogs);
+
+        // echo "\n=== Payment Methods ===\n";
+        // print_r($paymentMethods);
+
+        // echo "\n=== Payment Types ===\n";
+        // print_r($paymentTypes);
+
+        // echo "\n=== Payment Status Types ===\n";
+        // print_r($paymentStatusTypes);
+
+        // echo "\n=== Payment Logs ===\n";
+        // print_r($paymentLogs);
+
+        // echo "\n=== Booking Prices ===\n";
+        // print_r($bookingPrices);
+
+        // echo "</pre>";
+        // die(); // dừng lại để debug
+
+
+        require_once "./views/Admin/confirm_booking_deposit.php";
     }
 }

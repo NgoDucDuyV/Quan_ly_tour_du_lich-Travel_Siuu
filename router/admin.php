@@ -70,34 +70,34 @@ echo match ($act) {
         require_once "./views/Admin/home.php";
     })(),
     'categoriestour' => (function () {
-    requireAdmin();
-    (new CategoryController)->list();
-})(),
+        requireAdmin();
+        (new CategoryController)->list();
+    })(),
 
-'addcategory_add' => (function () {
-    requireAdmin();
-    (new CategoryController)->add();
-})(),
+    'addcategory_add' => (function () {
+        requireAdmin();
+        (new CategoryController)->add();
+    })(),
 
-'category_store' => (function () {
-    requireAdmin();
-    (new CategoryController)->store();
-})(),
+    'category_store' => (function () {
+        requireAdmin();
+        (new CategoryController)->store();
+    })(),
 
-'category_edit' => (function () {
-    requireAdmin();
-    (new CategoryController)->edit($_GET['id'] ?? 0);
-})(),
+    'category_edit' => (function () {
+        requireAdmin();
+        (new CategoryController)->edit($_GET['id'] ?? 0);
+    })(),
 
-'category_update' => (function () {
-    requireAdmin();
-    (new CategoryController)->update();
-})(),
+    'category_update' => (function () {
+        requireAdmin();
+        (new CategoryController)->update();
+    })(),
 
-'category_delete' => (function () {
-    requireAdmin();
-    (new CategoryController)->delete($_GET['id'] ?? 0);
-})(),
+    'category_delete' => (function () {
+        requireAdmin();
+        (new CategoryController)->delete($_GET['id'] ?? 0);
+    })(),
     'admintour' => (function () {
         requireAdmin();
         if (isset($_GET['tour_id'])) {
@@ -141,19 +141,20 @@ echo match ($act) {
         echo (new BookingController)->ShowBooking();
     })(),
 
-    'updateFromThanhToan' => (function () {
+    'from_confirm_booking_deposit' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowFromThanhToan($_GET['id'] ?? null);
+        echo (new BookingStatusController())->UpdateFromBookingStatus($_GET['id'] ?? null);
     })(),
 
-    'update_from_booking_status' => (function () {
+    'updateFromThanhToan' => (function () {
         requireAdmin();
-        echo (new BookingController)->UpdateFromBookingStatus($_GET['id'] ?? null);
+        echo (new PaymentController)->ShowFromThanhToan($_GET['booking_id'] ?? null);
     })(),
-    'create_booking_status' => (function () {
-        requireAdmin();
-        echo (new BookingController)->CreateBookingStatus();
-    })(),
+
+    // 'create_booking_status' => (function () {
+    //     requireAdmin();
+    //     echo (new BookingController)->CreateBookingStatus();
+    // })(),
 
     'phan_tour_from_guides' => (function () {
         requireAdmin();

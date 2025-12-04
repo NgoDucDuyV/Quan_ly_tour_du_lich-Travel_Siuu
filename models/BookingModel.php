@@ -66,17 +66,77 @@ class BookingModel
     {
         $booking_id = (int) $booking_id;
 
-        $sql = "SELECT * FROM bookings WHERE id = :id LIMIT 1";
+        $sql = "
+            SELECT 
+                b.id AS booking_id,
+                b.booking_code,
+                b.tour_id,
+                b.tour_version_id,
+                b.start_date,
+                b.end_date,
+                b.customer_name,
+                b.customer_phone,
+                b.customer_email,
+                b.group_type_id,
+                b.number_of_people,
+                b.total_price,
+                b.service_prices,
+                b.passenger_prices,
+                b.note,
+                b.created_at AS booking_created_at,
+                b.updated_at AS booking_updated_at,
+
+                -- booking status (latest)
+                bst.id AS status_type_id_master,
+                bst.code AS status_type_code_master,
+                bst.name AS status_type_name,
+
+                -- payment status (latest)
+                pst.id AS payment_type_id_master,
+                pst.code AS payment_type_code_master,
+                pst.name AS payment_type_name,
+                pst.description AS payment_type_description,
+                pst.color AS payment_type_color,
+
+                -- group type info
+                gt.group_name,
+                gt.group_code,
+                gt.price_change_percent,
+                gt.color AS group_color
+
+            FROM bookings b
+
+            -- Lấy trạng thái mới nhất bằng cách join vào bản ghi có ID lớn nhất
+            LEFT JOIN booking_status bs 
+                ON bs.id = (
+                        SELECT id FROM booking_status 
+                        WHERE booking_id = b.id 
+                        ORDER BY id DESC 
+                        LIMIT 1
+                )
+
+            LEFT JOIN booking_status_type bst 
+                ON bs.booking_status_type_id = bst.id
+
+            LEFT JOIN payment_status_type pst 
+                ON bs.payment_status_type_id = pst.id
+
+            LEFT JOIN group_type gt 
+                ON b.group_type_id = gt.id
+
+            WHERE b.id = :booking_id
+            LIMIT 1
+    ";
+
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $booking_id, PDO::PARAM_INT);
+        $stmt->bindValue(':booking_id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
 
-        if ($stmt->execute()) {
-            $booking = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $booking !== false ? $booking : null;
-        }
+        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return null;
+        return $booking ?: null;
     }
+
 
     public function getAllBookingsByTourId($tour_id)
     {
