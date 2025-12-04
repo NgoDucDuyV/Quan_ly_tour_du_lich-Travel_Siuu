@@ -66,17 +66,77 @@ class BookingModel
     {
         $booking_id = (int) $booking_id;
 
-        $sql = "SELECT * FROM bookings WHERE id = :id LIMIT 1";
+        $sql = "
+            SELECT 
+                b.id AS booking_id,
+                b.booking_code,
+                b.tour_id,
+                b.tour_version_id,
+                b.start_date,
+                b.end_date,
+                b.customer_name,
+                b.customer_phone,
+                b.customer_email,
+                b.group_type_id,
+                b.number_of_people,
+                b.total_price,
+                b.service_prices,
+                b.passenger_prices,
+                b.note,
+                b.created_at AS booking_created_at,
+                b.updated_at AS booking_updated_at,
+
+                -- booking status (latest)
+                bst.id AS status_type_id_master,
+                bst.code AS status_type_code_master,
+                bst.name AS status_type_name,
+
+                -- payment status (latest)
+                pst.id AS payment_type_id_master,
+                pst.code AS payment_type_code_master,
+                pst.name AS payment_type_name,
+                pst.description AS payment_type_description,
+                pst.color AS payment_type_color,
+
+                -- group type info
+                gt.group_name,
+                gt.group_code,
+                gt.price_change_percent,
+                gt.color AS group_color
+
+            FROM bookings b
+
+            -- Lấy trạng thái mới nhất bằng cách join vào bản ghi có ID lớn nhất
+            LEFT JOIN booking_status bs 
+                ON bs.id = (
+                        SELECT id FROM booking_status 
+                        WHERE booking_id = b.id 
+                        ORDER BY id DESC 
+                        LIMIT 1
+                )
+
+            LEFT JOIN booking_status_type bst 
+                ON bs.booking_status_type_id = bst.id
+
+            LEFT JOIN payment_status_type pst 
+                ON bs.payment_status_type_id = pst.id
+
+            LEFT JOIN group_type gt 
+                ON b.group_type_id = gt.id
+
+            WHERE b.id = :booking_id
+            LIMIT 1
+    ";
+
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $booking_id, PDO::PARAM_INT);
+        $stmt->bindValue(':booking_id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
 
-        if ($stmt->execute()) {
-            $booking = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $booking !== false ? $booking : null;
-        }
+        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return null;
+        return $booking ?: null;
     }
+
 
     public function getAllBookingsByTourId($tour_id)
     {
@@ -200,25 +260,39 @@ class BookingModel
 
 
     // Tạo booking mới
-    public function create($data)
+    public function InsertBooking($data)
     {
         $sql = "INSERT INTO bookings 
-                (tour_id, tour_version_id, customer_name, customer_phone, customer_email, 
-                group_type, number_of_people, note, status, created_at, updated_at) 
-                VALUES 
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            (booking_code, tour_id, tour_version_id, start_date, end_date, customer_name, 
+            customer_phone, customer_email, group_type_id, number_of_people, total_price, 
+            service_prices, passenger_prices, note, created_at, updated_at) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['tour_id'],
-            $data['tour_version_id'],
-            $data['customer_name'],
-            $data['customer_phone'],
-            $data['customer_email'],
-            $data['group_type'],
-            $data['number_of_people'],
-            $data['note'],
-            $data['status']
-        ]);
+
+        try {
+            $stmt->execute([
+                $data['booking_code'] ?? null,
+                $data['tour_id'] ?? null,
+                $data['tour_version_id'] ?? null,
+                $data['start_date'] ?? null,
+                $data['end_date'] ?? null,
+                $data['customer_name'] ?? null,
+                $data['customer_phone'] ?? null,
+                $data['customer_email'] ?? null,
+                $data['group_type_id'] ?? null,
+                $data['number_of_people'] ?? 0,
+                $data['total_price'] ?? 0,
+                $data['service_prices'] ?? 0,
+                $data['passenger_prices'] ?? 0,
+                $data['note'] ?? null
+            ]);
+
+            return $this->conn->lastInsertId();
+        } catch (PDOException $e) {
+            echo "Lỗi insert booking: " . $e->getMessage();
+            return false;
+        }
     }
 }

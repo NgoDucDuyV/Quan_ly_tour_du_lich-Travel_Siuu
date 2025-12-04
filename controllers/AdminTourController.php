@@ -42,7 +42,8 @@ class AdminTourController
     {
         // kiểm tran REQUEST_METHOD thất acr các trường dữ liệu
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo "chưa nhập du dư liẹu";
+            $_SESSION['success_message'] = "Chưa nhập đủ dữ liệu để tạo tour!";
+            header("Location: " . BASE_URL . "?mode=admin&act=admintour");
             exit;
         }
         $datatour = [
@@ -163,7 +164,6 @@ class AdminTourController
             }
             // die;
         }
-
         // chon loai dịch vụ
         if (!empty($_POST['supplier_types_id'])) {
             $supplier_types_id = $_POST['supplier_types_id']; // mảng ID loại dịch vụ
@@ -178,18 +178,15 @@ class AdminTourController
                     'note' => $notes[$i]
                 ];
             }
-
             // echo '<pre>';
             // print_r($datasupplierstypes);
             // echo '</pre>';
             // die;
-
             foreach ($datasupplierstypes as $item) {
                 (new TourModel())->CreateTourSuppliersTypes($item, $tour_id);
             }
             // die;
         }
-
         // thêm version_nametour
         if (!empty($_POST['version_name'])) {
             $names   = $_POST['version_name'];
@@ -222,16 +219,14 @@ class AdminTourController
             }
             // die;
         }
-
-
         // thêm các chính sách
         if (!empty($_POST['policy_type'])) {
-            $policy_types = $_POST['policy_type'];   // mảng các loại chính sách
-            $descriptions = $_POST['description'];   // mảng nội dung tương ứng
+            $policy_types = $_POST['policy_type'];
+            $descriptions = $_POST['description'];
 
-            $policies = []; // mảng gom dữ liệu
+            $policies = [];
 
-            $count = count($policy_types); // số chính sách
+            $count = count($policy_types);
 
             for ($i = 0; $i < $count; $i++) {
                 $policies[] = [
@@ -239,7 +234,6 @@ class AdminTourController
                     'description' => $descriptions[$i]
                 ];
             }
-
             // kiểm tra dữ liệu
             // echo '<pre>';
             // print_r($policies);
@@ -251,7 +245,8 @@ class AdminTourController
             // die;
         }
 
-        header("Location: " . BASE_URL . "?act=admintour");
+        $_SESSION['success_message'] = "Tạo tour thành công! Mã Tour #: " . $datatour['code'];
+        header("Location: " . BASE_URL . "?mode=admin&act=admintour");
         exit;
     }
 

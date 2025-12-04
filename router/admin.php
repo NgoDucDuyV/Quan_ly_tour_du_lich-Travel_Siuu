@@ -71,7 +71,32 @@ echo match ($act) {
     })(),
     'categoriestour' => (function () {
         requireAdmin();
-        (new CategoryController)->listCategories();
+        (new CategoryController)->list();
+    })(),
+
+    'addcategory_add' => (function () {
+        requireAdmin();
+        (new CategoryController)->add();
+    })(),
+
+    'category_store' => (function () {
+        requireAdmin();
+        (new CategoryController)->store();
+    })(),
+
+    'category_edit' => (function () {
+        requireAdmin();
+        (new CategoryController)->edit($_GET['id'] ?? 0);
+    })(),
+
+    'category_update' => (function () {
+        requireAdmin();
+        (new CategoryController)->update();
+    })(),
+
+    'category_delete' => (function () {
+        requireAdmin();
+        (new CategoryController)->delete($_GET['id'] ?? 0);
     })(),
     'admintour' => (function () {
         requireAdmin();
@@ -116,19 +141,20 @@ echo match ($act) {
         echo (new BookingController)->ShowBooking();
     })(),
 
-    'updateFromThanhToan' => (function () {
+    'from_confirm_booking_deposit' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowFromThanhToan($_GET['id'] ?? null);
+        echo (new BookingStatusController())->UpdateFromBookingStatus($_GET['id'] ?? null);
     })(),
 
-    'update_from_booking_status' => (function () {
+    'updateFromThanhToan' => (function () {
         requireAdmin();
-        echo (new BookingController)->UpdateFromBookingStatus($_GET['id'] ?? null);
+        echo (new PaymentController)->ShowFromThanhToan($_GET['booking_id'] ?? null);
     })(),
-    'create_booking_status' => (function () {
-        requireAdmin();
-        echo (new BookingController)->CreateBookingStatus();
-    })(),
+
+    // 'create_booking_status' => (function () {
+    //     requireAdmin();
+    //     echo (new BookingController)->CreateBookingStatus();
+    // })(),
 
     'phan_tour_from_guides' => (function () {
         requireAdmin();
@@ -137,7 +163,7 @@ echo match ($act) {
 
     'bookingdetail' => (function () {
         requireAdmin();
-        require_once "./views/Admin/bookingdetail.php";
+        echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
         // echo (new BookingController)->ShowBooking();
     })(),
     'newBooking' => (function () {

@@ -14,6 +14,7 @@ require_once __DIR__ . '/models/BookingModel.php';
 require_once __DIR__ . '/models/BookingCustomersModel.php';
 require_once __DIR__ . '/models/BookingStatusModel.php';
 require_once __DIR__ . '/models/PaymentModel.php';
+require_once __DIR__ . '/models/BookingServicesModel.php';
 require_once __DIR__ . '/models/GuideTourModel.php';
 require_once __DIR__ . '/models/SchedulesModel.php';
 
@@ -21,6 +22,7 @@ require_once __DIR__ . '/models/SchedulesModel.php';
 // admin Controller
 require_once __DIR__ . '/controllers/AdminAuthController.php';
 require_once __DIR__ . '/controllers/BookingController.php';
+require_once __DIR__ . '/controllers/BookingStatusController.php';
 require_once __DIR__ . '/controllers/PaymentController.php';
 require_once __DIR__ . '/controllers/CategoryController.php';
 

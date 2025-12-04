@@ -1,229 +1,257 @@
 <?php
-// Giả sử các biến dữ liệu đã có sẵn từ controller
-// $databooking, $dataBookingStatusType, $dataPaymentTypes, $datagetBookinglogsbyid, $dataBookingServicesWithSuppliers
-$old_data = $_SESSION['old_data'] ?? [];
-unset($_SESSION['old_data']);
+$booking = $databooking; // từ controller
+$total   = $booking['total_price'] ?? 0;
+$paid    = $booking['paid_amount'] ?? 0;
+$remain  = $total - $paid;
+$percent = $total > 0 ? round(($paid / $total) * 100) : 0;
+
+// Hàm lấy màu trạng thái
+function getStatusColor($code)
+{
+    return match (strtoupper($code)) {
+        'PENDING', 'CHXACNHAN'     => 'bg-yellow-100 text-yellow-800',
+        'DEPOSITED', 'DACO'        => 'bg-orange-100 text-orange-800',
+        'ASSIGN_GUIDE'            => 'bg-purple-100 text-purple-800',
+        'UPCOMING', 'UPCOMINGS'    => 'bg-amber-100 text-amber-800',
+        'IN_PROGRESS'             => 'bg-cyan-100 text-cyan-800',
+        'COMPLETED', 'HOANTAT'     => 'bg-emerald-100 text-emerald-800',
+        'CLOSED'                  => 'bg-gray-300 text-gray-700',
+        'CANCELED', 'CANCELLED'    => 'bg-red-100 text-red-800',
+        default                   => 'bg-gray-100 text-gray-800'
+    };
+}
+$statusColor = getStatusColor($booking['status_type_code_master'] ?? $booking['booking_status_code'] ?? '');
 ?>
 
-<div class="max-w-[1600px] mx-auto p-6 space-y-8 font-sans">
+<div class="max-w-[1900px] mx-auto p-6">
 
     <!-- Breadcrumb -->
-    <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+    <nav class="text-sm text-slate-500 mb-4">
         <ul class="inline-flex items-center space-x-2">
-            <li>Quản trị viên</li>
-            <li class="before:content-['/'] before:px-2 before:text-gray-300 text-gray-400">
-                Cập nhật trạng thái Booking
-            </li>
+            <li><a href="?act=booking" class="hover:text-slate-700">Quản lý booking</a></li>
+            <li class="before:content-['/'] before:px-2 before:text-slate-300">Chi tiết booking</li>
         </ul>
     </nav>
 
-    <!-- Title -->
-    <h1 class="text-3xl font-semibold text-gray-900">
-        Cập nhật trạng thái Booking #<?= htmlspecialchars($databooking['booking_code']) ?>
-    </h1>
-
-    <!-- Thông báo lỗi / success -->
-    <?php if (!empty($_SESSION['errors'])): ?>
-        <div class="p-4 bg-red-100 text-red-700 rounded-xl mb-4">
-            <ul class="list-disc pl-5">
-                <?php foreach ($_SESSION['errors'] as $error): ?>
-                    <li><?= htmlspecialchars($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
+    <!-- Header + Trạng thái -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-5">
+            <h1 class="text-3xl font-bold text-slate-900">BK: <?= $booking['booking_code'] ?></h1>
+            <div class="flex gap-3">
+                <span class="px-5 py-2 rounded-full text-sm font-bold <?= $statusColor ?>">
+                    <?= $booking['status_type_name'] ?? 'Chưa xác định' ?>
+                </span>
+                <span class="px-5 py-2 rounded-full text-sm font-bold <?= $booking['payment_type_color'] ?? 'bg-gray-100 text-gray-800' ?>">
+                    <?= $booking['payment_type_name'] ?? 'Chưa thanh toán' ?>
+                </span>
+            </div>
         </div>
-        <?php unset($_SESSION['errors']); ?>
-    <?php endif; ?>
+        <a href="?act=booking" class="flex items-center gap-2 px-5 py-2.5 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm">
+            ← Danh sách
+        </a>
+    </div>
 
-    <?php if (!empty($_SESSION['success'])): ?>
-        <div class="p-4 bg-green-100 text-green-700 rounded-xl mb-4">
-            <?= htmlspecialchars($_SESSION['success']) ?>
-        </div>
-        <?php unset($_SESSION['success']); ?>
-    <?php endif; ?>
-
-    <!-- MAIN CARD FORM -->
-    <form action="<?= BASE_URL ?>?mode=admin&act=create_booking_status" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-2xl shadow-xl space-y-8 border border-gray-200">
-
-        <input type="hidden" name="booking_id" value="<?= $databooking['id'] ?>">
-        <input type="hidden" name="old_status" value="<?= $databooking['status_code'] ?>">
-
+    <!-- Card tổng quan -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <!-- Thông tin khách hàng -->
-        <div class="space-y-4">
-            <h2 class="text-xl font-semibold text-gray-800">Thông tin khách hàng</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block font-semibold mb-2 text-gray-600">Tên khách hàng</label>
-                    <input name="customer_name" value="<?= htmlspecialchars($databooking['customer_name']) ?>" disabled class="w-full p-3 bg-gray-100 rounded-xl border text-gray-700 shadow-sm">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Thông tin khách hàng</h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Họ tên</span>
+                    <span class="font-semibold"><?= htmlspecialchars($booking['customer_name']) ?></span>
                 </div>
-                <div>
-                    <label class="block font-semibold mb-2 text-gray-600">Số điện thoại</label>
-                    <input name="customer_phone" value="<?= htmlspecialchars($databooking['customer_phone']) ?>" disabled class="w-full p-3 bg-gray-100 rounded-xl border text-gray-700 shadow-sm">
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Số điện thoại</span>
+                    <span class="font-medium"><?= $booking['customer_phone'] ?></span>
                 </div>
-                <div>
-                    <label class="block font-semibold mb-2 text-gray-600">Email</label>
-                    <input name="customer_email" value="<?= htmlspecialchars($databooking['customer_email']) ?>" disabled class="w-full p-3 bg-gray-100 rounded-xl border text-gray-700 shadow-sm">
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Email</span>
+                    <span class="font-medium"><?= $booking['customer_email'] ?></span>
                 </div>
-                <div>
-                    <label class="block font-semibold mb-2 text-gray-600">Loại nhóm</label>
-                    <span class="px-4 py-2 bg-indigo-100 text-indigo-800 font-medium rounded-full text-sm">
-                        <?= $databooking['group_type'] == 'doan' ? 'Đoàn' : 'Lẻ' ?>
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Loại khách</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold <?= $booking['group_color'] ?? 'bg-gray-100 text-gray-800' ?>">
+                        <?= $booking['group_name'] ?? 'Chưa xác định' ?>
                     </span>
                 </div>
-            </div>
-        </div>
-
-        <!-- Trạng thái Booking -->
-        <div class="space-y-3">
-            <h2 class="text-xl font-semibold text-gray-800">Trạng thái booking</h2>
-            <select id="status" name="booking_status"
-                class="w-full p-4 border rounded-xl shadow-sm text-gray-800 font-semibold bg-gray-50">
-                <?php foreach ($dataBookingStatusType as $status): ?>
-                    <?php
-                    $status_name_vn = '';
-                    switch ($status['code']) {
-                        case 'CHXACNHAN':
-                            $status_name_vn = 'Chờ xác nhận';
-                            break;
-                        case 'DACOC':
-                            $status_name_vn = 'Đã cọc';
-                            break;
-                        case 'HOANTAT':
-                            $status_name_vn = 'Hoàn tất';
-                            break;
-                        case 'HUY':
-                            $status_name_vn = 'Hủy';
-                            break;
-                    }
-                    $selected = $old_data['booking_status'] ?? $databooking['status_code'];
-                    ?>
-                    <option value="<?= $status['code'] ?>" <?= $selected == $status['code'] ? 'selected' : '' ?>>
-                        <?= $status_name_vn ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Ghi chú -->
-        <div>
-            <label class="block font-semibold mb-2 text-gray-700">Ghi chú</label>
-            <textarea name="note" rows="3"
-                class="w-full p-4 border rounded-xl shadow-sm bg-white text-gray-700"><?= htmlspecialchars($old_data['note'] ?? $databooking['note']) ?></textarea>
-        </div>
-
-        <!-- Thanh toán đặt cọc -->
-        <div id="payment_section" class="<?= (($old_data['booking_status'] ?? $databooking['status_code']) === 'DACOC') ? '' : 'hidden' ?> p-6 bg-blue-50 rounded-2xl shadow-inner space-y-4 border border-blue-100">
-            <h2 class="text-lg font-semibold text-blue-800">Thông tin thanh toán đặt cọc</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block font-semibold mb-2 text-blue-700">Người thanh toán</label>
-                    <input name="payer_name" value="<?= htmlspecialchars($old_data['payer_name'] ?? $databooking['payer_name'] ?? '') ?>" class="w-full p-3 border rounded-xl shadow-sm" placeholder="Tên người thanh toán">
-                </div>
-
-                <div>
-                    <label class="block font-semibold mb-2 text-blue-700">Số tiền cọc</label>
-                    <input name="deposit_amount" type="number" value="<?= htmlspecialchars($old_data['deposit_amount'] ?? $databooking['deposit_amount'] ?? '') ?>" class="w-full p-3 border rounded-xl shadow-sm" placeholder="Nhập số tiền">
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="block font-semibold mb-2 text-blue-700">Trạng thái thannh toán</label>
-                    <select name="payment_method_id" class="w-full p-3 border rounded-xl shadow-sm">
-                        <option value="">-- Chọn trạng thái --</option>
-                        <?php foreach ($dataPaymentTypes as $payment): ?>
-                            <option value="<?= $payment['id'] ?>">
-                                <?= htmlspecialchars($payment['name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="block font-semibold mb-2 text-blue-700">Hình ảnh chuyển tiền</label>
-                    <input name="payment_image" type="file" accept="image/*" class="w-full p-3 border rounded-xl shadow-sm">
-                    <?php if (!empty($databooking['payment_image'])): ?>
-                        <p class="text-xs text-gray-500 mt-1">Ảnh hiện tại: <a href="./uploads/payment_images/<?= $databooking['payment_image'] ?>" target="_blank" class="underline text-blue-600"><?= $databooking['payment_image'] ?></a></p>
-                    <?php endif; ?>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="block font-semibold mb-2 text-blue-700">Phương thức thanh toán</label>
-                    <select name="payment_status_id" class="w-full p-3 border rounded-xl shadow-sm">
-                        <option value="">-- Chọn phương thức --</option>
-                        <?php foreach ($datagetPaymentModel as $payment): ?>
-                            <option value="<?= $payment['id'] ?>"
-                                <?= (isset($old_data['payment_status_id']) && $old_data['payment_status_id'] == $payment['id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($payment['name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block font-semibold mb-2 text-blue-700">Ghi chú thanh toán</label>
-                    <textarea name="payment_description" rows="3" class="w-full p-3 border rounded-xl shadow-sm" placeholder="Nhập ghi chú về thanh toán (nếu có)"><?= htmlspecialchars($old_data['payment_description'] ?? $databooking['payment_description'] ?? '') ?></textarea>
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Số người</span>
+                    <span class="font-bold text-xl text-main"><?= $booking['number_of_people'] ?> khách</span>
                 </div>
             </div>
         </div>
 
-        <!-- Lịch sử thay đổi -->
-        <div class="space-y-4">
-            <h2 class="text-xl font-semibold text-gray-800">Lịch sử thay đổi trạng thái</h2>
-            <?php foreach ($datagetBookinglogsbyid as $log): ?>
-                <div class="p-4 border rounded-xl bg-gray-50 shadow-sm">
-                    <div class="flex justify-between items-center">
-                        <span class="font-semibold text-gray-700">
-                            Từ:
-                            <?php
-                            $old_status = match ($log['old_status']) {
-                                'CHXACNHAN' => 'Chờ xác nhận',
-                                'DACOC' => 'Đã cọc',
-                                'HOANTAT' => 'Hoàn tất',
-                                'HUY' => 'Hủy',
-                                default => $log['old_status']
-                            };
-                            $new_status = match ($log['new_status']) {
-                                'CHXACNHAN' => 'Chờ xác nhận',
-                                'DACOC' => 'Đã cọc',
-                                'HOANTAT' => 'Hoàn tất',
-                                'HUY' => 'Hủy',
-                                default => $log['new_status']
-                            };
-                            echo "$old_status → $new_status";
-                            ?>
-                        </span>
-                        <span class="text-sm text-gray-500"><?= $log['created_at'] ?></span>
+        <!-- Thông tin tour -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Thông tin tour</h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Mã tour</span>
+                    <span class="font-mono font-bold">#<?= $booking['tour_id'] ?></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Ngày khởi hành</span>
+                    <span class="font-semibold"><?= date('d/m/Y', strtotime($booking['start_date'])) ?></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Ngày kết thúc</span>
+                    <span class="font-semibold"><?= date('d/m/Y', strtotime($booking['end_date'])) ?></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-600">Tạo booking lúc</span>
+                    <span class="text-slate-500"><?= date('d/m/Y H:i', strtotime($booking['booking_created_at'])) ?></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tình hình thanh toán -->
+        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold mb-4">Tình hình thanh toán</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between text-2xl font-bold">
+                    <span>Tổng tiền</span>
+                    <span><?= number_format($total) ?>đ</span>
+                </div>
+                <div class="flex justify-between text-xl">
+                    <span>Đã thu</span>
+                    <span class="text-emerald-300"><?= number_format($paid) ?>đ</span>
+                </div>
+                <div class="flex justify-between text-xl">
+                    <span>Còn thiếu</span>
+                    <span class="<?= $remain > 0 ? 'text-orange-300' : 'text-emerald-300' ?>">
+                        <?= number_format($remain) ?>đ
+                    </span>
+                </div>
+                <div class="mt-4">
+                    <div class="bg-white bg-opacity-20 rounded-full h-4 overflow-hidden">
+                        <div class="bg-emerald-400 h-full transition-all duration-700" style="width: <?= $percent ?>%"></div>
                     </div>
-                    <p class="text-gray-600 text-sm"><?= htmlspecialchars($log['description']) ?> • Nhân viên #<?= $log['updated_by'] ?></p>
+                    <div class="text-right mt-1 text-sm"><?= $percent ?>% đã thu</div>
                 </div>
-            <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs nội dung -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="border-b border-slate-200">
+            <div class="flex">
+                <button class="tab-btn active px-6 py-4 font-medium text-main border-b-2 border-main">Lịch sử trạng thái</button>
+                <button class="tab-btn px-6 py-4 font-medium text-slate-600 hover:text-main">Lịch sử thanh toán</button>
+                <button class="tab-btn px-6 py-4 font-medium text-slate-600 hover:text-main">Dịch vụ đã đặt</button>
+                <button class="tab-btn px-6 py-4 font-medium text-slate-600 hover:text-main">Ghi chú nội bộ</button>
+            </div>
         </div>
 
-        <!-- Dịch vụ đã đặt -->
-        <div class="space-y-4">
-            <h2 class="text-xl font-semibold text-gray-800">Dịch vụ đã đặt</h2>
-            <?php foreach ($dataBookingServicesWithSuppliers as $service): ?>
-                <div class="p-5 bg-white border rounded-xl shadow-sm">
-                    <p class="font-medium text-gray-700">Dịch vụ: <?= htmlspecialchars($service['service_name']) ?> - Nhà cung cấp: <?= htmlspecialchars($service['supplier_name']) ?></p>
-                    <p class="text-gray-600">Số lượng: <?= $service['service_quantity'] ?> - Giá: <?= number_format($service['service_price'], 0, ',', '.') ?>đ</p>
-                    <p class="text-gray-600">Liên hệ: <?= htmlspecialchars($service['contact_name']) ?> - <?= htmlspecialchars($service['contact_phone']) ?> - <?= htmlspecialchars($service['contact_email']) ?></p>
-                    <p class="text-gray-600">Địa chỉ: <?= htmlspecialchars($service['address']) ?></p>
+        <div class="p-6 tab-content active">
+            <!-- Lịch sử trạng thái -->
+            <?php if (!empty($bookingLogs)): ?>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Thời gian</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Từ → Đến</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Nội dung</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Người thực hiện</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <?php foreach ($bookingLogs as $log): ?>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4"><?= date('d/m/Y H:i', strtotime($log['created_at'])) ?></td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700"><?= $log['old_status'] ?></span>
+                                        <i class="fa-solid fa-arrow-right mx-2 text-slate-400"></i>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700"><?= $log['new_status'] ?></span>
+                                    </td>
+                                    <td class="px-6 py-4"><?= htmlspecialchars($log['description']) ?></td>
+                                    <td class="px-6 py-4 text-slate-500">NV<?= $log['updated_by'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
-            <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-center py-12 text-slate-500">Chưa có lịch sử thay đổi</p>
+            <?php endif; ?>
         </div>
 
-        <!-- Button submit -->
-        <button type="submit"
-            class="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700 transition">
-            Cập nhật trạng thái
+        <div class="p-6 tab-content hidden">
+            <!-- Lịch sử thanh toán -->
+            <?php if (!empty($paymentLogs)): ?>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Ngày</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Số tiền</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Phương thức</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Loại</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase">Mã GD</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <?php foreach ($paymentLogs as $p): ?>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4"><?= date('d/m/Y H:i', strtotime($p['created_at'])) ?></td>
+                                    <td class="px-6 py-4 font-bold text-emerald-600"><?= number_format($p['amount']) ?>đ</td>
+                                    <td class="px-6 py-4"><?= $p['payment_method_name'] ?? 'Chưa xác định' ?></td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
+                                            <?= $p['payment_type_name'] ?? 'Đặt cọc' ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 font-mono text-xs"><?= $p['transaction_code'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p class="text-center py-12 text-slate-500">Chưa có giao dịch nào</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Các tab khác tương tự... -->
+    </div>
+
+    <!-- Nút hành động nhanh -->
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+        <?php if ($booking['status_type_code_master'] === 'PENDING'): ?>
+            <a href="?act=from_confirm_booking_deposit&id=<?= $booking['booking_id'] ?>"
+                class="flex items-center gap-3 px-6 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-2xl transition">
+                Xác nhận đặt cọc
+            </a>
+        <?php endif; ?>
+
+        <?php if (in_array($booking['status_type_code_master'], ['PENDING', 'DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMING', 'IN_PROGRESS'])): ?>
+            <a href="?act=updatePayment&booking_id=<?= $booking['booking_id'] ?>"
+                class="flex items-center gap-3 px-6 py-4 bg-teal-500 hover:bg-teal-600 text-white font-bold rounded-full shadow-2xl transition">
+                Cập nhật thanh toán
+            </a>
+        <?php endif; ?>
+
+        <button onclick="window.print()" class="p-4 bg-slate-700 hover:bg-slate-800 text-white rounded-full shadow-2xl">
+            Print
         </button>
-
-    </form>
+    </div>
 </div>
 
 <script>
-    const statusSelect = document.getElementById('status');
-    const paymentSection = document.getElementById('payment_section');
+    // Tab đơn giản
+    document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active', 'text-main', 'border-main');
+                b.classList.add('text-slate-600');
+            });
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
 
-    statusSelect.addEventListener('change', () => {
-        paymentSection.classList.toggle('hidden', statusSelect.value !== 'DACOC');
+            btn.classList.add('active', 'text-main', 'border-b-2', 'border-main');
+            btn.classList.remove('text-slate-600');
+            document.querySelectorAll('.tab-content')[idx].classList.remove('hidden');
+        });
     });
 </script>
