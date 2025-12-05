@@ -28,128 +28,136 @@ ob_start();
 
 echo match ($act) {
     '/' => (function () {
-        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
-        exit;
-    })(),
+            header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
+            exit;
+        })(),
     'showformSigninAdmin' => (function () {
-        checkSignin();
-        (new AuthController)->showformSigninAdmin();
-    })(),
+            checkSignin();
+            (new AuthController)->showformSigninAdmin();
+        })(),
     'signin' => (function () {
-        $requestData = json_decode(file_get_contents("php://input"), true);
-        (new AuthController())->signin($requestData);
-        exit;
-    })(),
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            (new AuthController())->signin($requestData);
+            exit;
+        })(),
 
     'dashboard' => (function () {
-        switch (isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : "") {
-            case 'admin': {
+            switch (isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : "") {
+                case 'admin': {
                     header("Location: " . BASE_URL . "?mode=admin&act=home");
                     exit;
                     break;
                 }
-            case 'guide': {
+                case 'guide': {
                     header("Location: " . BASE_URL . "?mode=admin&act=homeguide");
                     exit;
                     break;
                 }
-            default:
-                require_once "./views/Admin/common/404.php";
-                break;
-        }
-    })(),
+                default:
+                    require_once "./views/Admin/common/404.php";
+                    break;
+            }
+        })(),
     'logout' => (function () {
-        session_destroy();
-        header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
-        exit;
-    })(),
+            session_destroy();
+            header("Location: " . BASE_URL . "?mode=admin&act=showformSigninAdmin");
+            exit;
+        })(),
 
     // chứa năng thanh siderbar admin quản lý điều hành tour
     'home' => (function () {
-        requireAdmin();
-        require_once "./views/Admin/home.php";
-    })(),
+            requireAdmin();
+            require_once "./views/Admin/home.php";
+        })(),
     'categoriestour' => (function () {
-        requireAdmin();
-        (new CategoryController)->list();
-    })(),
+            requireAdmin();
+            (new CategoryController)->list();
+        })(),
 
     'addcategory_add' => (function () {
-        requireAdmin();
-        (new CategoryController)->add();
-    })(),
+            requireAdmin();
+            (new CategoryController)->add();
+        })(),
 
     'category_store' => (function () {
-        requireAdmin();
-        (new CategoryController)->store();
-    })(),
+            requireAdmin();
+            (new CategoryController)->store();
+        })(),
 
     'category_edit' => (function () {
-        requireAdmin();
-        (new CategoryController)->edit($_GET['id'] ?? 0);
-    })(),
+            requireAdmin();
+            (new CategoryController)->edit($_GET['id'] ?? 0);
+        })(),
 
     'category_update' => (function () {
-        requireAdmin();
-        (new CategoryController)->update();
-    })(),
+            requireAdmin();
+            (new CategoryController)->update();
+        })(),
 
     'category_delete' => (function () {
-        requireAdmin();
-        (new CategoryController)->delete($_GET['id'] ?? 0);
-    })(),
+            requireAdmin();
+            (new CategoryController)->delete($_GET['id'] ?? 0);
+        })(),
     'admintour' => (function () {
-        requireAdmin();
-        if (isset($_GET['tour_id'])) {
-            (new AdminTourController())->showTourDetail($_GET['tour_id']);
-        } else {
-            (new AdminTourController)->ShowAdminTour();
-        }
-    })(),
+            requireAdmin();
+            $ctrl = new AdminTourController();
+
+            if (isset($_GET['tour_id'])) {
+                // Chi tiết 1 tour
+                $ctrl->showTourDetail($_GET['tour_id']);
+            } elseif (isset($_GET['category_id'])) {
+                // Danh sách tour theo danh mục
+                $ctrl->showToursByCategory($_GET['category_id']);
+            } else {
+                // Danh sách tất cả tour
+                $ctrl->ShowAdminTour();
+            }
+        })(),
+
     'admin_detail_tour' => (function () {
-        requireAdmin();
-    })(),
+            requireAdmin();
+        })(),
     'admin_createTourfrom' => (function () {
-        requireAdmin();
-        (new AdminTourController)->showFromCreateTour();
-    })(),
+            requireAdmin();
+            (new AdminTourController)->showFromCreateTour();
+        })(),
     'admin_createTour' => (function () {
-        requireAdmin();
-        (new AdminTourController)->CreateTour();
-    })(),
+            requireAdmin();
+            (new AdminTourController)->CreateTour();
+        })(),
     'admin_deleteTour' => (function () {
-        requireAdmin();
-        (new AdminTourController)->DeleteTourController($_GET['tour_id']);
-    })(),
+            requireAdmin();
+            (new AdminTourController)->DeleteTourController($_GET['tour_id']);
+        })(),
     'admin_searchtour' => (function () {
-        $requestData = json_decode(file_get_contents("php://input"), true);
-        requireAdmin();
-        (new AdminTourController)->getByNameController($requestData);
-    })(),
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            requireAdmin();
+            (new AdminTourController)->getByNameController($requestData);
+        })(),
     // quản lý nàh cung cấp
     'supplier-list' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->showSupplierList();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->showSupplierList();
+        })(),
     'supplier-list-types' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->showSupplierTypesList();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->showSupplierTypesList();
+        })(),
 
     'bookinglist' => (function () {
-        requireAdmin();
-        echo (new BookingController)->ShowBooking();
-    })(),
+            requireAdmin();
+            echo (new BookingController)->ShowBooking();
+        })(),
 
     'from_confirm_booking_deposit' => (function () {
-        requireAdmin();
-        echo (new BookingStatusController())->UpdateFromBookingStatus($_GET['id'] ?? null);
-    })(),
+            requireAdmin();
+            echo (new BookingStatusController())->UpdateFromBookingStatus($_GET['id'] ?? null);
+        })(),
 
     'updateFromThanhToan' => (function () {
-        requireAdmin();
-        echo (new PaymentController)->ShowFromThanhToan($_GET['booking_id'] ?? null);
-    })(),
+            requireAdmin();
+            echo (new PaymentController)->ShowFromThanhToan($_GET['booking_id'] ?? null);
+        })(),
 
     // 'create_booking_status' => (function () {
     //     requireAdmin();
@@ -157,268 +165,268 @@ echo match ($act) {
     // })(),
 
     'phan_tour_from_guides' => (function () {
-        requireAdmin();
-        echo (new BookingController)->ShowPhanTourFromGuides($_GET['id'] ?? null);
-    })(),
+            requireAdmin();
+            echo (new BookingController)->ShowPhanTourFromGuides($_GET['id'] ?? null);
+        })(),
 
     'bookingdetail' => (function () {
-        requireAdmin();
-        echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
-        // echo (new BookingController)->ShowBooking();
-    })(),
+            requireAdmin();
+            echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
+            // echo (new BookingController)->ShowBooking();
+        })(),
     'newBooking' => (function () {
-        requireAdmin();
-        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : "");
-    })(),
+            requireAdmin();
+            echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : "");
+        })(),
 
     'createBooking' => (function () {
-        requireAdmin();
-        echo (new BookingController)->createBooking();
-    })(),
+            requireAdmin();
+            echo (new BookingController)->createBooking();
+        })(),
 
     // call api js booking
     'getAllSchedulesByid' => (function () {
-        $requestData = json_decode(file_get_contents("php://input"), true);
-        requireAdmin();
-        (new BookingController())->getAllSchedulesByid($requestData);
-        exit;
-    })(),
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            requireAdmin();
+            (new BookingController())->getAllSchedulesByid($requestData);
+            exit;
+        })(),
     // call api js booking
     'getsupplierPricesBySupplierId' => (function () {
-        $requestData = json_decode(file_get_contents("php://input"), true);
-        // echo json_encode(
-        //     [
-        //         'id' => $requestData['supplier_id']
-        //     ]
-        // );
-        // exit;
-        requireAdmin();
-        (new BookingController())->getsupplierPricesBySupplierId($requestData);
-        exit;
-    })(),
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            // echo json_encode(
+            //     [
+            //         'id' => $requestData['supplier_id']
+            //     ]
+            // );
+            // exit;
+            requireAdmin();
+            (new BookingController())->getsupplierPricesBySupplierId($requestData);
+            exit;
+        })(),
 
     // quản lý tải khoản người dùng
     'listclient' => (function () {
-        requireAdmin();
-        echo (new AccountManagementController)->showClientList();
-    })(),
+            requireAdmin();
+            echo (new AccountManagementController)->showClientList();
+        })(),
     'delete-client' => (function () {
-        requireAdmin();
-        (new AccountManagementController)->deleteClient();
-    })(),
+            requireAdmin();
+            (new AccountManagementController)->deleteClient();
+        })(),
 
     'update-client' => (function () {
-        requireAdmin();
-        (new AccountManagementController)->updateClient();
-        exit;
-    })(),
+            requireAdmin();
+            (new AccountManagementController)->updateClient();
+            exit;
+        })(),
     'create-client' => (function () {
-        requireAdmin();
-        (new AccountManagementController)->createClient();
-        exit;
-    })(),
+            requireAdmin();
+            (new AccountManagementController)->createClient();
+            exit;
+        })(),
 
 
     'liststaff' => (function () {
-        requireAdmin();
-        echo (new AccountManagementController)->showStaffList();
-    })(),
+            requireAdmin();
+            echo (new AccountManagementController)->showStaffList();
+        })(),
 
 
     //quản lý nhân viên
     'create-staff' => (function () {
-        requireAdmin();
-        (new AccountManagementController)->createStaff();
-        exit;
-    })(),
+            requireAdmin();
+            (new AccountManagementController)->createStaff();
+            exit;
+        })(),
 
 
     'update-staff' => (function () {
-        requireAdmin();
-        (new AccountManagementController)->updateStaff();
-        exit;
-    })(),
+            requireAdmin();
+            (new AccountManagementController)->updateStaff();
+            exit;
+        })(),
 
     'delete-staff' => (function () {
-        requireAdmin();
-        (new AccountManagementController)->deleteStaff();
-        exit;
-    })(),
+            requireAdmin();
+            (new AccountManagementController)->deleteStaff();
+            exit;
+        })(),
 
     'dashboarthongke' => (function () {
-        requireAdmin();
-        echo "bao cao thong ke";
-        require_once "./views/Admin/dashboard.php";
-        exit;
-    })(),
+            requireAdmin();
+            echo "bao cao thong ke";
+            require_once "./views/Admin/dashboard.php";
+            exit;
+        })(),
 
     // show trang lỗi
     '404' => (function () {
-        require_once "./views/Admin/common/404.php";
-    })(),
+            require_once "./views/Admin/common/404.php";
+        })(),
 
 
 
     // Hướng dẫn viên
     'guide' => (function () {
-        requireGuide();
-        require_once "./views/Admin/homeguide.php";
-    })(),
+            requireGuide();
+            require_once "./views/Admin/homeguide.php";
+        })(),
     // Trang chủ của HDV
     'homeguide' => (function () {
-        requireGuide();
-        (new GuideController())->homeGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->homeGuide();
+        })(),
 
     'aboutguide' => (function () {
-        requireGuide();
-        require_once "./views/Admin/aboutguide.php";
-    })(),
+            requireGuide();
+            require_once "./views/Admin/aboutguide.php";
+        })(),
 
 
     // ScheduleGuide
     // Lịch trình của HDV
     'scheduleguide' => (function () {
-        requireGuide();
-        (new GuideController())->scheduleGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->scheduleGuide();
+        })(),
 
     // ListGuide
     // Danh sách khách của HDV
     'listguide' => (function () {
-        requireGuide();
+            requireGuide();
 
-        $ctrl = new GuideController();
-        $ctrl->listGuide();
-    })(),
+            $ctrl = new GuideController();
+            $ctrl->listGuide();
+        })(),
 
     // DiaryGuide
     // Nhật ký ghi lại của HDV
     'diaryguide' => (function () {
-        requireGuide();
-        $ctrl = new GuideController();
-        $data = $ctrl->diaryGuide();
+            requireGuide();
+            $ctrl = new GuideController();
+            $data = $ctrl->diaryGuide();
 
-        $diary = $data['diary'];
-        $tours = $data['tours'];
+            $diary = $data['diary'];
+            $tours = $data['tours'];
 
-        require "./views/Admin/diaryguide.php";
-    })(),
+            require "./views/Admin/diaryguide.php";
+        })(),
     // XÓA NHẬT KÝ
     'deleteDiaryGuide' => (function () {
-        requireGuide();
-        (new GuideController())->deleteDiaryGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->deleteDiaryGuide();
+        })(),
     // Sửa nhật ký (hiển thị form)
     'editDiaryGuide' => (function () {
-        requireGuide();
-        (new GuideController())->editDiaryGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->editDiaryGuide();
+        })(),
     // Update nhật ký sau khi sửa
     'updateDiaryGuide' => (function () {
-        requireGuide();
-        (new GuideController())->updateDiaryGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->updateDiaryGuide();
+        })(),
     // Nhật ký lưu lại của HDV
     'saveDiaryGuide' => (function () {
-        requireGuide();
-        (new GuideController())->saveDiaryGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->saveDiaryGuide();
+        })(),
 
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
-        requireGuide();
+            requireGuide();
 
-        $ctrl = new GuideController();
-        $data = $ctrl->checkGuide();
+            $ctrl = new GuideController();
+            $data = $ctrl->checkGuide();
 
-        $todayTour = $data['todayTour'];
-        $customers = $data['customers'];
+            $todayTour = $data['todayTour'];
+            $customers = $data['customers'];
 
-        require "./views/Admin/checkguide.php";
-    })(),
+            require "./views/Admin/checkguide.php";
+        })(),
 
     // RequestGuide
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
-        requireGuide();
-        (new GuideController())->requestGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->requestGuide();
+        })(),
     // Lưu yêu cầu của HDV
     'saveRequestGuide' => (function () {
-        requireGuide();
-        (new GuideController())->saveRequestGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->saveRequestGuide();
+        })(),
     // Sửa yêu cầu của HDV (hiển thị form)
     'editRequestGuide' => (function () {
-        requireGuide();
-        (new GuideController())->editRequestGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->editRequestGuide();
+        })(),
     // Cập nhật yêu cầu của HDV sau khi sửa
     'updateRequestGuide' => (function () {
-        requireGuide();
-        (new GuideController())->updateRequestGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->updateRequestGuide();
+        })(),
     // Xóa yêu cầu của HDV
     'deleteRequestGuide' => (function () {
-        requireGuide();
-        (new GuideController())->deleteRequestGuide();
-    })(),
+            requireGuide();
+            (new GuideController())->deleteRequestGuide();
+        })(),
     // 
     'saveAttendance' => (function () {
-        requireGuide();
-        (new GuideController())->saveAttendance();
-    })(),
+            requireGuide();
+            (new GuideController())->saveAttendance();
+        })(),
 
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->addSupplierType();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->addSupplierType();
+        })(),
     //cập nhật loại dịch vụ
     'update-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplierType();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->updateSupplierType();
+        })(),
     //xóa dịch vụ
     'delete-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplierType();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->deleteSupplierType();
+        })(),
     //thêm nhà cung cấp
     'add-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->addSupplier();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->addSupplier();
+        })(),
 
 
     // sửa nhà cung cấp
     'update-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplier();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->updateSupplier();
+        })(),
 
     // xóa nhà cung cấp
     'delete-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplier();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->deleteSupplier();
+        })(),
 
     // sửa nhà cung cấp
     'update-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplier();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->updateSupplier();
+        })(),
 
     // xóa nhà cung cấp
     'delete-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplier();
-    })(),
+            requireAdmin();
+            (new AdminSupplierController)->deleteSupplier();
+        })(),
     default => (function () {
-        header("Location: " . BASE_URL . "?mode=admin&act=404");
-        exit;
-    })(),
+            header("Location: " . BASE_URL . "?mode=admin&act=404");
+            exit;
+        })(),
 };
 $content_views = ob_get_clean();
 
