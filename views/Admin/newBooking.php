@@ -46,6 +46,13 @@ if (!empty($tourFullData)) {
             </div>
         </div>
 
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="mb-5 p-4 bg-green-50 border border-green-200 text-red rounded-lg text-sm flex items-center gap-2">
+                <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success_message']; ?>
+                <?php unset($_SESSION['success_message']); ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Form -->
         <form action="<?= BASE_URL ?>?mode=admin&act=createBooking" class="space-y-10" method="POST" enctype="multipart/form-data">
 
@@ -380,7 +387,6 @@ if (!empty($tourFullData)) {
 
 
                     <?php
-                    // LỌC + SẮP XẾP AN TOÀN – KHÔNG BAO GIỜ LỖI
                     $validSchedules = [];
 
                     if (!empty($dataSchedulesByTourId) && is_array($dataSchedulesByTourId)) {
@@ -392,7 +398,6 @@ if (!empty($tourFullData)) {
                                 && in_array((int)$s['schedule_status_id'], [1, 2, 3]);
                         });
 
-                        // Sắp xếp theo ngày tăng dần
                         usort($validSchedules, fn($a, $b) => strtotime($a['start_date']) <=> strtotime($b['start_date']));
                     }
                     ?>
@@ -435,13 +440,13 @@ if (!empty($tourFullData)) {
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày khởi hành</label>
-                                    <input type="text" id="start-date-display"
+                                    <input type="text" id="start-date-display" name="start_date[]"
                                         class="w-full p-4 bg-white border-2 border-slate-300 rounded-xl font-bold text-main"
                                         readonly placeholder="Chưa chọn">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày kết thúc</label>
-                                    <input type="text" id="end-date-display"
+                                    <input type="text" id="end-date-display" name="end_date[]"
                                         class="w-full p-4 bg-white border-2 border-slate-300 rounded-xl font-bold text-main"
                                         readonly placeholder="Chưa chọn">
                                 </div>
@@ -613,13 +618,13 @@ if (!empty($tourFullData)) {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Ngày khởi hành *</label>
-                                <input type="date" id="departure_date" name="departure_date"
+                                <input type="date" id="start_date" name="start_date[]"
                                     class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-main focus:border-main transition"
                                     min="<?= $today ?>" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Ngày kết thúc (tự động)</label>
-                                <input type="date" id="end_date" name="end_date"
+                                <input type="date" id="end_date" name="end_date[]"
                                     class="w-full p-3 border rounded-xl bg-gray-50 font-medium text-main" readonly>
                             </div>
                         </div>
@@ -647,12 +652,12 @@ if (!empty($tourFullData)) {
                             const numberOfDays = <?= (int)$numberOfDays ?>;
                             const today = '<?= $today ?>';
 
-                            const departureInput = document.getElementById('departure_date');
+                            const startInput = document.getElementById('start_date');
                             const endInput = document.getElementById('end_date');
                             const conflictInfo = document.getElementById('conflict-info');
                             const conflictDetails = document.getElementById('conflict-details');
 
-                            if (!departureInput) return; // Bảo vệ nếu không có element
+                            if (!startInput) return; // Bảo vệ nếu không có element
 
                             function calcEndDate(start) {
                                 if (!start) return '';
@@ -661,7 +666,7 @@ if (!empty($tourFullData)) {
                                 return d.toISOString().split('T')[0];
                             }
 
-                            departureInput.addEventListener('change', function() {
+                            startInput.addEventListener('change', function() {
                                 const selected = this.value;
 
                                 // Reset
