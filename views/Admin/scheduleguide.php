@@ -75,7 +75,6 @@
         </div>
     </section>
 
-
     <!-- ========== BẢNG TOUR TRONG TUẦN ========== -->
     <section class="bg-white p-5 rounded-xl shadow">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Tour trong tuần này</h2>
@@ -102,19 +101,23 @@
                         <td class="p-3"><?= $tour['total_customers'] ?> khách</td>
 
                         <td class="p-3">
-                            <?php if ($tour['guide_status'] == "confirmed"): ?>
-                                <span class="text-green-600 font-medium">Đã xác nhận</span>
-                            <?php else: ?>
-                                <span class="text-yellow-600 font-medium">Chưa xác nhận</span>
-                            <?php endif; ?>
+                            <?php
+                            $status = $tour['guide_status_code'] ?? 'pending';
+
+                            if ($status == "confirmed") {
+                                echo '<span class="text-green-600 font-medium">Đã xác nhận</span>';
+                            } else {
+                                echo '<span class="text-yellow-600 font-medium">Chưa xác nhận</span>';
+                            }
+                            ?>
                         </td>
+
                     </tr>
                 <?php endforeach; ?>
             </tbody>
 
         </table>
     </section>
-
 
     <!-- ========== THÔNG BÁO ========== -->
     <section class="bg-white p-5 rounded-xl shadow space-y-4">

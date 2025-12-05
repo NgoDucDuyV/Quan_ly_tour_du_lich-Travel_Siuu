@@ -367,7 +367,25 @@
     </section>
 
 </main>
+<script>
+    // Xử lý logic Mở/Đóng chi tiết Tour
+    document.querySelectorAll('.border').forEach(card => {
+        const header = card.querySelector('.p-5.cursor-pointer');
+        const details = card.querySelector('.details');
 
+        if (header) {
+            header.addEventListener('click', () => {
+                const arrow = header.querySelector('i[data-lucide="chevron-down"]');
+                details.classList.toggle('hidden');
+
+                // Đảo ngược mũi tên
+                if (arrow) {
+                    arrow.classList.toggle('rotate-180');
+                }
+            });
+        }
+    });
+</script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();

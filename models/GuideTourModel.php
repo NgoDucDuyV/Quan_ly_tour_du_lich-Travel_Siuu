@@ -123,6 +123,7 @@ class GuideTourModel
     }
 
     // CheckGuide
+    // Cập nhật trạng thái điểm danh 
     public function updateAttendance($id, $status)
     {
         $sql = "UPDATE attendance 
@@ -135,7 +136,112 @@ class GuideTourModel
             'id' => $id
         ]);
     }
+    // Lấy lịch trình từng ngày
 
+    //   Tính toán ngày hiện tại của Tour
+    //   @param date $start_date Ngày bắt đầu tour (từ schedules.start_date)
+    //  @return int Số thứ tự ngày trong tour (Ngày 1, Ngày 2, ...)
+    public function getTodayTourDayNumber($start_date)
+    {
+        // Chuyển đổi ngày bắt đầu và ngày hiện tại sang đối tượng DateTime
+        $start = new DateTime($start_date);
+        $now = new DateTime(date('Y-m-d')); // Lấy ngày hiện tại
+
+        // Tính khoảng cách giữa hai ngày
+        $interval = $start->diff($now);
+
+        // Số ngày đã trôi qua (+1 vì ngày khởi hành là Ngày 1, khoảng cách là 0)
+        $day_number = $interval->days + 1;
+
+        // Giới hạn không cho số ngày quá nhỏ hơn 1
+        return max(1, $day_number);
+    }
+    // Lấy hoạt động trong 1 tour 
+    public function getTourActivitiesBySchedule($schedule_id)
+    {
+        $sql = "
+        SELECT
+            ta.id AS activity_id,
+            ta.time AS activity_time,
+            ta.activity AS activity_name,
+            ta.location,
+            ti.day_number
+        FROM schedules s
+        JOIN tours t ON s.tour_id = t.id
+        JOIN tour_itineraries ti ON t.id = ti.tour_id
+        JOIN tour_activities ta ON ti.id = ta.itinerary_id
+        WHERE s.id = :schedule_id
+        ORDER BY ti.day_number ASC, ta.time ASC
+    ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['schedule_id' => $schedule_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Trong GuideTourModel.php (Cập nhật logic lấy khách)
+    public function getCustomersAttendanceBySchedule($schedule_id)
+    {
+        // Lấy danh sách khách hàng thuộc Schedule này (từ bookings -> booking_customers)
+        $sqlCustomers = "
+        SELECT bc.id AS customer_id, bc.full_name AS customer_name
+        FROM bookings b
+        JOIN booking_customers bc ON b.id = bc.booking_id
+        JOIN schedules s ON b.id = s.booking_id
+        WHERE s.id = :schedule_id
+    ";
+        $stmtCustomers = $this->conn->prepare($sqlCustomers);
+        $stmtCustomers->execute(['schedule_id' => $schedule_id]);
+        $customers = $stmtCustomers->fetchAll(PDO::FETCH_ASSOC);
+
+        // Lấy tất cả trạng thái điểm danh cho các khách trong tour này
+        // (Từ bảng attendance_activity mới)
+        $sqlAttendance = "
+        SELECT customer_id, activity_id, status
+        FROM attendance_activity
+        WHERE schedule_id = :schedule_id
+    ";
+        $stmtAttendance = $this->conn->prepare($sqlAttendance);
+        $stmtAttendance->execute(['schedule_id' => $schedule_id]);
+        $attendanceData = $stmtAttendance->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+
+        // Kết hợp dữ liệu (Customer ID -> Activity ID -> Status)
+        $result = [];
+        foreach ($customers as $customer) {
+            $customer_id = $customer['customer_id'];
+            $customer['attendance'] = [];
+
+            // Gán trạng thái đã điểm danh theo từng activity_id
+            if (isset($attendanceData[$customer_id])) {
+                foreach ($attendanceData[$customer_id] as $record) {
+                    $customer['attendance'][$record['activity_id']] = $record['status'];
+                }
+            }
+            $result[] = $customer;
+        }
+
+        return $result; // Trả về [khách 1: {attendance: [activity_id: status]}, khách 2: {...}]
+    }
+    // Trong GuideTourModel.php, thêm hàm này:
+    public function saveOrUpdateAttendanceActivity($schedule_id, $customer_id, $activity_id, $status)
+    {
+        // Cố gắng INSERT, nếu đã tồn tại (UNIQUE KEY), thì UPDATE
+        $sql = "
+        INSERT INTO attendance_activity 
+            (schedule_id, customer_id, activity_id, status)
+        VALUES 
+            (:schedule_id, :customer_id, :activity_id, :status)
+        ON DUPLICATE KEY UPDATE 
+            status = :status_update, checked_at = NOW()
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            'schedule_id' => $schedule_id,
+            'customer_id' => $customer_id,
+            'activity_id' => $activity_id,
+            'status' => $status,
+            'status_update' => $status // Dùng lại status cho phần UPDATE
+        ]);
+    }
     // Requestguide
     // Lấy yêu cầu của hướng dẫn viên
     public function getRequestsByGuide($guide_id)
@@ -210,13 +316,12 @@ class GuideTourModel
         return $stmt->execute(['id' => $id, 'guide_id' => $guide_id]);
     }
 
-
     // Tổng tour
     // Tour hôm nay
     public function getTodayTour($guide_id)
     {
         $sql = "
-        SELECT 
+        SELECT
             s.id AS schedule_id,
             s.tour_id,
             t.name AS tour_name,
@@ -226,13 +331,22 @@ class GuideTourModel
                 SELECT COUNT(*)
                 FROM attendance a
                 WHERE a.schedule_id = s.id
-            ) AS total_customers
+            ) AS total_customers,
+            -- Thêm thông tin trạng thái lịch trình và HDV
+            ss.schedule_status_type_id,
+            sst.name AS schedule_status_name,
+            sst.code AS schedule_status_code,
+            gs.name AS guide_status_name,
+            gs.code AS guide_status_code
         FROM schedules s
         JOIN tours t ON t.id = s.tour_id
+        LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
+        LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
+        LEFT JOIN guide_status gs ON gs.id = ss.guide_status_id
         WHERE s.guide_id = :guide_id
           AND DATE(s.start_date) = CURDATE()
         LIMIT 1
-    ";
+        ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
@@ -297,27 +411,52 @@ class GuideTourModel
     public function getSchedulesForGuide($guide_id)
     {
         $sql = "
-        SELECT 
-            s.id AS schedule_id,
-            t.name AS tour_name,
-            t.code AS tour_code,
-            s.start_date,
-            s.end_date,
-            s.meeting_point,
-            s.vehicle,
-            s.hotel,
-            s.restaurant,
-            s.status AS schedule_status
-        FROM schedules s
-        JOIN tours t ON t.id = s.tour_id
-        WHERE s.guide_id = :guide_id
-        ORDER BY s.start_date ASC
-    ";
+SELECT 
+ s.id AS schedule_id,
+t.name AS tour_name,
+            t.days AS tour_days, /* THÊM TRƯỜNG NÀY */
+t.code AS tour_code,
+ s.start_date,
+ s.end_date,
+s.meeting_point,
+ s.vehicle,
+ s.hotel,
+ s.restaurant,
+            s.flight_info, /* THÊM TRƯỜNG NÀY */
+            s.guide_notes, /* THÊM TRƯỜNG NÀY */
+            s.schedule_status_id, /* THÊM TRƯỜNG NÀY */
+
+ -- Lấy trạng thái lịch trình
+ ss.schedule_status_type_id,
+ sst.name AS schedule_status_name,
+ sst.code AS schedule_status_code,
+
+ -- Trạng thái HDV
+ ss.guide_status_id,
+ gs.name AS guide_status_name,
+ gs.code AS guide_status_code
+
+FROM schedules s
+JOIN tours t 
+ ON t.id = s.tour_id
+
+ LEFT JOIN schedule_status ss 
+ ON ss.schedule_id = s.id /* <--- ĐIỀU KIỆN JOIN CHUẨN */
+
+LEFT JOIN schedule_status_types sst 
+ ON sst.id = ss.schedule_status_type_id
+
+ LEFT JOIN guide_status gs 
+ ON gs.id = ss.guide_status_id
+ WHERE s.guide_id = :guide_id
+ ORDER BY s.start_date ASC
+ ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     // Lấy nhật ký theo HDV
     public function getLogsByGuide($guide_id)
     {
@@ -340,7 +479,7 @@ class GuideTourModel
         $sql = "
             SELECT COUNT(*) AS total 
             FROM schedules
-            WHERE guide_id = :guide_id
+            WHERE guide_id = :guide_id 
             AND YEARWEEK(start_date, 1) = YEARWEEK(CURDATE(), 1)
         ";
 
@@ -362,19 +501,22 @@ class GuideTourModel
             b.customer_name AS main_customer,
             b.customer_phone,
             b.customer_email,
-            b.group_type,
             b.number_of_people,
+
             bc.id AS customer_id,
             bc.full_name AS customer_full_name,
             bc.birth_year,
             bc.passport,
             bc.customer_type_id
+
         FROM bookings b
-        LEFT JOIN booking_customers bc ON bc.booking_id = b.id
-        JOIN tours t ON t.id = b.tour_id
+        LEFT JOIN booking_customers bc 
+            ON bc.booking_id = b.id
+        JOIN tours t 
+            ON t.id = b.tour_id
         WHERE b.tour_id = :tour_id
-        AND b.start_date >= :start_date
-        AND b.end_date <= :end_date
+          AND b.start_date >= :start_date
+          AND b.end_date <= :end_date
         ORDER BY b.id, bc.id
     ";
 
@@ -387,6 +529,7 @@ class GuideTourModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     // Lấy 5 nhật ký gần nhất
     public function getRecentDiary($guide_id)
     {

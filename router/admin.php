@@ -70,34 +70,34 @@ echo match ($act) {
         require_once "./views/Admin/home.php";
     })(),
     'categoriestour' => (function () {
-    requireAdmin();
-    (new CategoryController)->list();
-})(),
+        requireAdmin();
+        (new CategoryController)->list();
+    })(),
 
-'addcategory_add' => (function () {
-    requireAdmin();
-    (new CategoryController)->add();
-})(),
+    'addcategory_add' => (function () {
+        requireAdmin();
+        (new CategoryController)->add();
+    })(),
 
-'category_store' => (function () {
-    requireAdmin();
-    (new CategoryController)->store();
-})(),
+    'category_store' => (function () {
+        requireAdmin();
+        (new CategoryController)->store();
+    })(),
 
-'category_edit' => (function () {
-    requireAdmin();
-    (new CategoryController)->edit($_GET['id'] ?? 0);
-})(),
+    'category_edit' => (function () {
+        requireAdmin();
+        (new CategoryController)->edit($_GET['id'] ?? 0);
+    })(),
 
-'category_update' => (function () {
-    requireAdmin();
-    (new CategoryController)->update();
-})(),
+    'category_update' => (function () {
+        requireAdmin();
+        (new CategoryController)->update();
+    })(),
 
-'category_delete' => (function () {
-    requireAdmin();
-    (new CategoryController)->delete($_GET['id'] ?? 0);
-})(),
+    'category_delete' => (function () {
+        requireAdmin();
+        (new CategoryController)->delete($_GET['id'] ?? 0);
+    })(),
     'admintour' => (function () {
         requireAdmin();
         if (isset($_GET['tour_id'])) {
@@ -228,7 +228,7 @@ echo match ($act) {
         requireAdmin();
         (new AdminSupplierController)->deleteSupplier();
     })(),
-    
+
     // quản lý tải khoản người dùng
     'listclient' => (function () {
         requireAdmin();
@@ -250,12 +250,10 @@ echo match ($act) {
         exit;
     })(),
 
-
     'liststaff' => (function () {
         requireAdmin();
         echo (new AccountManagementController)->showStaffList();
     })(),
-
 
     //quản lý nhân viên
     'create-staff' => (function () {
@@ -263,7 +261,6 @@ echo match ($act) {
         (new AccountManagementController)->createStaff();
         exit;
     })(),
-
 
     'update-staff' => (function () {
         requireAdmin();
@@ -290,7 +287,6 @@ echo match ($act) {
     })(),
 
 
-
     // Hướng dẫn viên
     'guide' => (function () {
         requireGuide();
@@ -301,7 +297,7 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->homeGuide();
     })(),
-
+    // Giới thiệu của HDV
     'aboutguide' => (function () {
         requireGuide();
         require_once "./views/Admin/aboutguide.php";
@@ -357,6 +353,9 @@ echo match ($act) {
         (new GuideController())->saveDiaryGuide();
     })(),
 
+    // CheckGuide
+    // Trong file Router.php, tìm đến khu vực Guide, thêm route này:
+
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();
@@ -364,12 +363,21 @@ echo match ($act) {
         $ctrl = new GuideController();
         $data = $ctrl->checkGuide();
 
+        // GIẢI NÉN MẢNG DỮ LIỆU ĐỂ CÁC BIẾN CÓ THỂ ĐƯỢC SỬ DỤNG TRONG VIEW
         $todayTour = $data['todayTour'];
         $customers = $data['customers'];
+        $activities = $data['activities'];
+        $current_day_number = $data['current_day_number'];
 
         require "./views/Admin/checkguide.php";
     })(),
 
+    // LƯU ĐIỂM DANH THEO CHẶNG (ACTIVITY)
+    'saveAttendanceByActivity' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        exit;
+    })(),
     // RequestGuide
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
