@@ -407,50 +407,56 @@ class GuideTourModel
         $stmt->execute(['sid' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    // Lấy lịch trình theo HDV
+    // Lấy lịch trình theo 
     public function getSchedulesForGuide($guide_id)
     {
         $sql = "
 SELECT 
- s.id AS schedule_id,
+s.id AS schedule_id,
 t.name AS tour_name,
-            t.days AS tour_days, /* THÊM TRƯỜNG NÀY */
+t.days AS tour_days, 
+t.nights AS tour_nights, 
 t.code AS tour_code,
- s.start_date,
- s.end_date,
+s.start_date,
+s.end_date,
 s.meeting_point,
- s.vehicle,
- s.hotel,
- s.restaurant,
-            s.flight_info, /* THÊM TRƯỜNG NÀY */
-            s.guide_notes, /* THÊM TRƯỜNG NÀY */
-            s.schedule_status_id, /* THÊM TRƯỜNG NÀY */
+s.vehicle,
+s.hotel,
+s.restaurant,
+s.flight_info, 
+s.guide_notes, 
+s.schedule_status_id, 
 
- -- Lấy trạng thái lịch trình
- ss.schedule_status_type_id,
- sst.name AS schedule_status_name,
- sst.code AS schedule_status_code,
+-- Lấy trạng thái lịch trình
+ss.schedule_status_type_id,
+sst.name AS schedule_status_name,
+sst.code AS schedule_status_code,
 
- -- Trạng thái HDV
- ss.guide_status_id,
- gs.name AS guide_status_name,
- gs.code AS guide_status_code
+-- Trạng thái HDV
+ss.guide_status_id,
+gs.name AS guide_status_name,
+gs.code AS guide_status_code
 
 FROM schedules s
 JOIN tours t 
- ON t.id = s.tour_id
+ON t.id = s.tour_id
 
- LEFT JOIN schedule_status ss 
- ON ss.schedule_id = s.id /* <--- ĐIỀU KIỆN JOIN CHUẨN */
+LEFT JOIN schedule_status ss 
+ON ss.schedule_id = s.id 
 
 LEFT JOIN schedule_status_types sst 
- ON sst.id = ss.schedule_status_type_id
+ON sst.id = ss.schedule_status_type_id
 
- LEFT JOIN guide_status gs 
- ON gs.id = ss.guide_status_id
- WHERE s.guide_id = :guide_id
- ORDER BY s.start_date ASC
- ";
+LEFT JOIN guide_status gs 
+ON gs.id = ss.guide_status_id
+
+WHERE s.guide_id = :guide_id
+-- Chỉ hiển thị tour sắp tới (planned, pending, confirmed) và đang diễn ra (in_progress)
+AND sst.code IN ('planned', 'in_progress', 'pending', 'confirmed') 
+-- Đảm bảo ngày kết thúc chưa qua ngày hiện tại
+AND s.end_date >= CURDATE() 
+ORDER BY s.start_date ASC
+";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
@@ -558,5 +564,28 @@ LEFT JOIN schedule_status_types sst
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['gid' => $guide_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Thêm hàm đếm tour sắp tới/đang diễn ra
+    public function countUpcomingTours($guide_id)
+    {
+        $sql = "
+        SELECT 
+            COUNT(s.id) AS total_upcoming_tours
+        FROM schedules s
+        LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
+        LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
+        WHERE s.guide_id = :guide_id
+        -- Chỉ tính tour Sắp tới (planned, pending, confirmed) và Đang diễn ra (in_progress)
+        AND sst.code IN ('planned', 'in_progress', 'pending', 'confirmed') 
+        -- Đảm bảo ngày kết thúc chưa qua ngày hiện tại
+        AND s.end_date >= CURDATE() 
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['guide_id' => $guide_id]);
+
+        // Trả về số lượng dưới dạng integer
+        return (int) $stmt->fetchColumn();
     }
 }

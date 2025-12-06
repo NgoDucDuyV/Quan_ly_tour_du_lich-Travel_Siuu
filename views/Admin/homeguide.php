@@ -29,7 +29,7 @@
                     </div>
                     <div>
                         <p class="text-gray-500">Tour sắp tới</p>
-                        <h3 class="text-xl font-bold text-gray-800">3 tour</h3>
+                        <h3 class="text-xl font-bold text-gray-800"><?= $totalUpcomingTours ?? 0 ?> tour</h3>
                     </div>
                 </div>
             </a>
@@ -82,15 +82,19 @@
         </h2>
 
         <?php
-        $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
         $todayTours = [];
+        $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
 
         foreach ($dataSchedulesByGuideId as $schedule) {
             $start = $schedule['start_date'];
             $end   = $schedule['end_date'];
+            $status_code = $schedule['schedule_status_code']; // Lấy mã trạng thái từ Model đã sửa
 
-            // Kiểm tra tour có diễn ra trong hôm nay không
-            if ($today >= $start && $today <= $end) {
+            // Điều kiện: (1) Đang diễn ra hôm nay VÀ (2) Trạng thái không phải là Hoàn thành/Đã hủy
+            if (
+                ($today >= $start && $today <= $end) &&
+                !in_array($status_code, ['completed', 'cancelled', 'closed'])
+            ) {
                 $todayTours[] = $schedule;
             }
         }

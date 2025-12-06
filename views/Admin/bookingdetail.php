@@ -3,7 +3,7 @@ $booking = $databooking; // từ controller
 $total   = $booking['total_price'] ?? 0;
 $paid    = $booking['paid_amount'] ?? 0;
 $remain  = $total - $paid;
-$percent = $total > 0 ? round(($paid / $total) * 100) : 0;
+$percent = $total > 0 ? round(($paid / $total) * 100) : 0; 
 
 // Hàm lấy màu trạng thái
 function getStatusColor($code)

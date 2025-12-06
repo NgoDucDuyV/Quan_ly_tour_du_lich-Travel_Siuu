@@ -2,28 +2,30 @@
 class GuideController
 {
     // HomeGuide
-    public function homeGuide()
-    {
-        $user_id = $_SESSION['admin_logged']['id'];
+   // Trong GuideController.php
+public function homeGuide()
+{
+    $user_id = $_SESSION['admin_logged']['id'];
 
-        $getGuideUserid = (new GuideTourModel())->getGuideUserid($user_id);
-        // echo "<pre>";
-        // var_dump($getGuideUserid);
-        // echo "<pre>";
-        // die;
-        $dataSchedulesByGuideId = (new GuideTourModel())->getSchedulesForGuide($getGuideUserid['id']);
-        $model = new GuideTourModel();
-        // Nhật ký gần đây
-        $diary = $model->getRecentDiary($getGuideUserid['id']);
+    $getGuideUserid = (new GuideTourModel())->getGuideUserid($user_id);
+    $guide_id = $getGuideUserid['id']; // Lấy ID của Guide từ bảng guides
 
-        // Yêu cầu gần đây
-        $requests = $model->getRecentRequests($getGuideUserid['id']);
-        // echo "<pre>";
-        // var_dump($dataSchedulesByGuideId);
-        // echo "<pre>";
-        // die;
-        require_once "./views/Admin/homeguide.php";
-    }
+    $model = new GuideTourModel();
+
+    $dataSchedulesByGuideId = $model->getSchedulesForGuide($guide_id);
+    
+    $totalUpcomingTours = $model->countUpcomingTours($guide_id); 
+    
+
+    // Nhật ký gần đây
+    $diary = $model->getRecentDiary($guide_id);
+
+    // Yêu cầu gần đây
+    $requests = $model->getRecentRequests($guide_id);
+
+    // Truyền biến đếm sang View
+    require_once "./views/Admin/homeguide.php";
+}
 
     // ListGuide
     // Danh sách khách của HDV
