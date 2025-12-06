@@ -6,6 +6,8 @@ class BookingController
     {
         $bookingModel = new BookingModel();
         $bookings = $bookingModel->getAllBookings();
+
+        // $dataSchedulesStatus = (new SchedulesModel())->getSchedulesStatusByBookingId(1);
         // echo "<pre>";
         // var_dump($bookings);
         // echo "</pre>";
@@ -15,7 +17,6 @@ class BookingController
 
     public function ShowBookingDetail($booking_id)
     {
-        // 1. Lấy thông tin booking
         $databooking = (new BookingModel())->getBookingById($booking_id);
 
         if (!$databooking) {
@@ -45,7 +46,7 @@ class BookingController
         $bookingPrices = (new PaymentModel())->getBookingPricesByBookingId($booking_id);
 
         // echo "<pre>";
-        // var_dump($bookingPrices);
+        // var_dump($paymentLogs);
         // echo "</pre>";
         // die;
         require_once "./views/Admin/bookingdetail.php";
@@ -111,7 +112,7 @@ class BookingController
 
         // if (isset($tourFullData)) {
         //     echo "<pre>";
-        //     var_dump($dataSchedulesByTourId);
+        //     var_dump($tourFullData['oneTour']);
         //     echo "<pre>";
         //     die;
         // }
@@ -160,9 +161,19 @@ class BookingController
         $data = $_POST;
         $data['files'] = $_FILES;
 
+        // echo "<pre>";
+        // var_dump($_POST);
+        // echo "</pre>";
+        // die;
+
         // 2. Lấy START - END DATE, đảm bảo NULL nếu rỗng
-        $startDate = !empty($data['start_date'][1]) ? $data['start_date'][1] : null;
-        $endDate   = !empty($data['end_date'][1]) ? $data['end_date'][1] : null;
+        if ($data['group_type_id'] == 1) { // nếu là theo lịch trình{
+            $startDate = !empty($data['start_date'][0]) ? $data['start_date'][0] : null;
+            $endDate   = !empty($data['end_date'][0]) ? $data['end_date'][0] : null;
+        } else { // nếu là đặt riêng
+            $startDate = !empty($data['start_date'][1]) ? $data['start_date'][1] : null;
+            $endDate   = !empty($data['end_date'][1]) ? $data['end_date'][1] : null;
+        }
 
         // 3. Xử lý passenger_prices
         $passengerRaw = $data['passenger_prices'] ?? '[]';
@@ -201,11 +212,20 @@ class BookingController
             'passenger_prices' => $passengerTotal,
             'note'             => $data['note'] ?? null,
         ];
-
         // 6. Insert Booking, trả về booking_id
+        // echo "<pre>";
+        // var_dump($bookingData);
+        // echo "<pre>";
+        // die;
         $bookingModel = new BookingModel();
         $bookingId = $bookingModel->InsertBooking($bookingData);
-        echo "New Booking ID: " . $bookingId;
+        // echo "New Booking ID: " . $bookingId;
+        if (!$bookingId) {
+            $_SESSION['success_message'] = "Lỗi Thông tin booking chính ! ";
+            header("Location: " . BASE_URL . "?mode=admin&act=newBooking&tour_id=" . ($data['tour_id'] ?? ''));
+            exit;
+        }
+        // die;
         // if (!$bookingId) {
         //     die("Lỗi insert booking!");
         // }
@@ -223,6 +243,11 @@ class BookingController
         ];
 
         $bookingPricesId = (new PaymentModel())->InsertBookingPrices($bookingPricesData);
+        if (!$bookingPricesId) {
+            $_SESSION['success_message'] = "Lỗi dữ liệu giá booking ! ";
+            header("Location: " . BASE_URL . "?mode=admin&act=newBooking&tour_id=" . ($data['tour_id'] ?? ''));
+            exit;
+        }
         // echo "New BookingPrices ID: " . $bookingPricesId;
         // die;
         // 8. Xử lý passengers
