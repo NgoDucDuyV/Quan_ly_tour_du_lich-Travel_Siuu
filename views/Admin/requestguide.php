@@ -144,9 +144,12 @@
 
                 </div>
             <?php endforeach; ?>
-
         </div>
 
     </section>
 
 </main>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>

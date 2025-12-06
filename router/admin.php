@@ -198,6 +198,39 @@ echo match ($act) {
         (new BookingController())->getsupplierPricesBySupplierId($requestData);
         exit;
     })(),
+    //thêm loại dịch vụ
+    'add-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
+    //cập nhật loại dịch vụ
+    'update-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
+    //xóa dịch vụ
+    'delete-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
+    //thêm nhà cung cấp
+    'add-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
+
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
 
     // quản lý tải khoản người dùng
     'listclient' => (function () {
@@ -220,12 +253,10 @@ echo match ($act) {
         exit;
     })(),
 
-
     'liststaff' => (function () {
         requireAdmin();
         echo (new AccountManagementController)->showStaffList();
     })(),
-
 
     //quản lý nhân viên
     'create-staff' => (function () {
@@ -233,7 +264,6 @@ echo match ($act) {
         (new AccountManagementController)->createStaff();
         exit;
     })(),
-
 
     'update-staff' => (function () {
         requireAdmin();
@@ -260,7 +290,6 @@ echo match ($act) {
     })(),
 
 
-
     // Hướng dẫn viên
     'guide' => (function () {
         requireGuide();
@@ -271,7 +300,7 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->homeGuide();
     })(),
-
+    // Giới thiệu của HDV
     'aboutguide' => (function () {
         requireGuide();
         require_once "./views/Admin/aboutguide.php";
@@ -327,6 +356,9 @@ echo match ($act) {
         (new GuideController())->saveDiaryGuide();
     })(),
 
+    // CheckGuide
+    // Trong file Router.php, tìm đến khu vực Guide, thêm route này:
+
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();
@@ -334,12 +366,21 @@ echo match ($act) {
         $ctrl = new GuideController();
         $data = $ctrl->checkGuide();
 
+        // GIẢI NÉN MẢNG DỮ LIỆU ĐỂ CÁC BIẾN CÓ THỂ ĐƯỢC SỬ DỤNG TRONG VIEW
         $todayTour = $data['todayTour'];
         $customers = $data['customers'];
+        $activities = $data['activities'];
+        $current_day_number = $data['current_day_number'];
 
         require "./views/Admin/checkguide.php";
     })(),
 
+    // LƯU ĐIỂM DANH THEO CHẶNG (ACTIVITY)
+    'saveAttendanceByActivity' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        exit;
+    })(),
     // RequestGuide
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
@@ -372,51 +413,7 @@ echo match ($act) {
         (new GuideController())->saveAttendance();
     })(),
 
-    //thêm loại dịch vụ
-    'add-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->addSupplierType();
-    })(),
-    //cập nhật loại dịch vụ
-    'update-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplierType();
-    })(),
-    //xóa dịch vụ
-    'delete-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplierType();
-    })(),
-    //thêm nhà cung cấp
-    'add-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->addSupplier();
-    })(),
 
-
-    // sửa nhà cung cấp
-    'update-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplier();
-    })(),
-
-    // xóa nhà cung cấp
-    'delete-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplier();
-    })(),
-
-    // sửa nhà cung cấp
-    'update-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplier();
-    })(),
-
-    // xóa nhà cung cấp
-    'delete-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplier();
-    })(),
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
         exit;
