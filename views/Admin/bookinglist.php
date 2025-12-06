@@ -66,6 +66,7 @@
                 <thead class="bg-slate-50">
                     <tr>
                         <th class="px-6 py-4 text-left"><input type="checkbox" class="rounded border-slate-300"></th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">ID Booking</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Mã Booking</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Khách hàng</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Liên hệ</th>
@@ -86,13 +87,20 @@
                             </td>
                         </tr>
                         <?php else: foreach ($bookings as $b): ?>
+                            <?php
+                            $dataSchedulesStatus = (new SchedulesModel())->getSchedulesStatusByBookingId($b['booking_id']);
+                            ?>
                             <tr class="hover:bg-slate-50 transition duration-150">
                                 <td class="px-6 py-4"><input type="checkbox" class="rounded border-slate-300"></td>
 
                                 <!-- Mã booking -->
                                 <td class="px-4 py-4">
+                                    <div class="font-bold text-main text-base"><?= $b['booking_id'] ?></div>
+                                </td>
+                                <td class="px-4 py-4">
                                     <div class="font-bold text-main text-base"><?= $b['booking_code'] ?></div>
                                     <div class="text-xs text-slate-500">Tour #<?= $b['tour_id'] ?> • <?= date('d/m/Y', strtotime($b['start_date'])) ?></div>
+
                                 </td>
 
                                 <!-- Tên khách -->
@@ -123,20 +131,77 @@
                                     <?= $b['number_of_people'] ?>
                                 </td>
 
-                                <!-- Trạng thái Booking -->
+                                <!-- Trạng thái Booking + HDV -->
                                 <td class="px-4 py-4">
                                     <?php
-                                    $statusColor = match ($b['status_type_code_master'] ?? 'PENDING') {
-                                        'PENDING'   => 'bg-yellow-100 text-yellow-800',
-                                        'DEPOSITED' => 'bg-orange-100 text-orange-800',
-                                        'COMPLETED' => 'bg-emerald-100 text-emerald-800',
-                                        'CANCELLED' => 'bg-red-100 text-red-800',
-                                        default     => 'bg-gray-100 text-gray-800'
+                                    // 1. Trạng thái Booking (luôn hiển thị)
+                                    $bookingStatusCode = $b['status_type_code_master'] ?? 'PENDING';
+
+                                    $bookingColor = match ($bookingStatusCode) {
+                                        'PENDING'       => 'bg-yellow-100 text-yellow-800',
+                                        'DEPOSITED'     => 'bg-orange-100 text-orange-800',
+                                        'ASSIGN_GUIDE'  => 'bg-indigo-100 text-indigo-800',   // Màu đặc biệt cho "Đang phân HDV"
+                                        'UPCOMING'      => 'bg-purple-100 text-purple-800',
+                                        'IN_PROGRESS'   => 'bg-cyan-100 text-cyan-800',
+                                        'COMPLETED'     => 'bg-emerald-100 text-emerald-800',
+                                        'CLOSED'        => 'bg-teal-100 text-teal-800',
+                                        'CANCELED'      => 'bg-red-100 text-red-800',
+                                        default         => 'bg-gray-100 text-gray-800'
                                     };
                                     ?>
-                                    <span class="inline-flex px-3 py-1.5 rounded-full text-xs font-bold <?= $statusColor ?>">
-                                        <?= $b['status_type_name'] ?? 'Chờ xác nhận' ?>
-                                    </span>
+                                    <div class="flex flex-col gap-1.5">
+                                        <!-- Trạng thái Booking -->
+                                        <span class="inline-flex px-3 py-1.5 rounded-full text-xs font-bold <?= $bookingColor ?>">
+                                            <?= htmlspecialchars($b['status_type_name'] ?? 'Chờ xác nhận') ?>
+                                        </span>
+
+                                        <!-- HIỂN THỊ TRẠNG THÁI HDV CHỈ KHI: -->
+                                        <!-- 1. Booking đang ở trạng thái "Đang phân hướng dẫn viên" -->
+                                        <!-- HOẶC -->
+                                        <!-- 2. Tour đang diễn ra / đã hoàn thành (IN_PROGRESS, COMPLETED, CLOSED) -->
+                                        <?php
+                                        $schedules = $dataSchedulesStatus ?? [];
+                                        $firstSch = $schedules[0] ?? null;
+
+                                        $showGuideStatus = false;
+
+                                        // Điều kiện bật hiển thị trạng thái HDV
+                                        if ($bookingStatusCode === 'ASSIGN_GUIDE') {
+                                            $showGuideStatus = true; // Luôn hiện khi đang phân HDV
+                                        } elseif (in_array($bookingStatusCode, ['IN_PROGRESS', 'COMPLETED', 'CLOSED'])) {
+                                            $showGuideStatus = true; // Tour đang diễn ra hoặc xong → cũng hiện
+                                        }
+
+                                        if ($showGuideStatus && $firstSch) {
+                                            $guideCode = $firstSch['guide_status_code'] ?? 'PENDING';
+
+                                            $guideColor = match ($guideCode) {
+                                                'AVAILABLE'    => 'bg-indigo-100 text-indigo-800',
+                                                'ASSIGNED'     => 'bg-blue-100 text-blue-800',
+                                                'ON_ROUTE'     => 'bg-purple-100 text-purple-800',
+                                                'IN_PROGRESS'  => 'bg-cyan-100 text-cyan-800',
+                                                'COMPLETED'    => 'bg-green-100 text-green-800',
+                                                'CANCELED'     => 'bg-red-100 text-red-800',
+                                                default        => 'bg-gray-100 text-gray-700' // PENDING hoặc chưa rõ
+                                            };
+
+                                            $guideName = match ($guideCode) {
+                                                'AVAILABLE'    => 'HDV sẵn sàng',
+                                                'ASSIGNED'     => 'Đã phân công HDV',
+                                                'ON_ROUTE'     => 'HDV đang di chuyển',
+                                                'IN_PROGRESS'  => 'Đang hướng dẫn',
+                                                'COMPLETED'    => 'HDV hoàn thành',
+                                                'CANCELED'     => 'HDV đã hủy',
+                                                default        => $firstSch['guide_status_name_vn'] ?? 'Chờ phân công'
+                                            };
+                                        ?>
+                                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium <?= $guideColor ?>">
+                                                <?= htmlspecialchars($guideName) ?>
+                                            </span>
+                                        <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </td>
 
                                 <!-- Thanh toán (dùng đúng màu từ DB) -->
@@ -208,7 +273,7 @@
                                             <?php $current = $b['status_type_code_master']; ?>
 
                                             <?php if ($current === 'PENDING'): ?>
-                                                <a href="?act=from_confirm_booking_deposit&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=from_booking_update_deposit&booking_id=<?= $b['booking_id'] ?>"
                                                     onclick="return confirm('Xác nhận khách đã đặt cọc/thanh toán?')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-emerald-600 hover:bg-emerald-50">
                                                     <i class="fa-regular fa-circle-check"></i> Xác nhận đặt cọc

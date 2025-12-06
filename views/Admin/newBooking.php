@@ -57,8 +57,9 @@ if (!empty($tourFullData)) {
         <form action="<?= BASE_URL ?>?mode=admin&act=createBooking" class="space-y-10" method="POST" enctype="multipart/form-data">
 
             <!-- Hidden Fields -->
+            <input type="hidden" name="tour_id" value="<?= $selectedTourId ?? '' ?>">
             <input type="hidden" name="booking_id" value="">
-            <input type="hidden" name="booking_code" value="BK<?= date('YmdHis') ?>">
+            <input type="hidden" name="booking_code" value="BK<?= date('His') ?>">
 
             <!-- STEP 1: Tour & Khách chính -->
             <div id="step-1-content" class="step-content">
@@ -314,13 +315,13 @@ if (!empty($tourFullData)) {
                                     required>
                             </div>
 
-                            <div>
+                            <!-- <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Code Booking</label>
                                 <input type="text" name="booking_code"
                                     placeholder="VD: BK0001"
                                     class="w-full p-4 border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300"
                                     required>
-                            </div>
+                            </div> -->
 
                             <div class="flex justify-end mt-4">
                                 <button type="button" onclick="nextStep(2)"
@@ -440,13 +441,13 @@ if (!empty($tourFullData)) {
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày khởi hành</label>
-                                    <input type="text" id="start-date-display" name="start_date[]"
+                                    <input type="date" id="start-date-display" name="start_date[]"
                                         class="w-full p-4 bg-white border-2 border-slate-300 rounded-xl font-bold text-main"
                                         readonly placeholder="Chưa chọn">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">Ngày kết thúc</label>
-                                    <input type="text" id="end-date-display" name="end_date[]"
+                                    <input type="date" id="end-date-display" name="end_date[]"
                                         class="w-full p-4 bg-white border-2 border-slate-300 rounded-xl font-bold text-main"
                                         readonly placeholder="Chưa chọn">
                                 </div>
@@ -528,11 +529,14 @@ if (!empty($tourFullData)) {
 
                                 const start = option.dataset.start;
                                 const end = option.dataset.end;
-                                document.getElementById("start-date-display").value = start ? start.split('-').reverse().join('/') : "";
-                                document.getElementById("end-date-display").value = end ? end.split('-').reverse().join('/') : "";
+
+                                // Với input type="date", format phải là YYYY-MM-DD
+                                document.getElementById("start-date-display").value = start || "";
+                                document.getElementById("end-date-display").value = end || "";
 
                                 loadScheduleDetails(option.value);
                             });
+
 
                             function loadScheduleDetails(scheduleId) {
                                 if (!scheduleId) return;

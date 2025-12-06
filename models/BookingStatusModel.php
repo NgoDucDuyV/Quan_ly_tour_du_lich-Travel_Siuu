@@ -26,6 +26,20 @@ class BookingStatusModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getBookingStatusTypeById($booking_status_type_id)
+    {
+        $sql = "SELECT * 
+            FROM booking_status_type 
+            WHERE id = :booking_status_type_id  
+            ORDER BY id ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['booking_status_type_id' => $booking_status_type_id]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);  // trả 1 dòng
+    }
+
+
     // lịch sử booking 
     public function getBookinglogsbyid($booking_id)
     {
@@ -85,6 +99,7 @@ class BookingStatusModel
     // update trạng thái booking và payment theo booking_id
     public function updateStatusByBookingId(int $booking_id, int $booking_status_type_id, int $payment_status_type_id, ?string $description = null): bool
     {
+
         // Lấy code từ bảng liên quan
         $sqlCode = "SELECT 
                         bst.code AS booking_status_code,
