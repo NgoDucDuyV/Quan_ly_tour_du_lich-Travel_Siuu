@@ -14,6 +14,17 @@ class UserModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAllUserById(int $user_id)
+    {
+        $sql = "SELECT * FROM users WHERE id = :user_id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC); // trả về 1 user
+    }
+
+
     public function signin($email, $password)
     {
         $stmt = $this->conn->prepare("
@@ -58,7 +69,7 @@ class UserModel
     public function find($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$id]); 
+        $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -77,7 +88,7 @@ class UserModel
                 username = ?, 
                 updated_at = NOW() 
                 WHERE id = ?";
-        
+
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             $data['fullname'],
