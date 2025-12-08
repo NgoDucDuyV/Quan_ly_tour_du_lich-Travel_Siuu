@@ -311,6 +311,10 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->scheduleGuide();
     })(),
+    'tourdetailguide' => (function () {
+        requireGuide();
+        (new GuideController())->showTourDetail($_GET['schedule_id'] ?? null);
+    })(),
 
     // ListGuide
     // Danh sách khách của HDV
