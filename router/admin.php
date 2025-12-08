@@ -145,6 +145,7 @@ echo match ($act) {
             (new AdminSupplierController)->showSupplierTypesList();
         })(),
 
+    // list quản lý booking
     'bookinglist' => (function () {
             requireAdmin();
             echo (new BookingController)->ShowBooking();
@@ -161,11 +162,7 @@ echo match ($act) {
         echo (new BookingStatusController)->UpdateDeposit($_GET['booking_id'] ?? null);
     })(),
 
-    // 'create_booking_status' => (function () {
-    //     requireAdmin();
-    //     echo (new BookingController)->CreateBookingStatus();
-    // })(),
-
+    // update thanth toán
     'from_booking_update_payment' => (function () {
         requireAdmin();
         echo (new PaymentController)->ShowBookingUpdatePayment($_GET['booking_id'] ?? null);
@@ -174,6 +171,12 @@ echo match ($act) {
     'updatepayment' => (function () {
         requireAdmin();
         echo (new BookingStatusController)->UpdatePayment($_GET['booking_id'] ?? null);
+    })(),
+
+    // phân lịch trình cho hướng dẫn viên
+    'guide_tour_schedule' => (function () {
+        requireAdmin();
+        echo (new GuideTourScheduleController)->ShowGuideTourSchedule($_GET['booking_id'] ?? null);
     })(),
 
     'bookingdetail' => (function () {
