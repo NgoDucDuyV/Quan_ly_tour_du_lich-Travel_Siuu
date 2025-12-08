@@ -153,66 +153,73 @@
                     <div id="viewsdetailtour"
                         class="mt-5 md:mt-0 flex-1 col-span-1 lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-md">
 
-                        <div class="mx-auto bg-white text-center">
+                        <?php if (!isset($valueViews)): ?>
+                            <div class="mx-auto bg-white text-center">
 
-                            <!-- Header image with gradient overlay -->
-                            <div class="relative w-full max-w-3xl mx-auto">
-                                <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800"
-                                    alt="Tour Placeholder"
-                                    class="w-full h-64 object-cover rounded-2xl shadow">
+                                <!-- Header image with gradient overlay -->
+                                <div class="relative w-full max-w-3xl mx-auto">
+                                    <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800"
+                                        alt="Tour Placeholder"
+                                        class="w-full h-64 object-cover rounded-2xl shadow">
 
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-2xl"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-2xl"></div>
 
-                                <h2 class="absolute bottom-4 left-4 text-3xl font-bold text-white drop-shadow">
-                                    Chi tiết Tour
-                                </h2>
-                            </div>
-
-                            <!-- Description -->
-                            <p class="text-gray-600 mt-6 max-w-2xl mx-auto leading-relaxed">
-                                Đây là khu vực hiển thị <b>toàn bộ nội dung chi tiết của tour du lịch</b> như:
-                                <span class="text-main font-semibold">lịch trình – hình ảnh – nhà cung cấp – giá – chính sách – phiên bản</span>.
-                                Vui lòng chọn một tour trong danh sách để bắt đầu xem chi tiết.
-                            </p>
-
-                            <!-- Modern Icon Highlight Section -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8">
-
-                                <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
-                                    <div class="text-main text-3xl mb-2">
-                                        <i class="fa-solid fa-map-marked-alt text-xl"></i>
-                                    </div>
-                                    <h3 class="font-semibold text-gray-800">Lịch trình rõ ràng</h3>
-                                    <p class="text-gray-500 text-sm mt-1">Xem chi tiết từng ngày trong tour.</p>
+                                    <h2 class="absolute bottom-4 left-4 text-3xl font-bold text-white drop-shadow">
+                                        Chi tiết Tour
+                                    </h2>
                                 </div>
 
-                                <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
-                                    <div class="text-main text-3xl mb-2">
-                                        <i class="fa-solid fa-image"></i>
+                                <!-- Description -->
+                                <p class="text-gray-600 mt-6 max-w-2xl mx-auto leading-relaxed">
+                                    Đây là khu vực hiển thị <b>toàn bộ nội dung chi tiết của tour du lịch</b> như:
+                                    <span class="text-main font-semibold">lịch trình – hình ảnh – nhà cung cấp – giá – chính sách – phiên bản</span>.
+                                    Vui lòng chọn một tour trong danh sách để bắt đầu xem chi tiết.
+                                </p>
+
+                                <!-- Modern Icon Highlight Section -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8">
+
+                                    <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
+                                        <div class="text-main text-3xl mb-2">
+                                            <i class="fa-solid fa-map-marked-alt text-xl"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-800">Lịch trình rõ ràng</h3>
+                                        <p class="text-gray-500 text-sm mt-1">Xem chi tiết từng ngày trong tour.</p>
                                     </div>
-                                    <h3 class="font-semibold text-gray-800">Hình ảnh trực quan</h3>
-                                    <p class="text-gray-500 text-sm mt-1">Xem ảnh thực tế hoặc ảnh minh hoạ.</p>
+
+                                    <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
+                                        <div class="text-main text-3xl mb-2">
+                                            <i class="fa-solid fa-image"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-800">Hình ảnh trực quan</h3>
+                                        <p class="text-gray-500 text-sm mt-1">Xem ảnh thực tế hoặc ảnh minh hoạ.</p>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
+                                        <div class="text-main text-3xl mb-2">
+                                            <i class="fa-solid fa-boxes-packing"></i>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-800">Nhà cung cấp uy tín</h3>
+                                        <p class="text-gray-500 text-sm mt-1">Thông tin đơn vị tổ chức tour.</p>
+                                    </div>
+
                                 </div>
 
-                                <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-sm">
-                                    <div class="text-main text-3xl mb-2">
-                                        <i class="fa-solid fa-boxes-packing"></i>
-                                    </div>
-                                    <h3 class="font-semibold text-gray-800">Nhà cung cấp uy tín</h3>
-                                    <p class="text-gray-500 text-sm mt-1">Thông tin đơn vị tổ chức tour.</p>
+                                <!-- Button -->
+                                <div class="mt-8">
+                                    <button
+                                        class="px-6 py-3 bg-main text-white rounded-xl shadow hover:bg-hover transition font-semibold">
+                                        Chọn một tour để xem chi tiết
+                                    </button>
                                 </div>
 
                             </div>
+                        <?php endif; ?>
 
-                            <!-- Button -->
-                            <div class="mt-8">
-                                <button
-                                    class="px-6 py-3 bg-main text-white rounded-xl shadow hover:bg-hover transition font-semibold">
-                                    Chọn một tour để xem chi tiết
-                                </button>
-                            </div>
+                        <?php if (isset($valueViews)): ?>
+                            <?= $valueViews ?>
+                        <?php endif; ?>
 
-                        </div>
                     </div>
 
                 </section>

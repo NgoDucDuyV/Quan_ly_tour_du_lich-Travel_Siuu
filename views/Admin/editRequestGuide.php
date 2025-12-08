@@ -56,9 +56,10 @@
                 </p>
             <?php endif; ?>
         </div>
-
         <button class="px-6 py-2 bg-blue-600 text-white rounded-lg">Cập nhật</button>
-
     </form>
-
 </main>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>

@@ -38,6 +38,33 @@ class AdminTourController
         require_once "./views/Admin/admin_detail_tour.php";
     }
 
+    public function showTourDetailPHP($tour_id)
+    {
+        $datatour = (new TourModel())->getAll();
+
+        $dataTourDetai = (new TourModel())->TourDetailItineraryModel($tour_id);
+
+        $dataOneTour = (new TourModel())->getOne($tour_id);
+
+        $dataTourSupplier = (new TourModel())->TourSuppliersModel($tour_id);
+
+        $dataTourVersions = (new TourModel())->TourVersionsModel($tour_id);
+
+        $dataTourImages = (new TourModel())->TourImagesModel($tour_id);
+
+        $dataTourPolicies = (new TourModel())->TourPoliciesModel($tour_id);
+        // echo "<pre>";
+        // var_dump($dataTourSupplier);
+        // echo "<pre>";
+        // die;
+        ob_start();
+        require_once "./views/Admin/admin_detail_tour.php";
+        $htmlView = ob_get_clean();
+
+        $valueViews = $htmlView;
+        require_once "./views/Admin/admin_tours.php";
+    }
+
     public function CreateTour()
     {
         // kiểm tran REQUEST_METHOD thất acr các trường dữ liệu

@@ -115,8 +115,9 @@ echo match ($act) {
         })(),
 
     'admin_detail_tour' => (function () {
-            requireAdmin();
-        })(),
+        requireAdmin();
+        (new AdminTourController())->showTourDetailPHP($_GET['tour_id']);
+    })(),
     'admin_createTourfrom' => (function () {
             requireAdmin();
             (new AdminTourController)->showFromCreateTour();
@@ -149,25 +150,31 @@ echo match ($act) {
             echo (new BookingController)->ShowBooking();
         })(),
 
-    'from_confirm_booking_deposit' => (function () {
-            requireAdmin();
-            echo (new BookingStatusController())->UpdateFromBookingStatus($_GET['id'] ?? null);
-        })(),
+    // 'Cập nhật đặt cọc booking'
+    'from_booking_update_deposit' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
+    })(),
 
-    'updateFromThanhToan' => (function () {
-            requireAdmin();
-            echo (new PaymentController)->ShowFromThanhToan($_GET['booking_id'] ?? null);
-        })(),
+    'updatedeposit' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->UpdateDeposit($_GET['booking_id'] ?? null);
+    })(),
 
     // 'create_booking_status' => (function () {
     //     requireAdmin();
     //     echo (new BookingController)->CreateBookingStatus();
     // })(),
 
-    'phan_tour_from_guides' => (function () {
-            requireAdmin();
-            echo (new BookingController)->ShowPhanTourFromGuides($_GET['id'] ?? null);
-        })(),
+    'from_booking_update_payment' => (function () {
+        requireAdmin();
+        echo (new PaymentController)->ShowBookingUpdatePayment($_GET['booking_id'] ?? null);
+    })(),
+
+    'updatepayment' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->UpdatePayment($_GET['booking_id'] ?? null);
+    })(),
 
     'bookingdetail' => (function () {
             requireAdmin();
@@ -193,17 +200,50 @@ echo match ($act) {
         })(),
     // call api js booking
     'getsupplierPricesBySupplierId' => (function () {
-            $requestData = json_decode(file_get_contents("php://input"), true);
-            // echo json_encode(
-            //     [
-            //         'id' => $requestData['supplier_id']
-            //     ]
-            // );
-            // exit;
-            requireAdmin();
-            (new BookingController())->getsupplierPricesBySupplierId($requestData);
-            exit;
-        })(),
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        // echo json_encode(
+        //     [
+        //         'id' => $requestData['supplier_id']
+        //     ]
+        // );
+        // exit;
+        requireAdmin();
+        (new BookingController())->getsupplierPricesBySupplierId($requestData);
+        exit;
+    })(),
+    //thêm loại dịch vụ
+    'add-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
+    //cập nhật loại dịch vụ
+    'update-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
+    //xóa dịch vụ
+    'delete-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
+    //thêm nhà cung cấp
+    'add-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
+
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
 
     // quản lý tải khoản người dùng
     'listclient' => (function () {
@@ -226,12 +266,10 @@ echo match ($act) {
             exit;
         })(),
 
-
     'liststaff' => (function () {
             requireAdmin();
             echo (new AccountManagementController)->showStaffList();
         })(),
-
 
     //quản lý nhân viên
     'create-staff' => (function () {
@@ -239,7 +277,6 @@ echo match ($act) {
             (new AccountManagementController)->createStaff();
             exit;
         })(),
-
 
     'update-staff' => (function () {
             requireAdmin();
@@ -266,7 +303,6 @@ echo match ($act) {
         })(),
 
 
-
     // Hướng dẫn viên
     'guide' => (function () {
             requireGuide();
@@ -274,10 +310,10 @@ echo match ($act) {
         })(),
     // Trang chủ của HDV
     'homeguide' => (function () {
-            requireGuide();
-            (new GuideController())->homeGuide();
-        })(),
-
+        requireGuide();
+        (new GuideController())->homeGuide();
+    })(),
+    // Giới thiệu của HDV
     'aboutguide' => (function () {
             requireGuide();
             require_once "./views/Admin/aboutguide.php";
@@ -333,6 +369,9 @@ echo match ($act) {
             (new GuideController())->saveDiaryGuide();
         })(),
 
+    // CheckGuide
+    // Trong file Router.php, tìm đến khu vực Guide, thêm route này:
+
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
             requireGuide();
@@ -340,12 +379,21 @@ echo match ($act) {
             $ctrl = new GuideController();
             $data = $ctrl->checkGuide();
 
-            $todayTour = $data['todayTour'];
-            $customers = $data['customers'];
+        // GIẢI NÉN MẢNG DỮ LIỆU ĐỂ CÁC BIẾN CÓ THỂ ĐƯỢC SỬ DỤNG TRONG VIEW
+        $todayTour = $data['todayTour'];
+        $customers = $data['customers'];
+        $activities = $data['activities'];
+        $current_day_number = $data['current_day_number'];
 
             require "./views/Admin/checkguide.php";
         })(),
 
+    // LƯU ĐIỂM DANH THEO CHẶNG (ACTIVITY)
+    'saveAttendanceByActivity' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        exit;
+    })(),
     // RequestGuide
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
@@ -423,6 +471,7 @@ echo match ($act) {
             requireAdmin();
             (new AdminSupplierController)->deleteSupplier();
         })(),
+
     default => (function () {
             header("Location: " . BASE_URL . "?mode=admin&act=404");
             exit;
