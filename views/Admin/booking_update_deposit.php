@@ -16,7 +16,7 @@
                 </span>
             </div>
         </div>
-        <a href="?mode=admin&act=bookinglist" class="flex items-center gap-2 px-6 py-3 border border-slate-300 rounded-xl hover:bg-slate-50 transition text-sm font-medium">
+        <a href="?mode=admin&act=bookinglist" class="flex items-center gap-2 px-6 py-3 border border-slate-300 rounded-xl hover:text-hover hover:bg-light transition text-main text-sm font-medium">
             ← Danh sách booking
         </a>
     </div>
@@ -36,8 +36,11 @@
     <?php endif; ?>
 
     <?php if (isset($_SESSION['error_message'])): ?>
-        <div class="mb-5 p-4 bg-red-100 border-red-700 text-red-600 rounded-lg text-sm flex items-center gap-2">
-            <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['error_message']; ?>
+        <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>
+                <?= $_SESSION['error_message'] ?>
+            </div>
             <?php unset($_SESSION['error_message']); ?>
         </div>
     <?php endif; ?>
@@ -195,9 +198,11 @@
                     <select name="booking_status_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
                         <option value="">-- Chọn trạng thái --</option>
                         <?php foreach ($bookingStatusTypes as $s): ?>
-                            <option value="<?= $s['id'] ?>" <?= $s['id'] == $databooking['status_type_id_master'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($s['name']) ?>
-                            </option>
+                            <?php if (in_array($s['id'], [1, 2])): ?>
+                                <option value="<?= $s['id'] ?>" <?= $s['id'] == $databooking['status_type_id_master'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($s['name']) ?>
+                                </option>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -215,7 +220,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Phương thức thanh toán</label>
+                    <label class=" block text-sm font-medium text-slate-700 mb-2">Phương thức thanh toán</label>
                     <select name="payment_method_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
                         <option value="">-- Chọn phương thức --</option>
                         <?php foreach ($paymentMethods as $m): ?>
@@ -223,9 +228,21 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Loại thanh toán</label>
+                    <select name="payment_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
+                        <option value="">-- Chọn trạng thái thanh toán --</option>
+                        <?php foreach ($paymentTypes as $p): ?>
+                            <option value="<?= $p['id'] ?>">
+                                <?= htmlspecialchars($p['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
             </div>
 
-            <div class="space-y-6">
+            <div class=" space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">
                         Số tiền nhận lần này (VNĐ)
@@ -328,110 +345,3 @@
             </div>
         </form>
     </div>
-
-    <!-- ==================== LỊCH SỬ THANH TOÁN (CÓ ẢNH) ==================== -->
-    <?php if (!empty($paymentLogs)): ?>
-        <div class="mt-10 bg-white rounded-xl shadow-sm border border-slate-200 rounded-xl overflow-hidden">
-            <div class="bg-main text-white px-6 py-4 font-bold text-lg">
-                Lịch sử thanh toán (<?= count($paymentLogs) ?> lần)
-            </div>
-
-            <div class="divide-y divide-slate-100">
-                <?php foreach ($paymentLogs as $log):
-                    $methodName = '—';
-                    foreach ($paymentMethods as $m) {
-                        if ($m['id'] == $log['payment_method_id']) {
-                            $methodName = $m['name'];
-                            break;
-                        }
-                    }
-                    $hasImage = !empty($log['payment_image']);
-                ?>
-                    <div class="p-6 hover:bg-slate-50 transition">
-                        <div class="flex items-center justify-between">
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
-                                <div>
-                                    <div class="text-slate-500">Ngày thanh toán</div>
-                                    <div class="font-semibold text-slate-900"><?= date('d/m/Y H:i', strtotime($log['created_at'])) ?></div>
-                                </div>
-                                <div>
-                                    <div class="text-slate-500">Số tiền</div>
-                                    <div class="text-2xl font-bold text-main"><?= number_format($log['amount']) ?>₫</div>
-                                </div>
-                                <div>
-                                    <div class="text-slate-500">Hình thức</div>
-                                    <div class="font-medium"><?= htmlspecialchars($methodName) ?></div>
-                                </div>
-                                <div>
-                                    <div class="text-slate-500">Mã giao dịch</div>
-                                    <div class="font-mono text-sm bg-slate-100 px-3 py-1 rounded">
-                                        <?= htmlspecialchars($log['transaction_code'] ?? '—') ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <?php if ($hasImage): ?>
-                                <button type="button"
-                                    onclick="openImageModal('<?= BASE_URL ?>uploads/payments/<?= htmlspecialchars($log['payment_image']) ?>')"
-                                    class="px-5 py-2.5 bg-main hover:bg-hover text-white rounded-lg text-sm font-medium transition">
-                                    Xem ảnh chuyển khoản
-                                </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <!-- ==================== NHẬT KÝ TRẠNG THÁI BOOKING ==================== -->
-    <?php if (!empty($bookingLogs)): ?>
-        <div class="mt-10 bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="bg-main text-white px-6 py-4 font-bold text-lg">
-                Nhật ký thay đổi trạng thái
-            </div>
-            <div class="p-6 space-y-4">
-                <?php foreach ($bookingLogs as $log): ?>
-                    <div class="flex items-center gap-4 text-sm">
-                        <span class="shrink-0 text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full">
-                            <?= date('d/m/Y H:i', strtotime($log['created_at'])) ?>
-                        </span>
-                        <span class="text-slate-500">→</span>
-                        <span class="font-medium text-slate-800">
-                            <?= htmlspecialchars($log['description'] ?? 'Cập nhật trạng thái') ?>
-                        </span>
-                        <?php if (!empty($log['updated_by'])): ?>
-                            <span class="text-xs text-slate-400">(NV: <?= $log['updated_by'] ?>)</span>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php endif; ?>
-
-</div>
-
-<!-- Modal xem ảnh thanh toán (đơn giản + đẹp) -->
-<script>
-    function openImageModal(src) {
-        // Xóa modal cũ nếu có
-        const old = document.getElementById('paymentImageModal');
-        if (old) old.remove();
-
-        const modal = document.createElement('div');
-        modal.id = 'paymentImageModal';
-        modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4';
-        modal.innerHTML = `
-        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 bg-main text-white">
-                <h3 class="font-bold text-lg">Ảnh minh chứng thanh toán</h3>
-                <button type="button" onclick="this.closest('#paymentImageModal').remove()" class="text-2xl hover:opacity-70">&times;</button>
-            </div>
-            <div class="p-6 bg-gray-50">
-                <img src="${src}" class="w-full rounded-xl shadow-lg" alt="Ảnh chuyển khoản">
-            </div>
-        </div>
-    `;
-        document.body.appendChild(modal);
-    }
-</script>

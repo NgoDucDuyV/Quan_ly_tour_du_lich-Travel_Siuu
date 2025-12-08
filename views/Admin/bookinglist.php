@@ -243,7 +243,7 @@
 
                                             <!-- 2.5. CẬP NHẬT THANH TOÁN - HIỂN THỊ ĐẾN KHI TOUR ĐANG DIỄN RA -->
                                             <?php
-                                            $allowPaymentUpdate = in_array($b['status_type_code_master'], ['PENDING', 'DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMINGS', 'IN_PROGRESS'])
+                                            $allowPaymentUpdate = in_array($b['status_type_code_master'], ['DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMINGS', 'IN_PROGRESS'])
                                                 && !in_array($b['status_type_code_master'], ['COMPLETED', 'CLOSED', 'CANCELED']);
 
                                             $total   = $b['total_amount'] ?? 0;
@@ -252,7 +252,7 @@
                                             $percent = $total > 0 ? round(($paid / $total) * 100) : 0;
                                             ?>
                                             <?php if ($allowPaymentUpdate): ?>
-                                                <a href="?act=updateFromThanhToan&booking_id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=from_booking_update_payment&booking_id=<?= $b['booking_id'] ?>"
                                                     class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium hover:bg-teal-50 border-t border-slate-100 mt-1 pt-3">
                                                     <span class="flex items-center gap-3">
                                                         <i class="fa-solid fa-money-bill-wave text-teal-600"></i>
@@ -281,7 +281,7 @@
                                             <?php endif; ?>
 
                                             <?php if ($current === 'DEPOSITED'): ?>
-                                                <a href="?act=phan_tour_from_guides&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=guide_tour_schedule&booking_id=<?= $b['booking_id'] ?>"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-purple-600 hover:bg-purple-50">
                                                     <i class="fa-solid fa-user-tie"></i> Phân hướng dẫn viên
                                                 </a>
@@ -330,7 +330,7 @@
 
                                             <!-- 5. Khôi phục nếu đã hủy -->
                                             <?php if ($current === 'CANCELED'): ?>
-                                                <div class="border-t border-slate-200 my-2"></div>
+                                                <!-- <div class="border-t border-slate-200 my-2"></div> -->
                                                 <a href="?act=restoreBooking&id=<?= $b['booking_id'] ?>"
                                                     onclick="return confirm('Khôi phục booking này về trạng thái trước khi hủy?')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-amber-600 hover:bg-amber-50">
