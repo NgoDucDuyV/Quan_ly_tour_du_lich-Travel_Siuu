@@ -19,7 +19,7 @@
 
         <div class="flex items-center space-x-3">
 
-            <a href="?mode=admin&act=listclient&create=1" class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
+            <a href="?mode=admin&act=liststaff&create=1" class="flex items-center gap-2 px-4 py-2 rounded-md border-[1px_solid_main] text-sm font-[300] bg-main hover:bg-hover text-white transition-all duration-200 ease-out">
                 <i class="fa-solid fa-plus"></i>
                 Tạo mới
             </a>
