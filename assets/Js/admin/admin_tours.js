@@ -15,6 +15,8 @@ function bindClickDetailTour() {
     });
   });
 }
+
+// lấyd dữ liệu xem chi tiết tour
 bindClickDetailTour();
 const loadDetailtour = (href) => {
   viewsdetailtour.innerHTML = `
@@ -120,6 +122,7 @@ const searchTourListContainer = document.getElementById(
 
 const tourListContainer = document.getElementById("tourListContainer");
 
+// tìm kiếm tour siderber from quản lý tour
 searchTourListContainer.addEventListener("change", (el) => {
   const valueSearch = el.target.value.trim();
   console.log(valueSearch);

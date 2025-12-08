@@ -108,6 +108,7 @@ echo match ($act) {
     })(),
     'admin_detail_tour' => (function () {
         requireAdmin();
+        (new AdminTourController())->showTourDetailPHP($_GET['tour_id']);
     })(),
     'admin_createTourfrom' => (function () {
         requireAdmin();
@@ -141,14 +142,15 @@ echo match ($act) {
         echo (new BookingController)->ShowBooking();
     })(),
 
-    'from_confirm_booking_deposit' => (function () {
+    // 'Cập nhật đặt cọc booking'
+    'from_booking_update_deposit' => (function () {
         requireAdmin();
-        echo (new BookingStatusController())->UpdateFromBookingStatus($_GET['id'] ?? null);
+        echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
     })(),
 
-    'updateFromThanhToan' => (function () {
+    'updatedeposit' => (function () {
         requireAdmin();
-        echo (new PaymentController)->ShowFromThanhToan($_GET['booking_id'] ?? null);
+        echo (new BookingStatusController)->UpdateDeposit($_GET['booking_id'] ?? null);
     })(),
 
     // 'create_booking_status' => (function () {
