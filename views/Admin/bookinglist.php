@@ -252,7 +252,7 @@
                                             $percent = $total > 0 ? round(($paid / $total) * 100) : 0;
                                             ?>
                                             <?php if ($allowPaymentUpdate): ?>
-                                                <a href="?act=updateFromThanhToan&booking_id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=from_booking_update_payment&booking_id=<?= $b['booking_id'] ?>"
                                                     class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium hover:bg-teal-50 border-t border-slate-100 mt-1 pt-3">
                                                     <span class="flex items-center gap-3">
                                                         <i class="fa-solid fa-money-bill-wave text-teal-600"></i>

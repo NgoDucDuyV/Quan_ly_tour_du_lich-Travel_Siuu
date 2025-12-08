@@ -158,9 +158,14 @@ echo match ($act) {
     //     echo (new BookingController)->CreateBookingStatus();
     // })(),
 
-    'phan_tour_from_guides' => (function () {
+    'from_booking_update_payment' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowPhanTourFromGuides($_GET['id'] ?? null);
+        echo (new PaymentController)->ShowBookingUpdatePayment($_GET['booking_id'] ?? null);
+    })(),
+
+    'updatepayment' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->UpdatePayment($_GET['booking_id'] ?? null);
     })(),
 
     'bookingdetail' => (function () {
