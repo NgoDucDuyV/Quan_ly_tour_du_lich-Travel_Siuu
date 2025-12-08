@@ -243,7 +243,7 @@
 
                                             <!-- 2.5. CẬP NHẬT THANH TOÁN - HIỂN THỊ ĐẾN KHI TOUR ĐANG DIỄN RA -->
                                             <?php
-                                            $allowPaymentUpdate = in_array($b['status_type_code_master'], ['PENDING', 'DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMINGS', 'IN_PROGRESS'])
+                                            $allowPaymentUpdate = in_array($b['status_type_code_master'], ['DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMINGS', 'IN_PROGRESS'])
                                                 && !in_array($b['status_type_code_master'], ['COMPLETED', 'CLOSED', 'CANCELED']);
 
                                             $total   = $b['total_amount'] ?? 0;

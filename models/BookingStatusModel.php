@@ -97,8 +97,12 @@ class BookingStatusModel
 
 
     // update trạng thái booking và payment theo booking_id
-    public function updateStatusByBookingId(int $booking_id, int $booking_status_type_id, int $payment_status_type_id, ?string $description = null): bool
-    {
+    public function updateStatusByBookingId(
+        int $booking_id,
+        int $booking_status_type_id,
+        int $payment_status_type_id,
+        ?string $description = null
+    ): bool {
 
         // Lấy code từ bảng liên quan
         $sqlCode = "SELECT 

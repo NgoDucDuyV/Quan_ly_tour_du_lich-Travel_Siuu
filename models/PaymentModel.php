@@ -172,6 +172,13 @@ class PaymentModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // public function getPaymentStatusType()
+    // {
+    //     $sql = "SELECT * FROM payment_status_type ORDER BY id ASC";
+    //     $stmt = $this->conn->query($sql);
+    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // }
+
     public function getLatestBookingPriceByBookingId(int $booking_id)
     {
         $sql = "SELECT * FROM booking_prices 
