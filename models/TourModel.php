@@ -163,19 +163,19 @@ class TourModel
         $stmt = $this->conn->prepare($sql);
         $data = [
             ':category_id' => $datatour['category_id'],
-            ':name'        => $datatour['name'],
-            ':code'        => $datatour['code'],
-            ':days'        => $datatour['days'],
-            ':nights'      => $datatour['nights'],
+            ':name' => $datatour['name'],
+            ':code' => $datatour['code'],
+            ':days' => $datatour['days'],
+            ':nights' => $datatour['nights'],
             // ':duration'    => $datatour['days'] . ' ngày ' . $datatour['nights'] . ' đêm', // Ví dụ nối days + nights
             ':description' => $datatour['description'],
-            ':itinerary'   => $datatour['itinerary'], // Nếu chưa có dữ liệu chi tiết hành trình
-            ':images'      => $datatour['image'], // đường dẫn ảnh upload
-            ':price'       => $datatour['price'],
-            ':policy'      => $datatour['policy'],
-            ':status'      => $datatour['status'],
-            ':created_at'  => date('Y-m-d H:i:s'),
-            ':updated_at'  => date('Y-m-d H:i:s')
+            ':itinerary' => $datatour['itinerary'], // Nếu chưa có dữ liệu chi tiết hành trình
+            ':images' => $datatour['image'], // đường dẫn ảnh upload
+            ':price' => $datatour['price'],
+            ':policy' => $datatour['policy'],
+            ':status' => $datatour['status'],
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
         ];
         if ($stmt->execute($data)) {
             return $this->conn->lastInsertId();
@@ -195,12 +195,12 @@ class TourModel
 
         // Chuẩn bị dữ liệu bind
         $data = [
-            ':tour_id'     => $tour_id,
-            ':day_number'  => $datatouritineraries['day'],
-            ':title'       => $datatouritineraries['title'],
+            ':tour_id' => $tour_id,
+            ':day_number' => $datatouritineraries['day'],
+            ':title' => $datatouritineraries['title'],
             ':description' => $datatouritineraries['desc'],
-            ':created_at'  => date('Y-m-d H:i:s'),
-            ':updated_at'  => date('Y-m-d H:i:s')
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
         ];
 
         if ($stmt->execute($data)) {
@@ -226,12 +226,12 @@ class TourModel
         $stmt = $this->conn->prepare($sql);
         $data = [
             ':itinerary_id' => $tour_itineraries_id,
-            ':time'         => $datatouractivities['time'] ?? '',
-            ':activity'     => $datatouractivities['name'] ?? '',
-            ':location'     => $datatouractivities['location'] ?? '',
-            ':description'  => $datatouractivities['description'] ?? '',
-            ':created_at'   => date('Y-m-d H:i:s'),
-            ':updated_at'   => date('Y-m-d H:i:s')
+            ':time' => $datatouractivities['time'] ?? '',
+            ':activity' => $datatouractivities['name'] ?? '',
+            ':location' => $datatouractivities['location'] ?? '',
+            ':description' => $datatouractivities['description'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
         ];
 
         if ($stmt->execute($data)) {
@@ -258,13 +258,13 @@ class TourModel
         $stmt = $this->conn->prepare($sql);
 
         $data = [
-            ':tour_id'      => $tour_id,
-            ':activity_id'  => $activity_id,
+            ':tour_id' => $tour_id,
+            ':activity_id' => $activity_id,
             ':itinerary_id' => $itinerary_id,
-            ':image_url'    => $datatourimages['image'] ?? '',
-            ':description'  => $datatourimages['desc'] ?? '',
-            ':created_at'   => date('Y-m-d H:i:s'),
-            ':updated_at'   => date('Y-m-d H:i:s')
+            ':image_url' => $datatourimages['image'] ?? '',
+            ':description' => $datatourimages['desc'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
         ];
 
         if ($stmt->execute($data)) {
@@ -323,13 +323,13 @@ class TourModel
         $stmt = $this->conn->prepare($sql);
 
         $data = [
-            ':tour_id'    => $tour_id,
-            ':name'       => $datatourversions['name'] ?? '',
-            ':season'     => $datatourversions['season'] ?? '',
-            ':price'      => $datatourversions['price'] ?? 0,
+            ':tour_id' => $tour_id,
+            ':name' => $datatourversions['name'] ?? '',
+            ':season' => $datatourversions['season'] ?? '',
+            ':price' => $datatourversions['price'] ?? 0,
             ':start_date' => $datatourversions['start_date'] ?? null,
-            ':end_date'   => $datatourversions['end_date'] ?? null,
-            ':status'     => $datatourversions['status'] ? 1 : 0,
+            ':end_date' => $datatourversions['end_date'] ?? null,
+            ':status' => $datatourversions['status'] ? 1 : 0,
             ':created_at' => date('Y-m-d H:i:s'),
             ':updated_at' => date('Y-m-d H:i:s')
         ];
@@ -359,11 +359,11 @@ class TourModel
         $stmt = $this->conn->prepare($sql);
 
         $data = [
-            ':tour_id'      => $tour_id,
-            ':policy_type'  => $datatourpolicies['type'] ?? '',
-            ':description'  => $datatourpolicies['description'] ?? '',
-            ':created_at'   => date('Y-m-d H:i:s'),
-            ':updated_at'   => date('Y-m-d H:i:s')
+            ':tour_id' => $tour_id,
+            ':policy_type' => $datatourpolicies['type'] ?? '',
+            ':description' => $datatourpolicies['description'] ?? '',
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
         ];
 
         if ($stmt->execute($data)) {
@@ -390,6 +390,13 @@ class TourModel
         ");
         $stmt->bindParam(':tour_id', $tour_id, PDO::PARAM_INT);
         $stmt->execute();
+    }
+    public function getToursByCategory($categoryId)
+    {
+        $sql = "SELECT * FROM tours WHERE category_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$categoryId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 }
