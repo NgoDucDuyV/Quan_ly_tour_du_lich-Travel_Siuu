@@ -36,8 +36,11 @@
     <?php endif; ?>
 
     <?php if (isset($_SESSION['error_message'])): ?>
-        <div class="mb-5 p-4 bg-red-100 border-red-700 text-red-600 rounded-lg text-sm flex items-center gap-2">
-            <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['error_message']; ?>
+        <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>
+                <?= $_SESSION['error_message'] ?>
+            </div>
             <?php unset($_SESSION['error_message']); ?>
         </div>
     <?php endif; ?>

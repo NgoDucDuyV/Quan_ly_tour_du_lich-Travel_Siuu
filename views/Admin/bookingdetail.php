@@ -140,7 +140,7 @@
     <div id="payment-form" class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
         <h2 class="text-2xl font-bold text-slate-900 mb-8">Cập nhật Xác Nhập Đăt chỗ ( Cọc Booking)</h2>
 
-        <form action="<?= BASE_URL ?>?mode=admin&act=updatedeposit&booking_id=<?= $databooking['booking_id'] ?>"
+        <form action="<?= BASE_URL ?>?mode=admin&act=updatepayment&booking_id=<?= $databooking['booking_id'] ?>"
             method="POST"
             enctype="multipart/form-data"
             class="grid grid-cols-1 md:grid-cols-2 gap-8">

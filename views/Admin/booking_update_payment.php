@@ -46,76 +46,34 @@
     <?php endif; ?>
     <!-- 3 Card tổng quan -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-
         <!-- Card 1: Khách hàng -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <h3 class="text-lg font-bold text-slate-800 mb-5">Thông tin khách hàng</h3>
             <div class="space-y-4 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Họ tên</span>
-                    <span class="font-semibold text-slate-900"><?= htmlspecialchars($databooking['customer_name']) ?></span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Điện thoại</span>
-                    <span class="font-medium><?= $databooking['customer_phone'] ?></span>
-                </div>
-                <div class=" flex justify-between">
-                        <span class="text-slate-600">Email</span>
-                        <span class="font-medium text-slate-700"><?= $databooking['customer_email'] ?></span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-600">Loại khách</span>
-                    <span class="px-4 py-1.5 rounded-full text-xs font-bold <?= $databooking['group_color'] ?>">
-                        <?= htmlspecialchars($databooking['group_name']) ?>
-                    </span>
-                </div>
-                <div class="flex justify-between pt-3 border-t">
-                    <span class="text-slate-600">Số người</span>
-                    <span class="text-2xl font-bold text-main"><?= $databooking['number_of_people'] ?> khách</span>
-                </div>
+                <div class="flex justify-between"><span class="text-slate-600">Họ tên</span><span class="font-semibold"><?= htmlspecialchars($databooking['customer_name']) ?></span></div>
+                <div class="flex justify-between"><span class="text-slate-600">Điện thoại</span><span class="font-medium"><?= $databooking['customer_phone'] ?></span></div>
+                <div class="flex justify-between"><span class="text-slate-600">Email</span><span class="font-medium text-slate-700"><?= $databooking['customer_email'] ?></span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-600">Loại khách</span><span class="px-4 py-1.5 rounded-full text-xs font-bold <?= $databooking['group_color'] ?>"><?= htmlspecialchars($databooking['group_name']) ?></span></div>
+                <div class="flex justify-between pt-3 border-t"><span class="text-slate-600">Số người</span><span class="text-2xl font-bold text-main"><?= $databooking['number_of_people'] ?> khách</span></div>
             </div>
         </div>
 
-        <!-- Card 2: Tour + NÚT XEM CHI TIẾT TOUR -->
+        <!-- Card 2: Tour -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-lg font-bold text-slate-800">Thông tin tour</h3>
-                <a href="<?= BASE_URL ?>?mode=admin&act=admin_detail_tour&tour_id=<?= $databooking['tour_id'] ?>"
-                    target="_blank"
-                    class="px-4 py-2 bg-main hover:bg-hover text-white text-sm font-medium rounded-lg transition shadow hover:shadow-md flex items-center gap-2">
+                <a href="<?= BASE_URL ?>?mode=admin&act=admin_detail_tour&tour_id=<?= $databooking['tour_id'] ?>" target="_blank"
+                    class="px-4 py-2 bg-main hover:bg-hover text-white text-sm font-medium rounded-lg transition flex items-center gap-2">
                     Xem chi tiết tour
                 </a>
             </div>
-
             <div class="space-y-4 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Mã tour</span>
-                    <span class="font-mono font-bold text-main">#<?= $databooking['tour_id'] ?></span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Ngày đi → về</span>
-                    <span class="font-semibold">
-                        <?= date('d/m', strtotime($databooking['start_date'])) ?> → <?= date('d/m/Y', strtotime($databooking['end_date'])) ?>
-                    </span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Số ngày</span>
-                    <span class="font-medium">
-                        <?php
-                        $days = (strtotime($databooking['end_date']) - strtotime($databooking['start_date'])) / 86400 + 1;
-                        echo $days . ' ngày';
-                        ?>
-                    </span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Tổng tiền tour</span>
-                    <span class="text-xl font-bold text-main"><?= number_format($total) ?>₫</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-600">Tạo booking lúc</span>
-                    <span class="text-slate-500"><?= date('d/m/Y H:i', strtotime($databooking['booking_created_at'])) ?></span>
-                </div>
-
+                <div class="flex justify-between"><span class="text-slate-600">Mã tour</span><span class="font-mono font-bold text-main">#<?= $databooking['tour_id'] ?></span></div>
+                <div class="flex justify-between"><span class="text-slate-600">Ngày đi → về</span><span class="font-semibold"><?= date('d/m', strtotime($databooking['start_date'])) ?> → <?= date('d/m/Y', strtotime($databooking['end_date'])) ?></span></div>
+                <div class="flex justify-between"><span class="text-slate-600">Số ngày</span><span class="font-medium"><?php $days = (strtotime($databooking['end_date']) - strtotime($databooking['start_date'])) / 86400 + 1;
+                                                                                                                        echo $days . ' ngày'; ?></span></div>
+                <div class="flex justify-between"><span class="text-slate-600">Tổng tiền tour</span><span class="text-xl font-bold text-main"><?= number_format($total) ?>₫</span></div>
+                <div class="flex justify-between"><span class="text-slate-600">Tạo booking lúc</span><span class="text-slate-500"><?= date('d/m/Y H:i', strtotime($databooking['booking_created_at'])) ?></span></div>
                 <?php if (!empty($databooking['note'])): ?>
                     <div class="pt-4 border-t border-slate-200 mt-4">
                         <p class="text-xs text-slate-600 mb-1">Ghi chú khách hàng:</p>
@@ -124,62 +82,43 @@
                 <?php endif; ?>
             </div>
         </div>
-        <!-- Card 3: Thanh toán – PHIÊN BẢN GỌN GÀNG NHẤT, ĐẸP NHẤT -->
+
+        <!-- Card 3: Thanh toán -->
         <div class="bg-main text-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-bold mb-6">Tình hình thanh toán</h3>
-
-            <div class="space-y-5 text-sm">
-
-                <!-- Tổng tiền -->
-                <div class="flex justify-between items-baseline pb-3 border-b border-white/20">
-                    <span class="opacity-90">Tổng giá trị booking</span>
-                    <span class="text-2xl font-black"><?= number_format($total) ?>₫</span>
-                </div>
-
-                <!-- Đã thu -->
-                <div class="flex justify-between items-end">
-                    <span class="opacity-90">Đã thu</span>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold"><?= number_format($paid) ?>₫</div>
-                        <?php if (!empty($paymentLogs)): ?>
-                            <div class="text-xs opacity-80 mt-1"><?= count($paymentLogs) ?> lần</div>
-                        <?php endif; ?>
+            <h2 class="text-lg font-bold mb-6 text-white">Tình hình thanh toán</h3>
+                <div class="space-y-5 text-sm">
+                    <div class="flex justify-between items-baseline pb-3 border-b border-white/20">
+                        <span class="opacity-90">Tổng giá trị booking</span>
+                        <span class="text-2xl font-black"><?= number_format($total) ?>₫</span>
                     </div>
-                </div>
-
-                <!-- Còn lại -->
-                <div class="flex justify-between items-end">
-                    <span class="opacity-90">Còn phải thu</span>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold <?= $remain > 0 ? 'text-orange-300' : 'text-emerald-300' ?>">
-                            <?= number_format($remain) ?>₫
+                    <div class="flex justify-between items-end">
+                        <span class="opacity-90">Đã thu</span>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold"><?= number_format($paid) ?>₫</div>
+                            <?php if (!empty($paymentLogs)): ?><div class="text-xs opacity-80 mt-1"><?= count($paymentLogs) ?> lần</div><?php endif; ?>
                         </div>
-                        <?php if ($remain <= 0): ?>
-                            <div class="text-xs mt-1 font-bold text-emerald-300">Đã thu đủ</div>
-                        <?php endif; ?>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="opacity-90">Còn phải thu</span>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold <?= $remain > 0 ? 'text-orange-300' : 'text-emerald-300' ?>">
+                                <?= number_format($remain) ?>₫
+                            </div>
+                            <?php if ($remain <= 0): ?><div class="text-xs mt-1 font-bold text-emerald-300">Đã thu đủ</div><?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="flex justify-between mb-2"><span class="text-xs opacity-80">Tiến độ</span><span class="font-bold"><?= $percent ?>%</span></div>
+                        <div class="bg-white/20 rounded-full h-3 overflow-hidden">
+                            <div class="bg-white h-full transition-all duration-700" style="width: <?= $percent ?>%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center pt-4 border-t border-white/20">
+                        <span class="px-4 py-1.5 rounded-full text-xs font-bold <?= $databooking['payment_type_color'] ?>">
+                            <?= htmlspecialchars($databooking['payment_type_name']) ?>
+                        </span>
                     </div>
                 </div>
-
-                <!-- Thanh tiến độ đơn giản -->
-                <div class="mt-6">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-xs opacity-80">Tiến độ</span>
-                        <span class="font-bold"><?= $percent ?>%</span>
-                    </div>
-                    <div class="bg-white/20 rounded-full h-3 overflow-hidden">
-                        <div class="bg-white h-full transition-all duration-700"
-                            style="width: <?= $percent ?>%"></div>
-                    </div>
-                </div>
-
-                <!-- Trạng thái hiện tại -->
-                <div class="text-center pt-4 border-t border-white/20">
-                    <span class="px-4 py-1.5 rounded-full text-xs font-bold <?= $databooking['payment_type_color'] ?>">
-                        <?= htmlspecialchars($databooking['payment_type_name']) ?>
-                    </span>
-                </div>
-
-            </div>
         </div>
     </div>
 
