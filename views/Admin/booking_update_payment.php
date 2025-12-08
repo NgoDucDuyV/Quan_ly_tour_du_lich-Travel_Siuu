@@ -36,8 +36,11 @@
     <?php endif; ?>
 
     <?php if (isset($_SESSION['error_message'])): ?>
-        <div class="mb-5 p-4 bg-red-100 border-red-700 text-red-600 rounded-lg text-sm flex items-center gap-2">
-            <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['error_message']; ?>
+        <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>
+                <?= $_SESSION['error_message'] ?>
+            </div>
             <?php unset($_SESSION['error_message']); ?>
         </div>
     <?php endif; ?>
@@ -184,7 +187,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
         <h2 class="text-2xl font-bold text-slate-900 mb-8">Cập nhật Xác Nhập Đăt chỗ ( Cọc Booking)</h2>
 
-        <form action="<?= BASE_URL ?>?mode=admin&act=updatedeposit&booking_id=<?= $databooking['booking_id'] ?>"
+        <form action="<?= BASE_URL ?>?mode=admin&act=updatepayment&booking_id=<?= $databooking['booking_id'] ?>"
             method="POST"
             enctype="multipart/form-data"
             class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -195,11 +198,9 @@
                     <select name="booking_status_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
                         <option value="">-- Chọn trạng thái --</option>
                         <?php foreach ($bookingStatusTypes as $s): ?>
-                            <?php if (in_array($s['id'], [1, 2])): ?>
-                                <option value="<?= $s['id'] ?>" <?= $s['id'] == $databooking['status_type_id_master'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($s['name']) ?>
-                                </option>
-                            <?php endif; ?>
+                            <option value="<?= $s['id'] ?>" <?= $s['id'] == $databooking['status_type_id_master'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($s['name']) ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -342,3 +343,135 @@
             </div>
         </form>
     </div>
+
+    <div id="payment-history" class="mb-12">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-5 flex items-center justify-between">
+                <h3 class="text-xl font-bold text-white ">Lịch sử thanh toán</h3>
+                <span class="bg-white/25 px-5 py-2 rounded-full text-sm font-bold">
+                    <?= count($paymentLogs ?? []) ?> giao dịch
+                </span>
+            </div>
+
+            <?php if (!empty($paymentLogs)): ?>
+                <div class="p-6 space-y-6">
+                    <?php foreach ($paymentLogs as $log):
+                        $imagePath     = !empty($log['payment_image']) ? BASE_URL . $log['payment_image'] : null;
+                        $statusColor   = $log['status_color'] ?? 'bg-orange-100 text-orange-700';
+                        $updatedName   = $log['updated_by_name'] ?? null;
+                        $updatedAvatar = !empty($log['updated_by_avatar']) ? BASE_URL . str_replace('\\', '/', $log['updated_by_avatar']) : null;
+                    ?>
+                        <div class="bg-gray-50/70 rounded-2xl p-6 flex items-start justify-between gap-6 border border-gray-100">
+                            <!-- Cột trái: Thông tin chính -->
+                            <div class="flex-1">
+                                <!-- Ngày + Trạng thái -->
+                                <div class="flex items-center gap-5 mb-4">
+                                    <div class="text-center">
+                                        <div class="text-4xl font-black text-blue-600">
+                                            <?= date('d', strtotime($log['created_at'])) ?>
+                                        </div>
+                                        <div class="text-sm text-gray-500"><?= date('m/Y', strtotime($log['created_at'])) ?></div>
+                                        <div class="text-xs text-gray-400"><?= date('H:i', strtotime($log['created_at'])) ?></div>
+                                    </div>
+
+                                    <div class="px-4 py-2 rounded-full text-sm font-bold <?= $statusColor ?>">
+                                        <?= $log['status_name'] ?? 'Đã đặt cọc' ?>
+                                    </div>
+                                </div>
+
+                                <!-- Số tiền -->
+                                <div class="text-3xl font-black text-green-600 mb-4">
+                                    <?= number_format($log['amount'], 0, ',', '.') ?>₫
+                                </div>
+
+                                <!-- Thông tin phụ -->
+                                <div class="space-y-2 text-sm text-gray-700">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium"><?= htmlspecialchars($log['method_name'] ?? 'Chuyển khoản') ?></span>
+                                        <?php if (!empty($log['type_name'])): ?>
+                                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+                                                <?= $log['type_name'] ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <?php if (!empty($log['transaction_code'])): ?>
+                                        <div>Mã GD:
+                                            <span class="font-mono font-bold text-blue-600"><?= $log['transaction_code'] ?></span>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (!empty($log['note'])): ?>
+                                        <div class="text-sm text-gray-600 mt-2 leading-relaxed">
+                                            Ghi chú: <?= htmlspecialchars($log['note']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- DÒNG MỚI: NGƯỜI CẬP NHẬT (ĐẸP NHƯ ẢNH) -->
+                                <?php if ($updatedName): ?>
+                                    <div class="flex items-center gap-3 mt-5 pt-4 border-t border-gray-200">
+                                        <?php if ($updatedAvatar): ?>
+                                            <img src="<?= $updatedAvatar ?>"
+                                                alt="<?= htmlspecialchars($updatedName) ?>"
+                                                class="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-lg">
+                                        <?php else: ?>
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                                                <?= mb_substr($updatedName, 0, 1) ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <div>
+                                            <p class="text-xs text-gray-500">Cập nhật bởi</p>
+                                            <p class="font-semibold text-gray-800"><?= htmlspecialchars($updatedName) ?></p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Ảnh chứng từ -->
+                            <div class="flex-shrink-0">
+                                <?php if ($imagePath): ?>
+                                    <img src="<?= $imagePath ?>"
+                                        onclick="openPaymentImage('<?= $imagePath ?>')"
+                                        class="w-28 h-28 object-cover rounded-2xl shadow-xl border-4 border-white cursor-pointer hover:scale-105 transition-all duration-300">
+                                    <p class="text-center text-xs text-gray-500 mt-2">Click để xem lớn</p>
+                                <?php else: ?>
+                                    <div class="w-28 h-28 bg-gray-200 border-2 border-dashed rounded-2xl flex items-center justify-center">
+                                        <i class="fa-solid fa-image text-gray-400 text-3xl"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="text-center py-20 text-gray-400">
+                    <i class="fa-solid fa-receipt text-6xl mb-4"></i>
+                    <p class="text-lg font-medium">Chưa có thanh toán nào</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Modal xem ảnh – chạy 100% -->
+    <script>
+        function openPaymentImage(src) {
+            const old = document.getElementById('paymentImageModal');
+            if (old) old.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'paymentImageModal';
+            modal.className = 'fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 p-4';
+            modal.innerHTML = `
+        <div class="relative max-w-4xl w-full">
+            <button onclick="this.closest('#paymentImageModal').remove()" 
+                    class="absolute -top-12 right-0 text-white text-5xl hover:text-gray-300">&times;</button>
+            <img src="${src}" class="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl">
+        </div>
+    `;
+            document.body.appendChild(modal);
+            modal.onclick = e => e.target === modal && modal.remove();
+        }
+    </script>

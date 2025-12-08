@@ -1,15 +1,7 @@
 <?php
 class PaymentController
 {
-
-    // public function PaymentController()
-    // {
-    //     $paymentModel = new PaymentModel();
-    //     $payments = $paymentModel->getPaymentModel();
-    //     require_once "./views/Admin/payment .php";
-    // }
-
-    public function ShowFromThanhToan($booking_id)
+    public function ShowBookingUpdatePayment($booking_id)
     {
         // 1. Lấy thông tin booking
         $databooking = (new BookingModel())->getBookingById($booking_id);
@@ -39,6 +31,6 @@ class PaymentController
 
         // 8. Giá booking
         $bookingPrices = (new PaymentModel())->getBookingPricesByBookingId($booking_id);
-        require_once "./views/Admin/update_from_thanh_toan.php";
+        require_once "./views/Admin/booking_update_payment.php";
     }
 }
