@@ -196,8 +196,8 @@ class BookingStatusController
 
         // kiểm tra hành toán option thanh toán một phần
         if (
-            $data['payment_status_type_id'] == 5 ||
-            $data['payment_type_id'] == 2
+            $data['payment_status_type_id'] == 5
+            // $data['payment_type_id'] == 2
         ) {
             $_SESSION['error_message'] = "Không thể thực hiện!<br>
             Để <strong>thanh toán một phần</strong>, bạn phải chọn đúng cả 2:<br>
