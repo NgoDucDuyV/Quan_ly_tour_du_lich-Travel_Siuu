@@ -2,30 +2,33 @@
 class GuideController
 {
     // HomeGuide
-   // Trong GuideController.php
-public function homeGuide()
-{
-    $user_id = $_SESSION['admin_logged']['id'];
+    // Trong GuideController.php
+    public function homeGuide()
+    {
+        $user_id = $_SESSION['admin_logged']['id'];
 
-    $getGuideUserid = (new GuideTourModel())->getGuideUserid($user_id);
-    $guide_id = $getGuideUserid['id']; // Lấy ID của Guide từ bảng guides
+        $getGuideUserid = (new GuideTourModel())->getGuideUserid($user_id);
+        $guide_id = $getGuideUserid['id'];
 
-    $model = new GuideTourModel();
+        $model = new GuideTourModel();
 
-    $dataSchedulesByGuideId = $model->getSchedulesForGuide($guide_id);
-    
-    $totalUpcomingTours = $model->countUpcomingTours($guide_id); 
-    
+        $dataSchedulesByGuideId = $model->getSchedulesForGuide($guide_id);
 
-    // Nhật ký gần đây
-    $diary = $model->getRecentDiary($guide_id);
+        $totalUpcomingTours = $model->countUpcomingTours($guide_id);
 
-    // Yêu cầu gần đây
-    $requests = $model->getRecentRequests($guide_id);
+        // ⭐ Đếm khách hôm nay
+        $totalCustomersToday = $model->getTotalCustomersToday($guide_id);
+        // Đếm số tour hoàn thành
+        $totalCompletedTours = $model->countCompletedTours($guide_id);
+        // Nhật ký gần đây
+        $diary = $model->getRecentDiary($guide_id);
 
-    // Truyền biến đếm sang View
-    require_once "./views/Admin/homeguide.php";
-}
+        // Yêu cầu gần đây
+        $requests = $model->getRecentRequests($guide_id);
+
+        require_once "./views/Admin/homeguide.php";
+    }
+
 
     // ListGuide
     // Danh sách khách của HDV
@@ -77,6 +80,33 @@ public function homeGuide()
 
 
         require "./views/Admin/scheduleguide.php";
+    }
+    // Hiển thị chi tiết lịch trình tour (bao gồm activities)
+    public function showTourDetail($schedule_id)
+    {
+        if (!$schedule_id) {
+            header("Location: " . BASE_URL . "?mode=admin&act=scheduleguide");
+            exit;
+        }
+
+        $model = new GuideTourModel();
+
+        // Lấy thông tin chi tiết Schedule
+        $scheduleData = $model->getScheduleDetailsById($schedule_id);
+
+        // Lấy tất cả hoạt động (activities) và nhóm theo ngày
+        $itineraries = $model->getTourItinerariesBySchedule($schedule_id);
+
+        // Kiểm tra xem HDV này có phụ trách tour này không (Nghiệp vụ quan trọng)
+        $user_id = $_SESSION['admin_logged']['id'];
+        $guide = $model->getGuideUserid($user_id);
+        if (empty($scheduleData) || $scheduleData['guide_id'] != $guide['id']) {
+            // Nếu không tìm thấy hoặc HDV không phụ trách
+            header("Location: " . BASE_URL . "?mode=admin&act=404");
+            exit;
+        }
+
+        require "./views/Admin/tour_detail_guide.php";
     }
 
     // DiaryGuide
@@ -138,6 +168,7 @@ public function homeGuide()
 
         header("Location: ?mode=admin&act=diaryguide");
     }
+
     // Xóa nhật ký của HDV
     public function deleteDiaryGuide()
     {

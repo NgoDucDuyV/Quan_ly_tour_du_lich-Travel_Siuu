@@ -96,7 +96,7 @@
                     <i data-lucide="log-out" class="w-5 h-5"></i>
                     Đăng Xuất
                 </a>
-            </div>
+            </div>  
 
             <div class="absolute inset-x-4 bottom-4 h-20 rounded-lg" style="background: linear-gradient(180deg, transparent, rgba(99,102,241,0.06)); filter: blur(12px); opacity: 0.9;"></div>
         </div>

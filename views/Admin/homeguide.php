@@ -17,25 +17,29 @@
     </section>
 
 
-    <!-- 4 CARD THỐNG KÊ -->
+    <!-- 3 CARD THỐNG KÊ -->
     <section class="grid md:grid-cols-4 gap-6">
 
-        <!-- CARD -->
-        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
-            <a href="#schedulenewquyj">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-200">
-                        <i data-lucide="calendar" class="w-6 h-6 text-blue-700"></i>
-                    </div>
-                    <div>
-                        <p class="text-gray-500">Tour sắp tới</p>
-                        <h3 class="text-xl font-bold text-gray-800"><?= $totalUpcomingTours ?? 0 ?> tour</h3>
-                    </div>
+        <!-- CARD 1 -->
+        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group cursor-pointer"
+            onclick="location.href='#schedulenewquyj'">
+
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-200">
+                    <i data-lucide="calendar" class="w-6 h-6 text-blue-700"></i>
                 </div>
-            </a>
+                <div>
+                    <p class="text-gray-500">Tour sắp tới</p>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <?= $totalUpcomingTours ?? 0 ?> tour
+                    </h3>
+                </div>
+            </div>
         </div>
 
+        <!-- CARD 2 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
+
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-green-100 rounded-xl group-hover:bg-green-200">
                     <i data-lucide="clock" class="w-6 h-6 text-green-700"></i>
@@ -47,33 +51,41 @@
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
-            <div class="flex items-center gap-4">
-                <div class="p-3 bg-yellow-100 rounded-xl group-hover:bg-yellow-200">
-                    <i data-lucide="star" class="w-6 h-6 text-yellow-600"></i>
-                </div>
-                <div>
-                    <p class="text-gray-500">Điểm đánh giá</p>
-                    <h3 class="text-xl font-bold text-gray-800">4.9 ⭐</h3>
-                </div>
-            </div>
-        </div>
+        <!-- CARD 3 -->
+        <div onclick="window.location='?mode=admin&act=listguide'"
+            class="cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
 
-        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-red-100 rounded-xl group-hover:bg-red-200">
                     <i data-lucide="users" class="w-6 h-6 text-red-600"></i>
                 </div>
+
                 <div>
                     <p class="text-gray-500">Khách hôm nay</p>
-                    <h3 class="text-xl font-bold text-gray-800">26 khách</h3>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <?= $totalCustomersToday['total_customers'] ?>
+                    </h3>
                 </div>
             </div>
         </div>
+        <!-- CARD 4 -->
+        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group cursor-pointer"
+            onclick="window.location='?mode=admin&act=historyguide'">
 
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-purple-100 rounded-xl group-hover:bg-purple-200">
+                    <i data-lucide="check-circle" class="w-6 h-6 text-purple-700"></i>
+                </div>
+                <div>
+                    <p class="text-gray-500">Tour hoàn thành</p>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <?= $totalCompletedTours ?? 0 ?>
+                    </h3>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- LỊCH TRÌNH HÔM NAY -->
     <!-- LỊCH TRÌNH HÔM NAY -->
     <section class="bg-white p-6 rounded-2xl shadow">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -85,6 +97,7 @@
         $todayTours = [];
         $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
 
+
         foreach ($dataSchedulesByGuideId as $schedule) {
             $start = $schedule['start_date'];
             $end   = $schedule['end_date'];
@@ -92,7 +105,7 @@
 
             // Điều kiện: (1) Đang diễn ra hôm nay VÀ (2) Trạng thái không phải là Hoàn thành/Đã hủy
             if (
-                ($today >= $start && $today <= $end) &&
+                ($today >= $start && $today <= $end) && // <-- Logic này bao gồm tour đang diễn ra
                 !in_array($status_code, ['completed', 'cancelled', 'closed'])
             ) {
                 $todayTours[] = $schedule;
