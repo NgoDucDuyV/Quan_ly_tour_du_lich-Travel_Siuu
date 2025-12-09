@@ -295,8 +295,7 @@ echo match ($act) {
 
     'dashboarthongke' => (function () {
             requireAdmin();
-            echo "bao cao thong ke";
-            require_once "./views/Admin/dashboard.php";
+            (new ReportController())->index();
             exit;
         })(),
 
