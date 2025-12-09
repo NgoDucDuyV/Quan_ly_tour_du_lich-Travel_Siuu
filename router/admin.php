@@ -438,51 +438,51 @@ echo match ($act) {
         (new GuideController())->saveAttendance();
     })(),
 
-    //thêm loại dịch vụ
-    'add-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->addSupplierType();
-    })(),
-    //cập nhật loại dịch vụ
-    'update-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplierType();
-    })(),
-    //xóa dịch vụ
-    'delete-supplier-type' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplierType();
-    })(),
-    //thêm nhà cung cấp
-    'add-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->addSupplier();
-    })(),
+    // //thêm loại dịch vụ
+    // 'add-supplier-type' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->addSupplierType();
+    // })(),
+    // //cập nhật loại dịch vụ
+    // 'update-supplier-type' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->updateSupplierType();
+    // })(),
+    // //xóa dịch vụ
+    // 'delete-supplier-type' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->deleteSupplierType();
+    // })(),
+    // //thêm nhà cung cấp
+    // 'add-supplier' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->addSupplier();
+    // })(),
 
 
-    // sửa nhà cung cấp
-    'update-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplier();
-    })(),
+    // // sửa nhà cung cấp
+    // 'update-supplier' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->updateSupplier();
+    // })(),
 
-    // xóa nhà cung cấp
-    'delete-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplier();
-    })(),
+    // // xóa nhà cung cấp
+    // 'delete-supplier' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->deleteSupplier();
+    // })(),
 
-    // sửa nhà cung cấp
-    'update-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->updateSupplier();
-    })(),
+    // // sửa nhà cung cấp
+    // 'update-supplier' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->updateSupplier();
+    // })(),
 
-    // xóa nhà cung cấp
-    'delete-supplier' => (function () {
-        requireAdmin();
-        (new AdminSupplierController)->deleteSupplier();
-    })(),
+    // // xóa nhà cung cấp
+    // 'delete-supplier' => (function () {
+    //     requireAdmin();
+    //     (new AdminSupplierController)->deleteSupplier();
+    // })(),
 
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
