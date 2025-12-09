@@ -26,9 +26,7 @@ class CategoryController
     // Xử lý thêm mới (modal "Thêm danh mục")
     public function store()
     {
-        // Debug nhanh nếu cần:
-        // echo '<pre>'; print_r($_POST); echo '</pre>'; die;
-
+        // Lấy dữ liệu an toàn
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
@@ -51,7 +49,6 @@ class CategoryController
         $this->redirectToList();
     }
 
-    // (Không còn dùng với modal, nhưng vẫn giữ nếu bạn muốn dùng page riêng)
     public function edit($id)
     {
         $category = $this->model->getById($id);
@@ -65,8 +62,6 @@ class CategoryController
     // Xử lý cập nhật (modal "Sửa danh mục")
     public function update()
     {
-        // echo '<pre>'; print_r($_POST); echo '</pre>'; die;
-
         $id = (int) ($_POST['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -75,7 +70,6 @@ class CategoryController
             $_SESSION['error'] = 'ID danh mục không hợp lệ!';
             $this->redirectToList();
         }
-
         if ($name === '') {
             $_SESSION['error'] = 'Tên danh mục không được để trống!';
             $this->redirectToList();

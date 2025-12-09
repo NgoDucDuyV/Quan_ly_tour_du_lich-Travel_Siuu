@@ -95,7 +95,7 @@
 
                     <div class="mt-2 flex gap-2 justify-end">
                         <a href="?mode=admin&act=editDiaryGuide&id=<?= $log['id'] ?>" class="bg-yellow-500 px-3 py-1 text-white rounded">Sửa</a>
-                        <a onclick="return confirm('Xóa?')" href="?mode=admin&act=deleteDiaryGuide&id=<?= $log['id'] ?>" class="bg-red-600 px-3 py-1 text-white rounded">Xóa</a>
+                        <a onclick="return confirm('Bạn muốn xóa nhật ký này!')" href="?mode=admin&act=deleteDiaryGuide&id=<?= $log['id'] ?>" class="bg-red-600 px-3 py-1 text-white rounded">Xóa</a>
                     </div>
 
                 </div>

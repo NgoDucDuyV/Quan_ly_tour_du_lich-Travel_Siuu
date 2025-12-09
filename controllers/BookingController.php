@@ -45,10 +45,44 @@ class BookingController
         // 8. Giá booking
         $bookingPrices = (new PaymentModel())->getBookingPricesByBookingId($booking_id);
 
+        // các loại dịch vụ 
+        $bookingServicesByBoookingid  = (new BookingServicesModel())->getServicesByBookingId($booking_id);
+
+        $bookingcustomers = (new BookingCustomersModel())->getCustomersByBookingId($booking_id);
+
+
         // echo "<pre>";
+        // echo "==== DATA BOOKING ====\n";
+        // var_dump($databooking);
+
+        // echo "\n==== BOOKING STATUS TYPES ====\n";
+        // var_dump($bookingStatusTypes);
+
+        // echo "\n==== BOOKING LOGS ====\n";
+        // var_dump($bookingLogs);
+
+        // echo "\n==== PAYMENT METHODS ====\n";
+        // var_dump($paymentMethods);
+
+        // echo "\n==== PAYMENT TYPES ====\n";
+        // var_dump($paymentTypes);
+
+        // echo "\n==== PAYMENT STATUS TYPES ====\n";
+        // var_dump($paymentStatusTypes);
+
+        // echo "\n==== PAYMENT LOGS ====\n";
         // var_dump($paymentLogs);
+
+        // echo "\n==== BOOKING PRICES ====\n";
+        // var_dump($bookingPrices);
+
+        // echo "\n==== Loại dịch vụ ====\n";
+        // var_dump($paymentLogs);
+
         // echo "</pre>";
-        // die;
+
+        // exit; // Dừng lại để xem dữ liệu
+
         require_once "./views/Admin/bookingdetail.php";
     }
 
