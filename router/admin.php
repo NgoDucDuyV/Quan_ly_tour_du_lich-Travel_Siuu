@@ -321,8 +321,15 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/aboutguide.php";
     })(),
-
-
+    // thông báo guide
+    'mesageguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/mesageguide.php";
+    })(),
+    'mesageguidedetail' => (function () {
+        requireGuide();
+        require_once "./views/Admin/mesageguidedetail.php";
+    })(),
     // ScheduleGuide
     // Lịch trình của HDV
     'scheduleguide' => (function () {
@@ -433,49 +440,49 @@ echo match ($act) {
 
     // //thêm loại dịch vụ
     // 'add-supplier-type' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->addSupplierType();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->addSupplierType();
+    // })(),
     // //cập nhật loại dịch vụ
     // 'update-supplier-type' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->updateSupplierType();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->updateSupplierType();
+    // })(),
     // //xóa dịch vụ
     // 'delete-supplier-type' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->deleteSupplierType();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->deleteSupplierType();
+    // })(),
     // //thêm nhà cung cấp
     // 'add-supplier' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->addSupplier();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->addSupplier();
+    // })(),
 
 
     // // sửa nhà cung cấp
     // 'update-supplier' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->updateSupplier();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->updateSupplier();
+    // })(),
 
     // // xóa nhà cung cấp
     // 'delete-supplier' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->deleteSupplier();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->deleteSupplier();
+    // })(),
 
     // // sửa nhà cung cấp
     // 'update-supplier' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->updateSupplier();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->updateSupplier();
+    // })(),
 
     // // xóa nhà cung cấp
     // 'delete-supplier' => (function () {
-    //         requireAdmin();
-    //         (new AdminSupplierController)->deleteSupplier();
-    //     })(),
+    //     requireAdmin();
+    //     (new AdminSupplierController)->deleteSupplier();
+    // })(),
 
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");
