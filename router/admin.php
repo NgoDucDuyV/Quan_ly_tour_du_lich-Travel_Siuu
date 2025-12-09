@@ -336,6 +336,10 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->scheduleGuide();
     })(),
+    'tourdetailguide' => (function () {
+        requireGuide();
+        (new GuideController())->showTourDetail($_GET['schedule_id'] ?? null);
+    })(),
 
     // ListGuide
     // Danh sách khách của HDV
@@ -380,8 +384,6 @@ echo match ($act) {
     })(),
 
     // CheckGuide
-    // Trong file Router.php, tìm đến khu vực Guide, thêm route này:
-
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();

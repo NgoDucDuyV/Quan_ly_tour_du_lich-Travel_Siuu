@@ -1,168 +1,136 @@
-<main class="flex-1 p-6 space-y-6">
+<main class="flex-1 p-8 space-y-10 bg-gray-50 min-h-screen">
 
-    <!-- ========== HEADER ========== -->
-    <header class="bg-white p-5 rounded-xl shadow flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-gray-800">Lịch Trình & Tour</h1>
+    <header class="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-2xl p-6 shadow-lg flex justify-between items-center">
+        <h1 class="text-3xl font-bold flex items-center gap-3">
+            <i data-lucide="calendar" class="w-7 h-7"></i>
+            Lịch Trình Hướng Dẫn
+        </h1>
+
+        <a href="?mode=admin&act=sheduleguide"
+            class="bg-white text-blue-600 font-semibold px-4 py-2 rounded-xl text-sm shadow hover:bg-blue-50 transition duration-200">
+            Quản lý lịch trình
+        </a>
     </header>
 
+    <div class="space-y-10">
 
-    <!-- ========== 3 KHỐI THỐNG KÊ ========== -->
-    <section class="grid md:grid-cols-3 gap-4">
+        <!-- TOUR TRONG TUẦN -->
+        <section class="bg-white p-6 rounded-3xl shadow-lg">
+            <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-4">
+                <i data-lucide="calendar-check" class="w-5 h-5 text-green-600"></i>
+                Tour Trong Tuần Này
+            </h2>
 
-        <div class="bg-white p-5 rounded-xl shadow flex flex-col gap-1">
-            <h2 class="text-lg font-semibold text-gray-700">Tour đang phụ trách</h2>
-            <p class="text-gray-500">4 tour tuần này</p>
-            <span class="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded w-max">
-                Còn 2 tour chưa bắt đầu
-            </span>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl shadow flex flex-col gap-1">
-            <h2 class="text-lg font-semibold text-gray-700">Số giờ làm</h2>
-            <p class="text-gray-500">32 giờ / tuần</p>
-            <span class="text-sm bg-green-100 text-green-700 px-3 py-1 rounded w-max">
-                +8 giờ so với tuần trước
-            </span>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl shadow flex flex-col gap-1">
-            <h2 class="text-lg font-semibold text-gray-700">Đánh giá hiệu suất</h2>
-            <p class="text-gray-500">96%</p>
-            <span class="text-sm bg-purple-100 text-purple-700 px-3 py-1 rounded w-max">
-                Top 5 hướng dẫn viên
-            </span>
-        </div>
-
-    </section>
-
-
-    <!-- ========== LỊCH SỬ TOUR GẦN ĐÂY ========== -->
-    <section class="bg-white p-5 rounded-xl shadow space-y-4">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-700">Lịch sử tour gần đây</h2>
-            <a href="#" class="text-blue-600 text-sm hover:underline">Xem tất cả</a>
-        </div>
-
-        <div class="space-y-4">
-
-            <?php foreach ($recentTours as $tour): ?>
-                <div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                    <div>
-                        <h3 class="font-semibold text-gray-800"><?= $tour['tour_name'] ?></h3>
-                        <p class="text-gray-500 text-sm">
-                            Hoàn thành ngày <?= date("d/m/Y", strtotime($tour['end_date'])) ?>
-                            – <?= $tour['total_customers'] ?> khách
-                        </p>
-                    </div>
-
-                    <?php
-                    $guideStatus = $tour['guide_status'] ?? 'pending';  // fallback nếu key không tồn tại
-
-                    if ($guideStatus === "pending") {
-                        $badge = '<span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">Đợi đánh giá</span>';
-                    } elseif ($guideStatus === "completed") {
-                        $badge = '<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">Hoàn thành</span>';
-                    } else {
-                        $badge = '<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">Đã nhận xét</span>';
-                    }
-
-                    ?>
-
-                    <?= $badge ?>
+            <?php if (empty($weekTours)): ?>
+                <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-2xl border border-dashed">
+                    <p>Tuần này bạn không có tour nào.</p>
                 </div>
-            <?php endforeach; ?>
+            <?php else: ?>
+                <div class="overflow-x-auto rounded-2xl border">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-sm text-gray-600">
+                                <th class="p-4 font-semibold">Tên Tour</th>
+                                <th class="p-4 font-semibold">Ngày Đi</th>
+                                <th class="p-4 font-semibold text-center">Số Khách</th>
+                                <th class="p-4 font-semibold text-center">Trạng Thái</th>
+                                <th class="p-4 font-semibold text-center">Tùy Chọn</th>
+                            </tr>
+                        </thead>
 
-        </div>
-    </section>
+                        <tbody class="divide-y">
+                            <?php foreach ($weekTours as $tour): ?>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="p-4 font-semibold text-gray-800">
+                                        <?= htmlspecialchars($tour['tour_name']) ?>
+                                    </td>
 
-    <!-- ========== BẢNG TOUR TRONG TUẦN ========== -->
-    <section class="bg-white p-5 rounded-xl shadow">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Tour trong tuần này</h2>
+                                    <td class="p-4 text-gray-700">
+                                        <?= date("d/m/Y", strtotime($tour['start_date'])) ?>
+                                    </td>
 
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="border-b bg-gray-100 text-sm text-gray-600">
-                    <th class="p-3">Tên tour</th>
-                    <th class="p-3">Ngày đi</th>
-                    <th class="p-3">Số khách</th>
-                    <th class="p-3">Trạng thái</th>
-                </tr>
-            </thead>
+                                    <td class="p-4 text-center text-gray-700 font-medium">
+                                        <?= $tour['total_customers'] ?? 0 ?> khách
+                                    </td>
 
-            <tbody>
-                <?php foreach ($weekTours as $tour): ?>
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3"><?= $tour['tour_name'] ?></td>
+                                    <td class="p-4 text-center">
+                                        <?php
+                                        $status = date("Y-m-d") >= $tour['start_date'] ? "Đang diễn ra" : "Sắp tới";
+                                        $color = $status == "Đang diễn ra"
+                                            ? 'bg-green-100 text-green-700 border-green-200'
+                                            : 'bg-yellow-100 text-yellow-700 border-yellow-200';
+                                        ?>
+                                        <span class="px-4 py-1 rounded-full text-xs font-semibold border <?= $color ?>">
+                                            <?= $status ?>
+                                        </span>
+                                    </td>
 
-                        <td class="p-3">
-                            <?= date("d/m/Y", strtotime($tour['start_date'])) ?>
-                        </td>
+                                    <td class="p-3 text-center space-x-2">
+                                        <?php
+                                        $today_YMD = date("Y-m-d");
+                                        $is_active = $today_YMD >= $tour['start_date'] && $today_YMD <= $tour['end_date'];
+                                        $schedule_id = $tour['id'];
 
-                        <td class="p-3"><?= $tour['total_customers'] ?> khách</td>
+                                        if ($is_active):
+                                        ?>
+                                            <a href="?mode=admin&act=checkguide&schedule_id=<?= $schedule_id ?>"
+                                                class="inline-flex items-center text-xs font-semibold px-3 py-1 border border-green-500 rounded-lg bg-green-50 text-green-700 hover:bg-green-100 transition duration-150">
+                                                <i data-lucide="user-check" class="w-3 h-3 mr-1"></i> Điểm danh ngay
+                                            </a>
+                                        <?php endif; ?>
 
-                        <td class="p-3">
-                            <?php
-                            $status = $tour['guide_status_code'] ?? 'pending';
+                                        <a href="?mode=admin&act=tourdetailguide&schedule_id=<?= $schedule_id ?>"
+                                            class="inline-flex items-center text-xs font-semibold px-3 py-1 border border-indigo-500 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition duration-150">
+                                            <i data-lucide="eye" class="w-3 h-3 mr-1"></i> Chi tiết Tour
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
 
-                            if ($status == "confirmed") {
-                                echo '<span class="text-green-600 font-medium">Đã xác nhận</span>';
-                            } else {
-                                echo '<span class="text-yellow-600 font-medium">Chưa xác nhận</span>';
-                            }
-                            ?>
-                        </td>
-
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-
-        </table>
-    </section>
-
-    <!-- ========== THÔNG BÁO ========== -->
-    <section class="bg-white p-5 rounded-xl shadow space-y-4">
-
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-700">Thông báo dành cho bạn</h2>
-            <button class="text-sm text-indigo-600 hover:underline">Đánh dấu đã đọc</button>
-        </div>
-
-        <div class="space-y-3">
-
-            <div class="flex items-start gap-3 p-4 border rounded-lg hover:bg-gray-50">
-                <div class="w-10 h-10 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-full">
-                    <i class="fa-solid fa-bell text-lg"></i>
+                    </table>
                 </div>
-                <div class="flex-1">
-                    <p class="font-medium text-gray-800">Cập nhật lịch họp tuần này</p>
-                    <p class="text-gray-500 text-sm">Thứ 4 – 14:00. Nhớ tham dự.</p>
-                </div>
-            </div>
+            <?php endif; ?>
+        </section>
 
-            <div class="flex items-start gap-3 p-4 border rounded-lg hover:bg-gray-50">
-                <div class="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600 rounded-full">
-                    <i class="fa-solid fa-check text-lg"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="font-medium text-gray-800">Tour mới được phân công</p>
-                    <p class="text-gray-500 text-sm">Phú Quốc 3N2Đ bắt đầu ngày 25/11.</p>
-                </div>
-            </div>
+        <!-- LỊCH SỬ TOUR -->
+        <section class="bg-white p-6 rounded-3xl shadow-lg">
+            <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-4">
+                <i data-lucide="clock-history" class="w-5 h-5 text-blue-600"></i>
+                Lịch Sử Tour Gần Đây (Đã kết thúc)
+            </h2>
 
-            <div class="flex items-start gap-3 p-4 border rounded-lg hover:bg-gray-50">
-                <div class="w-10 h-10 flex items-center justify-center bg-red-100 text-red-600 rounded-full">
-                    <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+            <?php if (empty($recentTours)): ?>
+                <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-2xl border border-dashed">
+                    <p>Chưa có tour nào được hoàn thành gần đây.</p>
                 </div>
-                <div class="flex-1">
-                    <p class="font-medium text-gray-800">Chưa nộp báo cáo</p>
-                    <p class="text-gray-500 text-sm">Bạn còn 1 báo cáo tour chưa nộp.</p>
-                </div>
-            </div>
+            <?php else: ?>
+                <div class="space-y-4">
+                    <?php foreach ($recentTours as $tour): ?>
+                        <div class="flex items-center justify-between p-5 border rounded-2xl hover:bg-gray-50 transition shadow-sm">
+                            <div>
+                                <h3 class="font-bold text-gray-800">
+                                    <?= htmlspecialchars($tour['tour_name']) ?>
+                                </h3>
+                                <p class="text-gray-500 text-sm mt-1">
+                                    Kết thúc ngày <?= date("d/m/Y", strtotime($tour['end_date'])) ?> —
+                                    <?= $tour['total_customers'] ?? 0 ?> khách
+                                </p>
+                            </div>
 
-        </div>
-    </section>
+                            <span class="px-4 py-1.5 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold border">
+                                Hoàn thành
+                            </span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+
+    </div>
 
 </main>
+
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
