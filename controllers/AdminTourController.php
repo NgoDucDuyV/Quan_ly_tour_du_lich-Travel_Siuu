@@ -38,24 +38,52 @@ class AdminTourController
         require_once "./views/Admin/admin_detail_tour.php";
     }
 
+    public function showTourDetailPHP($tour_id)
+    {
+        $datatour = (new TourModel())->getAll();
+
+        $dataTourDetai = (new TourModel())->TourDetailItineraryModel($tour_id);
+
+        $dataOneTour = (new TourModel())->getOne($tour_id);
+
+        $dataTourSupplier = (new TourModel())->TourSuppliersModel($tour_id);
+
+        $dataTourVersions = (new TourModel())->TourVersionsModel($tour_id);
+
+        $dataTourImages = (new TourModel())->TourImagesModel($tour_id);
+
+        $dataTourPolicies = (new TourModel())->TourPoliciesModel($tour_id);
+        // echo "<pre>";
+        // var_dump($dataTourSupplier);
+        // echo "<pre>";
+        // die;
+        ob_start();
+        require_once "./views/Admin/admin_detail_tour.php";
+        $htmlView = ob_get_clean();
+
+        $valueViews = $htmlView;
+        require_once "./views/Admin/admin_tours.php";
+    }
+
     public function CreateTour()
     {
         // kiểm tran REQUEST_METHOD thất acr các trường dữ liệu
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo "chưa nhập du dư liẹu";
+            $_SESSION['success_message'] = "Chưa nhập đủ dữ liệu để tạo tour!";
+            header("Location: " . BASE_URL . "?mode=admin&act=admintour");
             exit;
         }
         $datatour = [
-            'name'        => $_POST['name'] ?? null,
-            'code'        => $_POST['code'] ?? null,
+            'name' => $_POST['name'] ?? null,
+            'code' => $_POST['code'] ?? null,
             'category_id' => $_POST['category_id'] ?? null,
-            'days'        => $_POST['days'] ?? null,
-            'nights'      => $_POST['nights'] ?? null,
+            'days' => $_POST['days'] ?? null,
+            'nights' => $_POST['nights'] ?? null,
             'description' => $_POST['description'] ?? null,
             'itinerary' => $_POST['itinerary'] ?? null,
-            'policy'      => $_POST['policy'] ?? null,
-            'price'       => $_POST['price'] ?? null,
-            'status'      => $_POST['status'] ?? null,
+            'policy' => $_POST['policy'] ?? null,
+            'price' => $_POST['price'] ?? null,
+            'status' => $_POST['status'] ?? null,
             // File ảnh
             // 'image'       => $_FILES['image'] ?? null
             'image' => $imagePath = uploadImage("public/upload/imageTour", $_FILES['image'])
@@ -64,7 +92,7 @@ class AdminTourController
         // print_r($datatour);
         // echo "</pre>";
         // die;
-        $tour_id =  (new TourModel())->CreateTourModel($datatour);
+        $tour_id = (new TourModel())->CreateTourModel($datatour);
         // echo "giá trị tour_id";
         // var_dump($tour_id);
         // die;
@@ -72,14 +100,14 @@ class AdminTourController
 
         // lấy thông tin lịch trình ngày
         if (!empty($_POST['day_number'])) {
-            $days   = $_POST['day_number'] ?? [];
+            $days = $_POST['day_number'] ?? [];
             $titles = $_POST['itinerary_title'] ?? [];
-            $descs  = $_POST['itinerary_desc'] ?? [];
+            $descs = $_POST['itinerary_desc'] ?? [];
 
-            $act_day  = $_POST['activity_day'] ?? [];
+            $act_day = $_POST['activity_day'] ?? [];
             $act_name = $_POST['activity_name'] ?? [];
             $act_time = $_POST['activity_time'] ?? [];
-            $act_loc  = $_POST['activity_location'] ?? [];
+            $act_loc = $_POST['activity_location'] ?? [];
             $act_desc = $_POST['activity_desc'] ?? [];
 
             $itineraries = [];
@@ -88,7 +116,7 @@ class AdminTourController
                 $itineraries[$day] = [
                     'day' => $day,
                     'title' => $titles[$i] ?? '',
-                    'desc'  => $descs[$i] ?? '',
+                    'desc' => $descs[$i] ?? '',
                     'activities' => []
                 ];
             }
@@ -105,9 +133,9 @@ class AdminTourController
                 }
                 // Thêm hoạt động vào mảng activities của ngày
                 $itineraries[$day]['activities'][] = [
-                    'name'        => $act_name[$i] ?? '',
-                    'time'        => $act_time[$i] ?? '',
-                    'location'    => $act_loc[$i] ?? '',
+                    'name' => $act_name[$i] ?? '',
+                    'time' => $act_time[$i] ?? '',
+                    'location' => $act_loc[$i] ?? '',
                     'description' => $act_desc[$i] ?? '',
                 ];
             }
@@ -130,8 +158,8 @@ class AdminTourController
         // Kiểm tra có dữ liệu gửi lên không
         if (!empty($_FILES['tour_images'])) {
             $images = $_FILES['tour_images'];
-            $descs  = $_POST['image_desc'] ?? [];
-            $links  = $_POST['image_link'] ?? [];
+            $descs = $_POST['image_desc'] ?? [];
+            $links = $_POST['image_link'] ?? [];
 
             $tourImages = [];
 
@@ -139,18 +167,18 @@ class AdminTourController
             for ($i = 0; $i < count($images['name']); $i++) {
                 // Tạo mảng file tạm như $_FILES['image'] bình thường
                 $file = [
-                    'name'     => $images['name'][$i],
-                    'type'     => $images['type'][$i],
+                    'name' => $images['name'][$i],
+                    'type' => $images['type'][$i],
                     'tmp_name' => $images['tmp_name'][$i],
-                    'error'    => $images['error'][$i],
-                    'size'     => $images['size'][$i]
+                    'error' => $images['error'][$i],
+                    'size' => $images['size'][$i]
                 ];
                 $imagePath = uploadImage("public/upload/imageTour", $file);
 
                 $tourImages[] = [
                     'image' => $imagePath,
-                    'desc'  => $descs[$i] ?? '',
-                    'link'  => $links[$i] ?? ''
+                    'desc' => $descs[$i] ?? '',
+                    'link' => $links[$i] ?? ''
                 ];
             }
 
@@ -163,7 +191,6 @@ class AdminTourController
             }
             // die;
         }
-
         // chon loai dịch vụ
         if (!empty($_POST['supplier_types_id'])) {
             $supplier_types_id = $_POST['supplier_types_id']; // mảng ID loại dịch vụ
@@ -178,25 +205,22 @@ class AdminTourController
                     'note' => $notes[$i]
                 ];
             }
-
             // echo '<pre>';
             // print_r($datasupplierstypes);
             // echo '</pre>';
             // die;
-
             foreach ($datasupplierstypes as $item) {
                 (new TourModel())->CreateTourSuppliersTypes($item, $tour_id);
             }
             // die;
         }
-
         // thêm version_nametour
         if (!empty($_POST['version_name'])) {
-            $names   = $_POST['version_name'];
+            $names = $_POST['version_name'];
             $seasons = $_POST['version_season'];
-            $prices  = $_POST['version_price'];
-            $starts  = $_POST['version_start'];
-            $ends    = $_POST['version_end'];
+            $prices = $_POST['version_price'];
+            $starts = $_POST['version_start'];
+            $ends = $_POST['version_end'];
             $statuses = $_POST['version_status'];
 
             $versions = [];
@@ -204,12 +228,12 @@ class AdminTourController
 
             for ($i = 0; $i < $count; $i++) {
                 $versions[] = [
-                    'name'       => $names[$i],
-                    'season'     => $seasons[$i],
-                    'price'      => $prices[$i],
+                    'name' => $names[$i],
+                    'season' => $seasons[$i],
+                    'price' => $prices[$i],
                     'start_date' => $starts[$i],
-                    'end_date'   => $ends[$i],
-                    'status'     => $statuses[$i]
+                    'end_date' => $ends[$i],
+                    'status' => $statuses[$i]
                 ];
             }
 
@@ -222,16 +246,14 @@ class AdminTourController
             }
             // die;
         }
-
-
         // thêm các chính sách
         if (!empty($_POST['policy_type'])) {
-            $policy_types = $_POST['policy_type'];   // mảng các loại chính sách
-            $descriptions = $_POST['description'];   // mảng nội dung tương ứng
+            $policy_types = $_POST['policy_type'];
+            $descriptions = $_POST['description'];
 
-            $policies = []; // mảng gom dữ liệu
+            $policies = [];
 
-            $count = count($policy_types); // số chính sách
+            $count = count($policy_types);
 
             for ($i = 0; $i < $count; $i++) {
                 $policies[] = [
@@ -239,7 +261,6 @@ class AdminTourController
                     'description' => $descriptions[$i]
                 ];
             }
-
             // kiểm tra dữ liệu
             // echo '<pre>';
             // print_r($policies);
@@ -251,7 +272,8 @@ class AdminTourController
             // die;
         }
 
-        header("Location: " . BASE_URL . "?act=admintour");
+        $_SESSION['success_message'] = "Tạo tour thành công! Mã Tour #: " . $datatour['code'];
+        header("Location: " . BASE_URL . "?mode=admin&act=admintour");
         exit;
     }
 
@@ -297,4 +319,16 @@ class AdminTourController
         header("Location: " . BASE_URL . "?act=admintour");
         exit;
     }
+    public function showToursByCategory($categoryId)
+    {
+        $tourModel = new TourModel();
+        $tours = $tourModel->getToursByCategory($categoryId);
+
+        // nếu bạn muốn lấy thêm thông tin category để hiển thị tiêu đề
+        $categoryModel = new CategoryModel();
+        $category = $categoryModel->getById($categoryId);
+
+        require "./views/Admin/admin_tours_list.php";
+    }
+
 }

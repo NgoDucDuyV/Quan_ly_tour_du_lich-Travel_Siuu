@@ -71,18 +71,52 @@ echo match ($act) {
     })(),
     'categoriestour' => (function () {
         requireAdmin();
-        (new CategoryController)->listCategories();
+        (new CategoryController)->list();
+    })(),
+
+    'addcategory_add' => (function () {
+        requireAdmin();
+        (new CategoryController)->add();
+    })(),
+
+    'category_store' => (function () {
+        requireAdmin();
+        (new CategoryController)->store();
+    })(),
+
+    'category_edit' => (function () {
+        requireAdmin();
+        (new CategoryController)->edit($_GET['id'] ?? 0);
+    })(),
+
+    'category_update' => (function () {
+        requireAdmin();
+        (new CategoryController)->update();
+    })(),
+
+    'category_delete' => (function () {
+        requireAdmin();
+        (new CategoryController)->delete($_GET['id'] ?? 0);
     })(),
     'admintour' => (function () {
         requireAdmin();
+        $ctrl = new AdminTourController();
+
         if (isset($_GET['tour_id'])) {
-            (new AdminTourController())->showTourDetail($_GET['tour_id']);
+            // Chi tiết 1 tour
+            $ctrl->showTourDetail($_GET['tour_id']);
+        } elseif (isset($_GET['category_id'])) {
+            // Danh sách tour theo danh mục
+            $ctrl->showToursByCategory($_GET['category_id']);
         } else {
-            (new AdminTourController)->ShowAdminTour();
+            // Danh sách tất cả tour
+            $ctrl->ShowAdminTour();
         }
     })(),
+
     'admin_detail_tour' => (function () {
         requireAdmin();
+        (new AdminTourController())->showTourDetailPHP($_GET['tour_id']);
     })(),
     'admin_createTourfrom' => (function () {
         requireAdmin();
@@ -111,18 +145,53 @@ echo match ($act) {
         (new AdminSupplierController)->showSupplierTypesList();
     })(),
 
-    'booking' => (function () {
+    // list quản lý booking
+    'bookinglist' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
+
+    // 'Cập nhật đặt cọc booking'
+    'from_booking_update_deposit' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
+    })(),
+
+    'updatedeposit' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->UpdateDeposit($_GET['booking_id'] ?? null);
+    })(),
+
+    // update thanth toán
+    'from_booking_update_payment' => (function () {
+        requireAdmin();
+        echo (new PaymentController)->ShowBookingUpdatePayment($_GET['booking_id'] ?? null);
+    })(),
+
+    'updatepayment' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->UpdatePayment($_GET['booking_id'] ?? null);
+    })(),
+
+    // phân lịch trình cho hướng dẫn viên
+    'guide_tour_schedule' => (function () {
+        requireAdmin();
+        echo (new GuideTourScheduleController)->ShowGuideTourSchedule($_GET['booking_id'] ?? null);
+    })(),
+
     'bookingdetail' => (function () {
         requireAdmin();
-        require_once "./views/Admin/bookingdetail.php";
+        echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
         // echo (new BookingController)->ShowBooking();
     })(),
     'newBooking' => (function () {
         requireAdmin();
-        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : null);
+        echo (new BookingController)->ShowFromNewBooking(isset($_GET['tour_id']) ? $_GET['tour_id'] : "");
+    })(),
+
+    'createBooking' => (function () {
+        requireAdmin();
+        echo (new BookingController)->createBooking();
     })(),
 
     // call api js booking
@@ -144,6 +213,39 @@ echo match ($act) {
         requireAdmin();
         (new BookingController())->getsupplierPricesBySupplierId($requestData);
         exit;
+    })(),
+    //thêm loại dịch vụ
+    'add-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
+    //cập nhật loại dịch vụ
+    'update-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
+    //xóa dịch vụ
+    'delete-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
+    //thêm nhà cung cấp
+    'add-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
+
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
     })(),
 
     // quản lý tải khoản người dùng
@@ -167,12 +269,10 @@ echo match ($act) {
         exit;
     })(),
 
-
     'liststaff' => (function () {
         requireAdmin();
         echo (new AccountManagementController)->showStaffList();
     })(),
-
 
     //quản lý nhân viên
     'create-staff' => (function () {
@@ -180,7 +280,6 @@ echo match ($act) {
         (new AccountManagementController)->createStaff();
         exit;
     })(),
-
 
     'update-staff' => (function () {
         requireAdmin();
@@ -207,7 +306,6 @@ echo match ($act) {
     })(),
 
 
-
     // Hướng dẫn viên
     'guide' => (function () {
         requireGuide();
@@ -218,18 +316,29 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->homeGuide();
     })(),
-
+    // Giới thiệu của HDV
     'aboutguide' => (function () {
         requireGuide();
         require_once "./views/Admin/aboutguide.php";
     })(),
-
-
+    // thông báo guide
+    'mesageguide' => (function () {
+        requireGuide();
+        require_once "./views/Admin/mesageguide.php";
+    })(),
+    'mesageguidedetail' => (function () {
+        requireGuide();
+        require_once "./views/Admin/mesageguidedetail.php";
+    })(),
     // ScheduleGuide
     // Lịch trình của HDV
     'scheduleguide' => (function () {
         requireGuide();
         (new GuideController())->scheduleGuide();
+    })(),
+    'tourdetailguide' => (function () {
+        requireGuide();
+        (new GuideController())->showTourDetail($_GET['schedule_id'] ?? null);
     })(),
 
     // ListGuide
@@ -274,6 +383,7 @@ echo match ($act) {
         (new GuideController())->saveDiaryGuide();
     })(),
 
+    // CheckGuide
     // Checkin và điểm danh của HDV 
     'checkguide' => (function () {
         requireGuide();
@@ -281,12 +391,21 @@ echo match ($act) {
         $ctrl = new GuideController();
         $data = $ctrl->checkGuide();
 
+        // GIẢI NÉN MẢNG DỮ LIỆU ĐỂ CÁC BIẾN CÓ THỂ ĐƯỢC SỬ DỤNG TRONG VIEW
         $todayTour = $data['todayTour'];
         $customers = $data['customers'];
+        $activities = $data['activities'];
+        $current_day_number = $data['current_day_number'];
 
         require "./views/Admin/checkguide.php";
     })(),
 
+    // LƯU ĐIỂM DANH THEO CHẶNG (ACTIVITY)
+    'saveAttendanceByActivity' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        exit;
+    })(),
     // RequestGuide
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
@@ -313,7 +432,57 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->deleteRequestGuide();
     })(),
+    // 
+    'saveAttendance' => (function () {
+        requireGuide();
+        (new GuideController())->saveAttendance();
+    })(),
 
+    //thêm loại dịch vụ
+    'add-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
+    //cập nhật loại dịch vụ
+    'update-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
+    //xóa dịch vụ
+    'delete-supplier-type' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
+    //thêm nhà cung cấp
+    'add-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
+
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
+
+    // sửa nhà cung cấp
+    'update-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
+
+    // xóa nhà cung cấp
+    'delete-supplier' => (function () {
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
 
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");

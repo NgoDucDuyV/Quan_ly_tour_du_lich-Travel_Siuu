@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+// Fix sai ngày giờ server
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 require_once __DIR__ . '/commons/env.php';
 require_once __DIR__ . '/commons/function.php';
 
@@ -11,6 +15,10 @@ require_once __DIR__ . '/models/CategoryModel.php';
 require_once __DIR__ . '/models/TourModel.php';
 require_once __DIR__ . '/models/SupplierModel.php';
 require_once __DIR__ . '/models/BookingModel.php';
+require_once __DIR__ . '/models/BookingCustomersModel.php';
+require_once __DIR__ . '/models/BookingStatusModel.php';
+require_once __DIR__ . '/models/PaymentModel.php';
+require_once __DIR__ . '/models/BookingServicesModel.php';
 require_once __DIR__ . '/models/GuideTourModel.php';
 require_once __DIR__ . '/models/SchedulesModel.php';
 
@@ -18,6 +26,8 @@ require_once __DIR__ . '/models/SchedulesModel.php';
 // admin Controller
 require_once __DIR__ . '/controllers/AdminAuthController.php';
 require_once __DIR__ . '/controllers/BookingController.php';
+require_once __DIR__ . '/controllers/BookingStatusController.php';
+require_once __DIR__ . '/controllers/PaymentController.php';
 require_once __DIR__ . '/controllers/CategoryController.php';
 
 require_once __DIR__ . '/controllers/AccountManagementController.php';
@@ -25,6 +35,7 @@ require_once __DIR__ . '/controllers/AccountManagementController.php';
 require_once __DIR__ . '/controllers/AdminLayoutController.php';
 require_once __DIR__ . '/controllers/GuideLayoutController.php';
 require_once __DIR__ . '/controllers/GuideController.php';
+require_once __DIR__ . '/controllers/GuideTourScheduleController.php';
 //quản lý danh mục tour
 require_once __DIR__ . '/controllers/AdminTourController.php';
 require_once __DIR__ . '/controllers/AdminSupplierController.php';

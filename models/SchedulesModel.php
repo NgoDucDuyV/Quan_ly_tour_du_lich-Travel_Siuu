@@ -11,13 +11,19 @@ class SchedulesModel
     public function getAllSchedulesByTourId($tour_id)
     {
         $sql = "
-        SELECT sch.*
+        SELECT 
+        sch.*
         FROM schedules sch
-        JOIN bookings b 
-        ON sch.tour_id = b.tour_id 
-        AND sch.start_date <= b.start_date 
-        AND sch.end_date >= b.end_date
-        WHERE sch.tour_id = :tour_id AND b.group_type = 'doan'
+        WHERE sch.tour_id = :tour_id
+        AND NOT EXISTS (
+            SELECT 1
+            FROM bookings b
+            INNER JOIN group_type gt ON b.group_type_id = gt.id
+            WHERE b.tour_id = sch.tour_id
+                AND gt.group_code = 'DOAN'
+                AND b.start_date <= sch.end_date
+                AND b.end_date   >= sch.start_date
+        )
         ORDER BY sch.start_date ASC;
         ";
         $stmt = $this->conn->prepare($sql);
@@ -26,58 +32,116 @@ class SchedulesModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAllSchedulesByid($supplier_id)
+    public function getSchedulesByTourAndBooking($tour_id, $booking_id)
+    {
+        $sql = "
+        SELECT *
+        FROM schedules
+        WHERE tour_id = :tour_id
+        AND booking_id = :booking_id
+        ORDER BY start_date ASC
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':tour_id', $tour_id, PDO::PARAM_INT);
+        $stmt->bindParam(':booking_id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getAllSchedulesByid($schedules_id)
     {
         $sql = "
         SELECT 
-            s.id AS schedule_id,
-            s.tour_id,
-            s.guide_id,
-            s.start_date,
-            s.end_date,
-            s.meeting_point,
-            s.vehicle,
-            s.hotel AS schedule_hotel,
-            s.restaurant AS schedule_restaurant,
-            s.flight_info,
-            s.status AS schedule_status,
-            s.guide_notes,
-            s.guide_status,
-            b.id AS booking_id,
-            b.booking_code,
-            b.customer_name,
-            b.customer_phone,
-            b.customer_email,
-            b.group_type,
-            b.number_of_people,
-            b.total_price AS booking_total_price,
-            b.deposit_amount,
-            b.paid_amount,
-            bs.id AS booking_supplier_id,
-            bs.service_description,
-            bs.price AS service_price,
-            sup.id AS supplier_id,
-            sup.name AS supplier_name,
-            sup.contact_name,
-            sup.contact_phone,
-            sup.contact_email,
-            sup.address AS supplier_address
-        FROM schedules s
-        LEFT JOIN bookings b 
-            ON s.tour_id = b.tour_id 
-            AND s.start_date = b.start_date 
-            AND s.end_date = b.end_date
-            AND b.group_type = 'doan'
-        LEFT JOIN booking_suppliers bs
-            ON b.id = bs.booking_id
-        LEFT JOIN suppliers sup
-            ON bs.supplier_id = sup.id
-        WHERE s.id = :supplier_id   -- <--- Thay số 1 bằng ID bạn muốn tìm
-        ORDER BY b.id, bs.id;
+            bs.*, 
+            s.name AS supplier_name,
+            s.supplier_types_id,
+            s.contact_name,
+            s.contact_phone,
+            s.contact_email,
+            s.address,
+            s.description
+        FROM schedules sc
+        JOIN booking_services bs ON bs.booking_id = sc.booking_id
+        LEFT JOIN suppliers s ON bs.supplier_id = s.id
+        WHERE sc.id = :schedules_id
+        ORDER BY bs.id;
         ";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':supplier_id', $supplier_id, PDO::PARAM_INT);
+        $stmt->bindParam(':schedules_id', $schedules_id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllStatusSchedulesByid($schedules_id)
+    {
+        $sql = "
+        SELECT 
+            ss.id AS schedule_status_id,
+            ss.schedule_id,
+            ss.schedule_status_type_id,
+            sst.code AS schedule_status_code,
+            sst.name AS schedule_status_name,
+            ss.guide_status_id,
+            gs.code AS guide_status_code,
+            gs.name AS guide_status_name,
+            ss.description
+        FROM schedule_status ss
+        LEFT JOIN schedule_status_types sst 
+            ON ss.schedule_status_type_id = sst.id
+        LEFT JOIN guide_status gs          -- <--- sửa tên bảng ở đây
+            ON ss.guide_status_id = gs.id
+        WHERE ss.schedule_id = :schedules_id
+        ORDER BY ss.id ASC
+        LIMIT 0, 25;
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':schedules_id', $schedules_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getSchedulesStatusByBookingId($booking_id)
+    {
+        try {
+            $sql = "
+                SELECT 
+                    s.id                    AS schedule_id,
+                    s.booking_id,
+                    s.tour_id,
+                    s.guide_id,
+                    s.start_date,
+                    s.end_date,
+                    s.meeting_point,
+                    s.vehicle,
+                    s.hotel,
+                    s.restaurant,
+                    s.flight_info,
+                    s.guide_notes,
+                    sst.code                AS schedule_status_code,
+                    sst.name                AS schedule_status_name_vn,
+                    gs.code                 AS guide_status_code,
+                    gs.name                 AS guide_status_name_vn,
+                    COALESCE(ss.description, 'Chưa có mô tả') AS status_description
+                FROM schedules s
+                LEFT JOIN schedule_status ss 
+                    ON s.schedule_status_id = ss.id
+                LEFT JOIN schedule_status_types sst 
+                    ON ss.schedule_status_type_id = sst.id
+                LEFT JOIN guide_status gs 
+                    ON ss.guide_status_id = gs.id
+                WHERE s.booking_id = :booking_id
+                ORDER BY s.start_date DESC, s.id DESC
+            ";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':booking_id', $booking_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Lỗi truy vấn: " . $e->getMessage();
+            return [];
+        }
     }
 }
