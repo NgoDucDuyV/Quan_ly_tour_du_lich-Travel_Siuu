@@ -43,11 +43,13 @@
 
                         <!-- Thông báo -->
                         <div class="relative">
-                            <i data-lucide="bell" class="w-6 h-6 text-gray-500"></i>
-                            <span
-                                class="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-                                1
-                            </span>
+                            <a href="?act=mesageguide"
+                                class="relative flex items-center justify-center size-12 rounded-xl bg-gray-100 hover:bg-gray-200 hover:shadow-md transition-all duration-200 group focus:outline-none focus:ring-4 focus:ring-blue-100">
+                                <i data-lucide="bell" class="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition"></i>
+                                <span class="absolute -top-1 -right-1 flex items-center justify-center size-6 text-xs font-bold text-white bg-red-600 rounded-full ring-4 ring-white shadow-lg animate-pulse">
+                                    1
+                                </span>
+                            </a>
                         </div>
 
                         <!-- Avatar + menu -->
