@@ -146,7 +146,7 @@ class BookingController
 
         // if (isset($tourFullData)) {
         //     echo "<pre>";
-        //     var_dump($tourFullData['oneTour']);
+        //     var_dump($dataSchedulesByTourId);
         //     echo "<pre>";
         //     die;
         // }

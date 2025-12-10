@@ -41,78 +41,72 @@
                 <h4 class="text-lg font-semibold text-gray-800">Lịch trình - <?= $dataOneTour['name'] ?></h4>
 
                 <div class="mt-4 space-y-8">
+                    <?php if (!empty($dataTourDetai)) : ?>
+                        <?php
+                        $groupedData = [];
+                        // Nhóm dữ liệu theo day_number
+                        foreach ($dataTourDetai as $item) {
+                            $day = $item['day_number'];
+                            $groupedData[$day][] = $item;
+                        }
+                        ?>
 
-                    <!-- Timeline lịch trình -->
-                    <div class="bg-white rounded-xl border shadow-sm p-6 mt-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Lịch trình tour</h3>
-
-                        <?php if (!empty($dataTourDetai)) : ?>
-                            <?php
-                            $groupedData = [];
-                            // Nhóm dữ liệu theo day_number
-                            foreach ($dataTourDetai as $item) {
-                                $day = $item['day_number'];
-                                $groupedData[$day][] = $item;
-                            }
-                            ?>
-
-                            <?php foreach ($groupedData as $dayNumber => $activities) :
-                                $firstItem = $activities[0]; // Lấy thông tin title, description chung của ngày
-                            ?>
-                                <div class="border border-gray-200 rounded-xl overflow-hidden mb-4">
-                                    <button type="button"
-                                        class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition focus:outline-none"
-                                        onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');">
-                                        <div class="flex items-center gap-4">
-                                            <span class="bg-main text-white w-10 h-10 flex items-center justify-center rounded-full font-bold shadow-md">
-                                                <?= $dayNumber ?>
-                                            </span>
-                                            <span class="text-gray-800 font-medium text-base">
-                                                <?= htmlspecialchars($firstItem['itinerary_title']) ?>
-                                            </span>
-                                        </div>
-                                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-
-                                    <!-- Nội dung ngày -->
-                                    <div class="p-4 text-gray-600 text-sm sm:text-base hidden">
-                                        <?php if (!empty($firstItem['itinerary_description'])): ?>
-                                            <p class="mb-4"><?= htmlspecialchars($firstItem['itinerary_description']) ?></p>
-                                        <?php endif; ?>
-
-                                        <ul class="space-y-3">
-                                            <?php foreach ($activities as $act): ?>
-                                                <li class="flex items-start gap-3">
-                                                    <span class="flex-shrink-0 text-main font-medium w-16">
-                                                        <?= htmlspecialchars($act['activity_time']) ?>
-                                                    </span>
-                                                    <div>
-                                                        <span class="font-medium text-gray-800"><?= htmlspecialchars($act['activity']) ?></span>
-                                                        <?php if (!empty($act['location'])): ?>
-                                                            — <span class="text-gray-600"><?= htmlspecialchars($act['location']) ?></span>
-                                                        <?php endif; ?>
-                                                        <?php if (!empty($act['activity_description'])): ?>
-                                                            <div class="text-gray-500 text-sm mt-1"><?= htmlspecialchars($act['activity_description']) ?></div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </li>
-                                            <?php endforeach; ?>
-                                        </ul>
+                        <?php foreach ($groupedData as $dayNumber => $activities) :
+                            $firstItem = $activities[0]; // Lấy thông tin title, description chung của ngày
+                        ?>
+                            <div class="border border-gray-200 rounded-xl overflow-hidden mb-4">
+                                <button type="button"
+                                    class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition focus:outline-none"
+                                    onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');">
+                                    <div class="flex items-center gap-4">
+                                        <span class="bg-main text-white w-10 h-10 flex items-center justify-center rounded-full font-bold shadow-md">
+                                            <?= $dayNumber ?>
+                                        </span>
+                                        <span class="text-gray-800 font-medium text-base">
+                                            <?= htmlspecialchars($firstItem['itinerary_title']) ?>
+                                        </span>
                                     </div>
-                                </div>
-                            <?php endforeach; ?>
-
-                        <?php else: ?>
-                            <div class="text-center bg-gray-50 p-6 rounded-xl border shadow-sm mt-6">
-                                <p class="text-gray-600">Chưa có dữ liệu lịch trình.</p>
-                                <button class="mt-3 px-5 py-2 bg-main text-white rounded-lg hover:bg-hover transition">
-                                    Xem chi tiết tour
+                                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </button>
+
+                                <!-- Nội dung ngày -->
+                                <div class="p-4 text-gray-600 text-sm sm:text-base hidden">
+                                    <?php if (!empty($firstItem['itinerary_description'])): ?>
+                                        <p class="mb-4"><?= htmlspecialchars($firstItem['itinerary_description']) ?></p>
+                                    <?php endif; ?>
+
+                                    <ul class="space-y-3">
+                                        <?php foreach ($activities as $act): ?>
+                                            <li class="flex items-start gap-3">
+                                                <span class="flex-shrink-0 text-main font-medium w-16">
+                                                    <?= htmlspecialchars($act['activity_time']) ?>
+                                                </span>
+                                                <div>
+                                                    <span class="font-medium text-gray-800"><?= htmlspecialchars($act['activity']) ?></span>
+                                                    <?php if (!empty($act['location'])): ?>
+                                                        — <span class="text-gray-600"><?= htmlspecialchars($act['location']) ?></span>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($act['activity_description'])): ?>
+                                                        <div class="text-gray-500 text-sm mt-1"><?= htmlspecialchars($act['activity_description']) ?></div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
                             </div>
-                        <?php endif; ?>
-                    </div>
+                        <?php endforeach; ?>
+
+                    <?php else: ?>
+                        <div class="text-center bg-gray-50 p-6 rounded-xl border shadow-sm mt-6">
+                            <p class="text-gray-600">Chưa có dữ liệu lịch trình.</p>
+                            <button class="mt-3 px-5 py-2 bg-main text-white rounded-lg hover:bg-hover transition">
+                                Xem chi tiết tour
+                            </button>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Chính sách Tour -->
                     <div class="bg-white rounded-xl border shadow-sm p-5 mt-6">

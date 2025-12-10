@@ -25,8 +25,11 @@ class TourModel
     {
         $stmt = $this->conn->prepare("
         SELECT 
-        *
+        t.*,
+        ct.name as categoriesname,
+        ct.description as categoriesdescription
         FROM tours t
+        JOIN categories ct on t.category_id = ct.id
         WHERE t.id = :tour_id;
         ");
         $stmt->bindParam(":tour_id", $tour_id);
@@ -398,5 +401,4 @@ class TourModel
         $stmt->execute([$categoryId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
 }
