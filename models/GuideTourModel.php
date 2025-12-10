@@ -7,6 +7,34 @@ class GuideTourModel
     {
         $this->conn = connectDB();
     }
+
+    public function getAllGuides()
+    {
+        $sql = "SELECT * FROM `guides` ORDER BY id ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getGuidesByStatus($status)
+    {
+        $sql = "SELECT * FROM `guides` WHERE status = :status ORDER BY id ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getGuideById($id)
+    {
+        $sql = "SELECT * FROM `guides` WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Lấy ID người dùng theo hdv
     public function getGuideUserid($user_id)
     {

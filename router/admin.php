@@ -115,9 +115,9 @@ echo match ($act) {
     })(),
 
     'admin_detail_tour' => (function () {
-            requireAdmin();
-            (new AdminTourController())->showTourDetailPHP($_GET['tour_id']);
-        })(),
+        requireAdmin();
+        (new AdminTourController())->showTourDetailPHP($_GET['tour_id']);
+    })(),
     'admin_createTourfrom' => (function () {
         requireAdmin();
         (new AdminTourController)->showFromCreateTour();
@@ -153,32 +153,38 @@ echo match ($act) {
 
     // 'Cập nhật đặt cọc booking'
     'from_booking_update_deposit' => (function () {
-            requireAdmin();
-            echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
-        })(),
+        requireAdmin();
+        echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
+    })(),
 
     'updatedeposit' => (function () {
-            requireAdmin();
-            echo (new BookingStatusController)->UpdateDeposit($_GET['booking_id'] ?? null);
-        })(),
+        requireAdmin();
+        echo (new BookingStatusController)->UpdateDeposit($_GET['booking_id'] ?? null);
+    })(),
 
     // update thanth toán
     'from_booking_update_payment' => (function () {
-            requireAdmin();
-            echo (new PaymentController)->ShowBookingUpdatePayment($_GET['booking_id'] ?? null);
-        })(),
+        requireAdmin();
+        echo (new PaymentController)->ShowBookingUpdatePayment($_GET['booking_id'] ?? null);
+    })(),
 
     'updatepayment' => (function () {
-            requireAdmin();
-            echo (new BookingStatusController)->UpdatePayment($_GET['booking_id'] ?? null);
-        })(),
+        requireAdmin();
+        echo (new BookingStatusController)->UpdatePayment($_GET['booking_id'] ?? null);
+    })(),
 
     // phân lịch trình cho hướng dẫn viên
     'guide_tour_schedule' => (function () {
-            requireAdmin();
-            echo (new GuideTourScheduleController)->ShowGuideTourSchedule($_GET['booking_id'] ?? null);
-        })(),
+        requireAdmin();
+        echo (new GuideTourScheduleController)->ShowGuideTourSchedule($_GET['booking_id'] ?? null);
+    })(),
 
+    'createguideschedule' => (function () {
+        requireAdmin();
+        echo (new GuideTourScheduleController)->CreateGuideSchedule($_GET['booking_id'] ?? null);
+    })(),
+
+    // chiết boong
     'bookingdetail' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
@@ -194,6 +200,12 @@ echo match ($act) {
         echo (new BookingController)->createBooking();
     })(),
 
+    // chi tiết lịch trình booking
+    'bookingscheduledetail' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/bookingscheduledetail.php";
+    })(),
+
     // call api js booking
     'getAllSchedulesByid' => (function () {
         $requestData = json_decode(file_get_contents("php://input"), true);
@@ -203,50 +215,50 @@ echo match ($act) {
     })(),
     // call api js booking
     'getsupplierPricesBySupplierId' => (function () {
-            $requestData = json_decode(file_get_contents("php://input"), true);
-            // echo json_encode(
-            //     [
-            //         'id' => $requestData['supplier_id']
-            //     ]
-            // );
-            // exit;
-            requireAdmin();
-            (new BookingController())->getsupplierPricesBySupplierId($requestData);
-            exit;
-        })(),
+        $requestData = json_decode(file_get_contents("php://input"), true);
+        // echo json_encode(
+        //     [
+        //         'id' => $requestData['supplier_id']
+        //     ]
+        // );
+        // exit;
+        requireAdmin();
+        (new BookingController())->getsupplierPricesBySupplierId($requestData);
+        exit;
+    })(),
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
-            requireAdmin();
-            (new AdminSupplierController)->addSupplierType();
-        })(),
+        requireAdmin();
+        (new AdminSupplierController)->addSupplierType();
+    })(),
     //cập nhật loại dịch vụ
     'update-supplier-type' => (function () {
-            requireAdmin();
-            (new AdminSupplierController)->updateSupplierType();
-        })(),
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplierType();
+    })(),
     //xóa dịch vụ
     'delete-supplier-type' => (function () {
-            requireAdmin();
-            (new AdminSupplierController)->deleteSupplierType();
-        })(),
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplierType();
+    })(),
     //thêm nhà cung cấp
     'add-supplier' => (function () {
-            requireAdmin();
-            (new AdminSupplierController)->addSupplier();
-        })(),
+        requireAdmin();
+        (new AdminSupplierController)->addSupplier();
+    })(),
 
 
     // sửa nhà cung cấp
     'update-supplier' => (function () {
-            requireAdmin();
-            (new AdminSupplierController)->updateSupplier();
-        })(),
+        requireAdmin();
+        (new AdminSupplierController)->updateSupplier();
+    })(),
 
     // xóa nhà cung cấp
     'delete-supplier' => (function () {
-            requireAdmin();
-            (new AdminSupplierController)->deleteSupplier();
-        })(),
+        requireAdmin();
+        (new AdminSupplierController)->deleteSupplier();
+    })(),
 
     // quản lý tải khoản người dùng
     'listclient' => (function () {
@@ -313,9 +325,9 @@ echo match ($act) {
     })(),
     // Homeguide
     'homeguide' => (function () {
-            requireGuide();
-            (new GuideController())->homeGuide();
-        })(),
+        requireGuide();
+        (new GuideController())->homeGuide();
+    })(),
     // Giới thiệu của HDV
     'aboutguide' => (function () {
         requireGuide();
@@ -391,21 +403,21 @@ echo match ($act) {
         $ctrl = new GuideController();
         $data = $ctrl->checkGuide();
 
-            // GIẢI NÉN MẢNG DỮ LIỆU ĐỂ CÁC BIẾN CÓ THỂ ĐƯỢC SỬ DỤNG TRONG VIEW
-            $todayTour = $data['todayTour'];
-            $customers = $data['customers'];
-            $activities = $data['activities'];
-            $current_day_number = $data['current_day_number'];
+        // GIẢI NÉN MẢNG DỮ LIỆU ĐỂ CÁC BIẾN CÓ THỂ ĐƯỢC SỬ DỤNG TRONG VIEW
+        $todayTour = $data['todayTour'];
+        $customers = $data['customers'];
+        $activities = $data['activities'];
+        $current_day_number = $data['current_day_number'];
 
         require "./views/Admin/checkguide.php";
     })(),
 
     // LƯU ĐIỂM DANH THEO CHẶNG (ACTIVITY)
     'saveAttendanceByActivity' => (function () {
-            requireGuide();
-            (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
-            exit;
-        })(),
+        requireGuide();
+        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        exit;
+    })(),
     // RequestGuide
     // Gửi yêu cầu của HDV
     'requestguide' => (function () {
