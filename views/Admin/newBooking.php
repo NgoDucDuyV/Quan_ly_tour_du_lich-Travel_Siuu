@@ -335,7 +335,7 @@ if (!empty($tourFullData)) {
             <!-- STEP 2: Số lượng & Trạng thái -->
             <div id="step-2-content" class="step-content hidden">
                 <div class="p-6 rounded-2xl border border-[#5288e0] shadow-md space-y-6 bg-[#ffffff]">
-                    <h4 class="text-xl font-bold text-[#1f55ad]">2. Số Lượng & Trạng Thái</h4>
+                    <h6 class="text-xl font-bold text-[#1f55ad]">2. Số Lượng & Trạng Thái</h6>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium">Số lượng khách *</label>
@@ -386,24 +386,8 @@ if (!empty($tourFullData)) {
                         </div>
                     </div>
 
-
-                    <?php
-                    $validSchedules = [];
-
-                    if (!empty($dataSchedulesByTourId) && is_array($dataSchedulesByTourId)) {
-                        $validSchedules = array_filter($dataSchedulesByTourId, function ($s) {
-                            return !empty($s['start_date'])
-                                && !empty($s['end_date'])
-                                && strtotime($s['end_date']) >= strtotime($s['start_date'])
-                                && isset($s['schedule_status_id'])
-                                && in_array((int)$s['schedule_status_id'], [1, 2, 3]);
-                        });
-
-                        usort($validSchedules, fn($a, $b) => strtotime($a['start_date']) <=> strtotime($b['start_date']));
-                    }
-                    ?>
                     <div id="schedule-box" class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200" style="display:none;">
-                        <h6 class="text-2xl font-bold text-main mb-6 flex items-center gap-3">
+                        <h6 class="font-bold text-main mb-6 flex items-center gap-3">
                             Chọn Lịch Trình Có Sẵn (Dành riêng cho Khách lẻ)
                         </h6>
 
@@ -411,30 +395,51 @@ if (!empty($tourFullData)) {
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 mb-2">Lịch khả dụng</label>
                                 <select id="schedule-select" name="schedule_id"
-                                    class="w-full p-4 border-2 border-slate-300 rounded-xl focus:border-main focus:ring-4 focus:ring-main/20 transition">
+                                    class="w-full p-4 border-2 border-slate-300 rounded-xl focus:border-main focus:ring-4 focus:ring-main/20 transition font-medium">
+
                                     <option value="">-- Chọn lịch trình --</option>
 
-                                    <?php if (!empty($validSchedules)): ?>
-                                        <?php foreach ($validSchedules as $s): ?>
+                                    <?php if (!empty($dataSchedulesByTourId)): ?>
+                                        <?php foreach ($dataSchedulesByTourId as $s): ?>
                                             <?php
-                                            $start  = date('d/m/Y', strtotime($s['start_date']));
-                                            $end    = date('d/m/Y', strtotime($s['end_date']));
-                                            $status = $s['schedule_status_id'] == 1 ? 'Sẵn sàng' : ($s['schedule_status_id'] == 2 ? 'Đang xử lý' : 'Đã khóa');
-                                            $color  = $s['schedule_status_id'] == 1 ? 'text-emerald-700' : ($s['schedule_status_id'] == 2 ? 'text-orange-700' : 'text-red-700');
-                                            $guide  = $s['guide_id'] ?? 'Chưa có';
+                                            $start = date('d/m/Y', strtotime($s['start_date']));
+                                            $end   = date('d/m/Y', strtotime($s['end_date']));
+                                            $dateRange = $start === $end ? $start : "$start → $end";
+
+                                            // Trạng thái lịch trình - dùng đúng tên tiếng Việt từ DB
+                                            $scheduleStatus = $s['schedule_status_name_vn'] ?? 'Chưa xác định';
+
+                                            // Màu theo trạng thái thực tế
+                                            $statusColor = match (strtolower($s['schedule_status_code'] ?? '')) {
+                                                'planned'     => 'text-sky-600',
+                                                'in_progress' => 'text-orange-600',
+                                                'completed'   => 'text-emerald-600',
+                                                'cancelled'   => 'text-red-600',
+                                                default       => 'text-gray-600'
+                                            };
+
+                                            // HDV
+                                            $guideText = !empty($s['guide_id']) ? "HDV #{$s['guide_id']}" : 'Chưa phân công';
+
+                                            // Nếu có trạng thái HDV thì hiện thêm (rất hữu ích)
+                                            $guideStatus = '';
+                                            if (!empty($s['guide_status_name'])) {
+                                                $guideStatus = ' • ' . $s['guide_status_name'];
+                                            }
                                             ?>
+
                                             <option value="<?= $s['id'] ?>"
                                                 data-start="<?= $s['start_date'] ?>"
                                                 data-end="<?= $s['end_date'] ?>">
-                                                <?= $start ?> to <?= $end ?> | HDV #<?= htmlspecialchars($guide) ?>
-                                                <span class="<?= $color ?> font-medium">(<?= $status ?>)</span>
+                                                <?= $dateRange ?> | <?= $guideText ?><?= $guideStatus ?>
+                                                <span class="<?= $statusColor ?> font-semibold">(<?= $scheduleStatus ?>)</span>
                                             </option>
                                         <?php endforeach; ?>
                                     <?php else: ?>
-                                        <option value="" disabled class="text-gray-500">
-                                            Không có lịch khả dụng
+                                        <option value="" disabled class="text-gray-500 italic">
+                                            Không có lịch trình khả dụng
                                         </option>
-                                        <?php endif; ?>h
+                                    <?php endif; ?>
                                 </select>
                             </div>
 
@@ -518,7 +523,7 @@ if (!empty($tourFullData)) {
                             toggleSchedule();
 
                             // Hiển thị ngày + load dịch vụ
-                            scheduleSelect?.addEventListener("change", function() {
+                            scheduleSelect.addEventListener("change", function() {
                                 const option = this.selectedOptions[0];
                                 if (!option || !option.value) {
                                     document.getElementById("start-date-display").value = "";
@@ -610,13 +615,12 @@ if (!empty($tourFullData)) {
 
                     // Loại trùng ngày
                     $bookedDates = array_unique($bookedDates);
-
-                    // Thông tin tour – bảo vệ dữ liệu
+                    // Thông tin tour –
                     $numberOfDays = $tourFullData['oneTour']['days'] ?? 1;
                     $today = date('Y-m-d');
                     ?>
 
-                    <div id="departure-box" class="mb-6 p-5 bg-white rounded-2xl shadow-lg border">
+                    <div id="departure-box" class="mb-6 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 rounded-2xl shadow-lg border">
                         <h6 class="text-lg font-bold text-main mb-4">Chọn ngày khởi hành</h6>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

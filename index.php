@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+// Fix sai ngày giờ server
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 require_once __DIR__ . '/commons/env.php';
 require_once __DIR__ . '/commons/function.php';
 
@@ -18,6 +22,7 @@ require_once __DIR__ . '/models/BookingServicesModel.php';
 require_once __DIR__ . '/models/GuideTourModel.php';
 require_once __DIR__ . '/models/SchedulesModel.php';
 require_once __DIR__ . '/models/ReportModel.php';
+require_once __DIR__ . '/models/ScheduleStatusModel.php';
 
 
 // admin Controller

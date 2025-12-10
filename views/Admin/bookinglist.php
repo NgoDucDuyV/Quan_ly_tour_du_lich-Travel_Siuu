@@ -45,8 +45,33 @@
                                                         unset($_SESSION['error']); ?>
         </div>
     <?php endif; ?>
+    <!-- Tìm kiếm + lọc -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 sticky top-0 z-10">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" placeholder="Code Booking, Tên khách, email hướng dẫn viên..."
+                    class="w-full pl-12 pr-6 py-4 rounded-lg border border-slate-300 focus:outline-none focus:ring-4 focus:ring-main/20 focus:border-main text-lg">
+            </div>
+            <div class="flex gap-4">
+                <select class="w-48 px-5 py-4 rounded-lg border border-slate-300">
+                    <option>Lọc theo trang thái</option>
+                    <option>Tiếng Anh</option>
+                    <option>Tiếng Pháp</option>
+                    <option>Tiếng Trung</option>
+                    <option>Tiếng Nhật</option>
+                    <option>Tiếng Hàn</option>
+                </select>
+                <select class="w-48 px-5 py-4 rounded-lg border border-slate-300">
+                    <option>Kinh nghiệm</option>
+                    <option>≥ 3 năm</option>
+                    <option>≥ 5 năm</option>
+                    <option>≥ 10 năm</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-    <!-- Chú thích màu sắc (cập nhật chính xác 100% theo DB) -->
     <div class="mb-6 p-5 bg-slate-50 rounded-xl border border-slate-200">
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-xs font-medium">
             <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-yellow-100"></span> Chờ xác nhận</div>
@@ -59,8 +84,7 @@
         </div>
     </div>
 
-    <!-- Bảng Booking Siêu Đẹp -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-h-[1800px]">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
