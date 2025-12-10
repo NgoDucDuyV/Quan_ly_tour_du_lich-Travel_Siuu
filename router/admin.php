@@ -306,11 +306,10 @@ echo match ($act) {
     })(),
 
     'dashboarthongke' => (function () {
-        requireAdmin();
-        echo "bao cao thong ke";
-        require_once "./views/Admin/dashboard.php";
-        exit;
-    })(),
+            requireAdmin();
+            (new ReportController())->index();
+            exit;
+        })(),
 
     // show trang lỗi
     '404' => (function () {
