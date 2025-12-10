@@ -21,6 +21,7 @@ require_once __DIR__ . '/models/PaymentModel.php';
 require_once __DIR__ . '/models/BookingServicesModel.php';
 require_once __DIR__ . '/models/GuideTourModel.php';
 require_once __DIR__ . '/models/SchedulesModel.php';
+require_once __DIR__ . '/models/ReportModel.php';
 require_once __DIR__ . '/models/ScheduleStatusModel.php';
 
 
@@ -40,6 +41,11 @@ require_once __DIR__ . '/controllers/GuideTourScheduleController.php';
 //quản lý danh mục tour
 require_once __DIR__ . '/controllers/AdminTourController.php';
 require_once __DIR__ . '/controllers/AdminSupplierController.php';
+
+require_once __DIR__ . '/controllers/ReportController.php';
+
+
+
 
 
 
