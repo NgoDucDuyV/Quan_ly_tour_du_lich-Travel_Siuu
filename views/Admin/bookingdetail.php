@@ -59,6 +59,16 @@
                 <div class="flex justify-between items-center"><span class="text-slate-600">Loại khách</span><span class="px-4 py-1.5 rounded-full text-xs font-bold <?= $databooking['group_color'] ?>"><?= htmlspecialchars($databooking['group_name']) ?></span></div>
                 <div class="flex justify-between pt-3 border-t"><span class="text-slate-600">Số người</span><span class="text-2xl font-bold text-main"><?= $databooking['number_of_people'] ?> khách</span></div>
             </div>
+            <div class="flex items-center justify-between mb-6 mt-5">
+                <h3 class="text-lg font-bold text-slate-800">Lịch Trình Trạng Thái HDV</h3>
+
+                <!-- Nút xem trạng thái HDV – nổi bật + icon -->
+                <a href="<?= BASE_URL ?>?mode=admin&act=bookingscheduledetail&schedule_id=<?= $dataSchedulesById[0]['schedule_id'] ?>"
+                    target="_blank"
+                    class="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-2.5 transform hover:-translate-y-0.5">
+                    Xem LT và Trạng thái HDV
+                </a>
+            </div>
         </div>
 
         <!-- Card 2: Tour -->

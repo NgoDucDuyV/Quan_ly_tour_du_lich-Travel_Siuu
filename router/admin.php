@@ -179,6 +179,11 @@ echo match ($act) {
         echo (new GuideTourScheduleController)->ShowGuideTourSchedule($_GET['booking_id'] ?? null);
     })(),
 
+    'guide_tour_schedule_detail' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/guide_tour_schedule_detail.php";
+    })(),
+
     'createguideschedule' => (function () {
         requireAdmin();
         echo (new GuideTourScheduleController)->CreateGuideSchedule($_GET['booking_id'] ?? null);
@@ -195,6 +200,13 @@ echo match ($act) {
     'bookingdetail' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
+        // echo (new BookingController)->ShowBooking();
+    })(),
+
+    // chiết boong
+    'bookingscheduledetail' => (function () {
+        requireAdmin();
+        echo (new BookingController)->ShowBookingScheduleDetail($_GET['booking_id'] ?? null);
         // echo (new BookingController)->ShowBooking();
     })(),
     'newBooking' => (function () {
@@ -329,6 +341,7 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
+
     // Homeguide
     'homeguide' => (function () {
         requireGuide();
@@ -342,12 +355,15 @@ echo match ($act) {
     // thông báo guide
     'mesageguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/mesageguide.php";
+        (new GuideController())->MesageGuide($_GET['guide_id'] ?? null);
     })(),
+
     'mesageguidedetail' => (function () {
         requireGuide();
-        require_once "./views/Admin/mesageguidedetail.php";
+        (new GuideController())->MesageGuideDetail($_GET['schedule_id'] ?? null);
     })(),
+
+
     // ScheduleGuide
     // Lịch trình của HDV
     'scheduleguide' => (function () {
@@ -418,7 +434,7 @@ echo match ($act) {
         require "./views/Admin/checkguide.php";
     })(),
 
-    // LƯU ĐIỂM DANH THEO CHẶNG (ACTIVITY)
+    // Lưu điểm danh theo chặng 
     'saveAttendanceByActivity' => (function () {
         requireGuide();
         (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
@@ -450,57 +466,6 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->deleteRequestGuide();
     })(),
-    // 
-    'saveAttendance' => (function () {
-        requireGuide();
-        (new GuideController())->saveAttendance();
-    })(),
-
-    // //thêm loại dịch vụ
-    // 'add-supplier-type' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->addSupplierType();
-    // })(),
-    // //cập nhật loại dịch vụ
-    // 'update-supplier-type' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->updateSupplierType();
-    // })(),
-    // //xóa dịch vụ
-    // 'delete-supplier-type' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->deleteSupplierType();
-    // })(),
-    // //thêm nhà cung cấp
-    // 'add-supplier' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->addSupplier();
-    // })(),
-
-
-    // // sửa nhà cung cấp
-    // 'update-supplier' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->updateSupplier();
-    // })(),
-
-    // // xóa nhà cung cấp
-    // 'delete-supplier' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->deleteSupplier();
-    // })(),
-
-    // // sửa nhà cung cấp
-    // 'update-supplier' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->updateSupplier();
-    // })(),
-
-    // // xóa nhà cung cấp
-    // 'delete-supplier' => (function () {
-    //     requireAdmin();
-    //     (new AdminSupplierController)->deleteSupplier();
-    // })(),
 
     default => (function () {
         header("Location: " . BASE_URL . "?mode=admin&act=404");

@@ -14,6 +14,12 @@ class GuideController
 
         $dataSchedulesByGuideId = $model->getSchedulesForGuide($guide_id);
 
+        // $today = date('Y-m-d');
+        // echo "<pre>";
+        // var_dump($today);
+        // var_dump($dataSchedulesByGuideId);
+        // echo "<pre>";
+        // die;
         $totalUpcomingTours = $model->countUpcomingTours($guide_id);
 
         // ⭐ Đếm khách hôm nay
@@ -53,6 +59,11 @@ class GuideController
             // Lấy danh sách khách hàng từ các booking khớp với tour_id VÀ khoảng ngày của schedule
             $datacustomers = $model->getCustomerListByTourid($tour_id, $start, $end);
         }
+
+        // echo "<pre>";
+        // var_dump($datacustomers);
+        // echo "<pre>";
+        // die;
 
         require "./views/Admin/listguide.php";
     }
@@ -256,29 +267,10 @@ class GuideController
             'current_day_number' => $current_day_number
         ];
     }
-    // Lưu điểm danh 
-    public function saveAttendance()
-    {
-        // Đọc dữ liệu JSON từ fetch()
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        if (!$data || !is_array($data)) {
-            echo "Không nhận được dữ liệu!";
-            return;
-        }
-
-        $model = new GuideTourModel();
-
-        foreach ($data as $attendanceId => $status) {
-            $model->updateAttendance($attendanceId, $status);
-        }
-
-        echo "success";
-    }
     // Lưu điểm danh từng chặng 1 
     public function saveAttendanceByActivity()
     {
-        // Đọc dữ liệu JSON: { customer_id: { activity_id: status, ... } }
+        // Đọc dữ liệu JSON: { customer_id: { activity_id: { status: '...', notes: '...' }, ... }, ... }
         $data = json_decode(file_get_contents("php://input"), true);
 
         // 1. Xác định schedule_id đang hoạt động
@@ -299,8 +291,17 @@ class GuideController
         if (is_array($data)) {
             foreach ($data as $customerId => $activities) {
                 if (is_array($activities)) {
-                    foreach ($activities as $activityId => $status) {
-                        $model->saveOrUpdateAttendanceActivity($schedule_id, $customerId, $activityId, $status);
+                    foreach ($activities as $activityId => $record) {
+                        $status = $record['status'] ?? 'absent';
+                        $notes = $record['notes'] ?? NULL; // Nhận ghi chú
+
+                        // LOGIC ĐIỀU KIỆN: Nếu Đã đến, xóa ghi chú thành NULL
+                        if ($status === 'present') {
+                            $notes = NULL;
+                        }
+
+                        // Lưu vào DB (ĐÃ CÓ $notes mới)
+                        $model->saveOrUpdateAttendanceActivity($schedule_id, $customerId, $activityId, $status, $notes);
                         $successCount++;
                     }
                 }
@@ -403,5 +404,48 @@ class GuideController
         (new GuideTourModel())->deleteRequest($id, $guide_id);
 
         header("Location: ?mode=admin&act=requestguide");
+    }
+
+
+    // thông báo guide chờ sác nhận 
+    public function MesageGuide($guide_id)
+    {
+        if (!$guide_id) {
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+        $dataSchedulesByIdGuide = (new SchedulesModel())->getSchedulesStatusByGuideId($guide_id);
+        // echo '<pre>';
+        // var_dump($dataSchedulesByIdGuide);
+        // die;
+        require_once "./views/Admin/mesageguide.php";
+    }
+
+    public function MesageGuideDetail($schedule_id)
+    {
+        if (!$schedule_id) {
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+
+        $dataSchedulesById = (new SchedulesModel())->getSchedulesStatusById($schedule_id);
+
+
+        $databooking = (new BookingModel())->getBookingById($dataSchedulesById[0]['booking_id']);
+
+        $dataCustomers = (new BookingCustomersModel())->getCustomersByBookingId($dataSchedulesById[0]['booking_id']);
+
+        // echo "<pre>";
+        // echo "\n=== \$dataSchedulesById ===\n";
+        // print_r($dataSchedulesById);
+
+        // echo "\n=== \$databooking ===\n";
+        // print_r($databooking);
+
+        // echo "\n=== \$dataCustomers ===\n";
+        // print_r($dataCustomers);
+        // echo "</pre>";
+        // die;
+        require_once "./views/Admin/mesageguidedetail.php";
     }
 }

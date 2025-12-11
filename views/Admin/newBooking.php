@@ -795,7 +795,7 @@ if (!empty($tourFullData)) {
                                 <?php foreach ($dataCustomerTypes as $type): ?>
                                     <?php $price = $basePrice * ($type['price_percentage'] / 100); ?>
                                     <li class="py-3 flex justify-between items-center" data-base-price="<?= $price ?>">
-                                        <span class="font-medium"><?= $type['name'] ?></span>
+                                        <span class="font-medium"><?= $type['name'] ?>(<?= (int)$type['price_percentage'] ?> % )</span>
                                         <span class="font-semibold text-main"><?= number_format($price, 0, ',', '.') ?> VNĐ</span>
                                     </li>
                                 <?php endforeach; ?>

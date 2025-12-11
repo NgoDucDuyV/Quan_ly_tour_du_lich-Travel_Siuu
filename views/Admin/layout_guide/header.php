@@ -38,16 +38,33 @@
                         </div>
                     </div>
 
+                    <?php
+                    $dataguide = (new GuideTourModel)->getGuideUserid($_SESSION['admin_logged']['id'] ?? 0);
+
+                    $dataSchedulesByIdGuide = (new SchedulesModel())->getSchedulesStatusByGuideId($dataguide['id']);
+
+                    $notifications = array_filter($dataSchedulesByIdGuide, function ($sch) {
+                        return
+                            strtoupper(trim($sch['guide_status_code'] ?? '')) === 'PENDING' &&
+                            strtoupper(trim($sch['schedule_status_code'] ?? '')) === 'PENDING';
+                    });
+
+                    $notificationCount = count($notifications);
+                    // Bảo vệ: nếu không có dữ liệu HDV thì ẩn nút hoặc không link
+                    $guideId = $dataguide['id'] ?? 0;
+                    $hasNotification = true; // Bạn có thể thay bằng logic đếm tin nhắn chưa đọc
+                    $notificationCount = $notificationCount;
+                    // Có thể lấy từ DB: số tin nhắn chưa đọc
+                    ?>
                     <!-- Phải -->
                     <div class="flex items-center space-x-4">
-
                         <!-- Nút chuông thông báo – đẹp, bấm được, badge nổi bật -->
                         <div class="relative">
-                            <a href="?mode=admin&act=mesageguide"
+                            <a href="?mode=admin&act=mesageguide&guide_id=<?= $dataguide['id'] ?>"
                                 class="relative flex items-center justify-center size-12 rounded-xl bg-gray-100 hover:bg-gray-200 hover:shadow-md transition-all duration-200 group focus:outline-none focus:ring-4 focus:ring-blue-100">
                                 <i data-lucide="bell" class="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition"></i>
                                 <span class="absolute -top-1 -right-1 flex items-center justify-center size-6 text-xs font-bold text-white bg-red-600 rounded-full ring-4 ring-white shadow-lg animate-pulse">
-                                    1
+                                    <?= $notificationCount ?>
                                 </span>
                             </a>
                         </div>

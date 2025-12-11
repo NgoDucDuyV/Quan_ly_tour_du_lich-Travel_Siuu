@@ -69,9 +69,9 @@ class GuideTourScheduleController
         // khơi tào trn thái
         $idScheduleStatus = (new ScheduleStatusModel())->createScheduleStatus(
             $idSchedules,
+            5,
             1,
-            1,
-            'planned',
+            'pending',
             'PENDING',
             'Khởi Tạo  trạng thái lịch trình chờ hướng dẫn viên sác nhận'
         );

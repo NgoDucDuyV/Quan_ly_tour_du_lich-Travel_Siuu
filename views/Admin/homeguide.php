@@ -7,7 +7,7 @@
 
     <section class="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-3xl p-8 shadow-lg">
         <div class="relative z-10">
-            <h1 class="text-3xl font-bold">
+            <h1 class="text-3xl text-dark font-bold">
                 Xin chào, HDV <span class="text-white text-shadow-xl"><?= $name ?></span> 👋
             </h1>
             <p class="mt-2 text-blue-100">
@@ -95,7 +95,7 @@
 
         <?php
         $todayTours = [];
-        $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
+        $today = '2025-12-12'; // Ngày hôm nay định dạng Y-m-d
 
 
         foreach ($dataSchedulesByGuideId as $schedule) {

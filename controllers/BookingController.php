@@ -86,6 +86,11 @@ class BookingController
         require_once "./views/Admin/bookingdetail.php";
     }
 
+    public function ShowBookingScheduleDetail()
+    {
+        require_once "./views/Admin/bookingscheduledetail.php";
+    }
+
     public function ShowFromNewBooking($tour_id = null)
     {
         $datatour = (new TourModel())->getAll();
