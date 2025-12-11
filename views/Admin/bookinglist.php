@@ -33,6 +33,16 @@
         </div>
     <?php endif; ?>
 
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>
+                <?= $_SESSION['error_message'] ?>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        </div>
+    <?php endif; ?>
+
     <?php if (isset($_SESSION['success'])): ?>
         <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
             <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success'];
@@ -45,8 +55,33 @@
                                                         unset($_SESSION['error']); ?>
         </div>
     <?php endif; ?>
+    <!-- Tìm kiếm + lọc -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 sticky top-0 z-10">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" placeholder="Code Booking, Tên khách, email hướng dẫn viên..."
+                    class="w-full pl-12 pr-6 py-4 rounded-lg border border-slate-300 focus:outline-none focus:ring-4 focus:ring-main/20 focus:border-main text-lg">
+            </div>
+            <div class="flex gap-4">
+                <select class="w-48 px-5 py-4 rounded-lg border border-slate-300">
+                    <option>Lọc theo trang thái</option>
+                    <option>Tiếng Anh</option>
+                    <option>Tiếng Pháp</option>
+                    <option>Tiếng Trung</option>
+                    <option>Tiếng Nhật</option>
+                    <option>Tiếng Hàn</option>
+                </select>
+                <select class="w-48 px-5 py-4 rounded-lg border border-slate-300">
+                    <option>Kinh nghiệm</option>
+                    <option>≥ 3 năm</option>
+                    <option>≥ 5 năm</option>
+                    <option>≥ 10 năm</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-    <!-- Chú thích màu sắc (cập nhật chính xác 100% theo DB) -->
     <div class="mb-6 p-5 bg-slate-50 rounded-xl border border-slate-200">
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-xs font-medium">
             <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-yellow-100"></span> Chờ xác nhận</div>
@@ -59,8 +94,7 @@
         </div>
     </div>
 
-    <!-- Bảng Booking Siêu Đẹp -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-h-[1800px]">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
@@ -241,27 +275,36 @@
                                                 </a>
                                             <?php endif; ?>
 
-                                            <!-- 2.5. CẬP NHẬT THANH TOÁN - HIỂN THỊ ĐẾN KHI TOUR ĐANG DIỄN RA -->
                                             <?php
-                                            $allowPaymentUpdate = in_array($b['status_type_code_master'], ['DEPOSITED', 'ASSIGN_GUIDE', 'UPCOMINGS', 'IN_PROGRESS'])
-                                                && !in_array($b['status_type_code_master'], ['COMPLETED', 'CLOSED', 'CANCELED']);
-
-                                            $total   = $b['total_amount'] ?? 0;
-                                            $paid    = $b['paid_amount'] ?? 0;
-                                            $remain  = $total - $paid;
+                                            $allowPaymentUpdate = in_array($b['status_type_code_master'], [
+                                                'DEPOSITED',
+                                                'ASSIGN_GUIDE',
+                                                'UPCOMING'
+                                            ]);
+                                            $total  = $b['total_amount'] ?? 0;
+                                            $paid   = $b['paid_amount'] ?? 0;
+                                            $remain = $total - $paid;
                                             $percent = $total > 0 ? round(($paid / $total) * 100) : 0;
                                             ?>
                                             <?php if ($allowPaymentUpdate): ?>
                                                 <a href="?act=from_booking_update_payment&booking_id=<?= $b['booking_id'] ?>"
-                                                    class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium hover:bg-teal-50 border-t border-slate-100 mt-1 pt-3">
+                                                    class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium hover:bg-teal-50 border-t border-slate-100 mt-1 pt-3 transition rounded-lg">
+
                                                     <span class="flex items-center gap-3">
                                                         <i class="fa-solid fa-money-bill-wave text-teal-600"></i>
-                                                        <span class="text-teal-700">Cập nhật thanh toán</span>
+                                                        <span class="text-teal-700 font-medium">Cập nhật thanh toán</span>
                                                     </span>
+
                                                     <?php if ($total > 0): ?>
-                                                        <span class="text-xs font-bold px-2 py-1 rounded-full <?= $paid >= $total ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700' ?>">
+                                                        <span class="text-xs font-bold px-2.5 py-1 rounded-full border
+                                                            <?= $paid >= $total
+                                                                ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
+                                                                : 'bg-orange-100 text-orange-700 border-orange-300' ?>">
+
                                                             <?= $percent ?>%
-                                                            <?= $paid >= $total ? 'Đã đủ' : 'Còn ' . number_format($remain) . 'đ' ?>
+                                                            <?= $paid >= $total
+                                                                ? '<span class="text-emerald-700">Đã đủ</span>'
+                                                                : 'Còn ' . number_format($remain) . 'đ' ?>
                                                         </span>
                                                     <?php endif; ?>
                                                 </a>
@@ -288,7 +331,8 @@
                                             <?php endif; ?>
 
                                             <?php if ($current === 'ASSIGN_GUIDE'): ?>
-                                                <a href="?act=markUpcoming&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=markUpcoming&booking_id=<?= $b['booking_id'] ?>"
+                                                    onclick="return confirm('Xác Nhậ đánh dấu sắp diễn ra')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-orange-600 hover:bg-orange-50">
                                                     <i class="fa-solid fa-calendar-check"></i> Đánh dấu Sắp diễn ra
                                                 </a>

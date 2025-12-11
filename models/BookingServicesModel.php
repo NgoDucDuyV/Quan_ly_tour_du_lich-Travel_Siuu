@@ -8,6 +8,31 @@ class BookingServicesModel
         $this->conn = connectDB();
     }
 
+    public function getServicesByBookingId(int $booking_id): array
+    {
+        $sql = "SELECT 
+                bs.id,
+                bs.booking_id,
+                bs.supplier_id,
+                bs.supplier_type_id,
+                bs.service_name,
+                bs.service_quantity,
+                bs.service_price,
+                bs.service_note,
+                bs.created_at,
+                bs.updated_at
+            FROM booking_services bs
+            WHERE bs.booking_id = :booking_id
+            ORDER BY bs.id ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ':booking_id' => $booking_id
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     // Insert multiple services
     public function insertServices(array $services)
     {

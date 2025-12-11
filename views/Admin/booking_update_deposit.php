@@ -194,12 +194,22 @@
 
             <div class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Trạng thái Booking</label>
-                    <select name="booking_status_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                        Trạng thái Booking
+                    </label>
+                    <select name="booking_status_type_id"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition"
+                        required>
+
                         <option value="">-- Chọn trạng thái --</option>
+
                         <?php foreach ($bookingStatusTypes as $s): ?>
-                            <?php if (in_array($s['id'], [1, 2])): ?>
-                                <option value="<?= $s['id'] ?>" <?= $s['id'] == $databooking['status_type_id_master'] ? 'selected' : '' ?>>
+                            <?php
+                            // Chỉ hiển thị 2 trạng thái: PENDING (1) và DEPOSITED (2)
+                            if (in_array($s['id'], [1, 2])):
+                            ?>
+                                <option value="<?= $s['id'] ?>"
+                                    <?= $s['id'] == ($databooking['status_type_id_master'] ?? 0) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($s['name']) ?>
                                 </option>
                             <?php endif; ?>
@@ -208,13 +218,25 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Trạng thái Thanh toán</label>
-                    <select name="payment_status_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                        Trạng thái Thanh toán
+                    </label>
+                    <select name="payment_status_type_id"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition"
+                        required>
+
                         <option value="">-- Chọn trạng thái thanh toán --</option>
+
                         <?php foreach ($paymentStatusTypes as $p): ?>
-                            <option value="<?= $p['id'] ?>" <?= $p['id'] == $databooking['payment_type_id_master'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($p['name']) ?>
-                            </option>
+                            <?php
+                            // Chỉ hiển thị 3 trạng thái: UNPAID (1), DEPOSIT (2), PAID (3)
+                            if (in_array($p['id'], [1, 2, 3])):
+                            ?>
+                                <option value="<?= $p['id'] ?>"
+                                    <?= $p['id'] == $databooking['payment_type_id_master'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($p['name']) ?>
+                                </option>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
                 </div>

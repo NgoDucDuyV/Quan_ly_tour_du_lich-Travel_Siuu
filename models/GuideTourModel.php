@@ -7,6 +7,34 @@ class GuideTourModel
     {
         $this->conn = connectDB();
     }
+
+    public function getAllGuides()
+    {
+        $sql = "SELECT * FROM `guides` ORDER BY id ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getGuidesByStatus($status)
+    {
+        $sql = "SELECT * FROM `guides` WHERE status = :status ORDER BY id ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getGuideById($id)
+    {
+        $sql = "SELECT * FROM `guides` WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Lấy ID người dùng theo hdv
     public function getGuideUserid($user_id)
     {
@@ -148,7 +176,7 @@ class GuideTourModel
     public function insertLog($schedule_id, $guide_id, $content, $images)
     {
         $sql = "INSERT INTO tour_logs (schedule_id, guide_id, log_date, content, images)
-                VALUES (:schedule_id, :guide_id, CURDATE(), :content, :images)";
+            VALUES (:schedule_id, :guide_id, :log_date, :content, :images)";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
@@ -157,8 +185,10 @@ class GuideTourModel
             'content' => $content,
             'images' => json_encode($images)
         ]);
+
         return $this->conn->lastInsertId();
     }
+
     // Xóa nhật ký 
     public function deleteLog($id)
     {
@@ -176,11 +206,9 @@ class GuideTourModel
     public function updateLog($id, $content)
     {
         $stmt = $this->conn->prepare("
-            UPDATE tour_logs
-            SET content = :content, updated_at = NOW()
-            WHERE id = :id
-        ");
-
+        UPDATE tour_logs
+        SET content = :content, updated_at = NOW()
+        WHERE id = :id");
         return $stmt->execute([
             'id' => $id,
             'content' => $content
@@ -453,25 +481,25 @@ class GuideTourModel
             t.name AS tour_name,
             s.start_date,
             s.end_date,
-           (
-        SELECT COUNT(bc.id)
-        FROM bookings b
-        JOIN booking_customers bc ON b.id = bc.booking_id
-        WHERE b.id = s.booking_id
-    ) AS total_customers,
-            ss.schedule_status_type_id,
-            sst.name AS schedule_status_name,
-            sst.code AS schedule_status_code,
-            gs.name AS guide_status_name,
-            gs.code AS guide_status_code
-        FROM schedules s
-        JOIN tours t ON t.id = s.tour_id
-        LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
-        LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
-        LEFT JOIN guide_status gs ON gs.id = ss.guide_status_id
-        WHERE s.guide_id = :guide_id
-          AND CURDATE() BETWEEN s.start_date AND s.end_date -- Đang diễn ra hôm nay
-        LIMIT 1
+            (
+            SELECT COUNT(bc.id)
+            FROM bookings b
+            JOIN booking_customers bc ON b.id = bc.booking_id
+            WHERE b.id = s.booking_id
+        ) AS total_customers,
+                ss.schedule_status_type_id,
+                sst.name AS schedule_status_name,
+                sst.code AS schedule_status_code,
+                gs.name AS guide_status_name,
+                gs.code AS guide_status_code
+            FROM schedules s
+            JOIN tours t ON t.id = s.tour_id
+            LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
+            LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
+            LEFT JOIN guide_status gs ON gs.id = ss.guide_status_id
+            WHERE s.guide_id = :guide_id
+            AND CURDATE() BETWEEN s.start_date AND s.end_date -- Đang diễn ra hôm nay
+            LIMIT 1
         ";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);

@@ -15,6 +15,26 @@ class BookingCustomersModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCustomersByBookingId($booking_id)
+    {
+        $sql = "SELECT 
+                bc.*, 
+                ct.code AS customer_type_code,
+                ct.name AS customer_type_name,
+                ct.price_percentage
+            FROM booking_customers AS bc
+            LEFT JOIN customer_types AS ct 
+                ON bc.customer_type_id = ct.id
+            WHERE bc.booking_id = :booking_id
+            ORDER BY bc.id ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(":booking_id", $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     // Insert multiple passengers
     public function insertPassengers(array $passengers)
     {

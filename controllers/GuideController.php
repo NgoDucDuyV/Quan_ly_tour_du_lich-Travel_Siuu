@@ -14,6 +14,12 @@ class GuideController
 
         $dataSchedulesByGuideId = $model->getSchedulesForGuide($guide_id);
 
+        // $today = date('Y-m-d');
+        // echo "<pre>";
+        // var_dump($today);
+        // var_dump($dataSchedulesByGuideId);
+        // echo "<pre>";
+        // die;
         $totalUpcomingTours = $model->countUpcomingTours($guide_id);
 
         // ⭐ Đếm khách hôm nay
@@ -53,6 +59,11 @@ class GuideController
             // Lấy danh sách khách hàng từ các booking khớp với tour_id VÀ khoảng ngày của schedule
             $datacustomers = $model->getCustomerListByTourid($tour_id, $start, $end);
         }
+
+        // echo "<pre>";
+        // var_dump($datacustomers);
+        // echo "<pre>";
+        // die;
 
         require "./views/Admin/listguide.php";
     }
@@ -168,6 +179,7 @@ class GuideController
 
         header("Location: ?mode=admin&act=diaryguide");
     }
+
     // Xóa nhật ký của HDV
     public function deleteDiaryGuide()
     {
@@ -392,5 +404,20 @@ class GuideController
         (new GuideTourModel())->deleteRequest($id, $guide_id);
 
         header("Location: ?mode=admin&act=requestguide");
+    }
+
+
+    // thông báo guide chờ sác nhận 
+    public function MesageGuide($guide_id)
+    {
+        if (!$guide_id) {
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+        $dataSchedulesByIdGuide = (new SchedulesModel())->getSchedulesStatusByGuideId($guide_id);
+        // echo '<pre>';
+        // var_dump($dataSchedulesByIdGuide);
+        // die;
+        require_once "./views/Admin/mesageguide.php";
     }
 }

@@ -179,6 +179,19 @@ echo match ($act) {
         echo (new GuideTourScheduleController)->ShowGuideTourSchedule($_GET['booking_id'] ?? null);
     })(),
 
+    'createguideschedule' => (function () {
+        requireAdmin();
+        echo (new GuideTourScheduleController)->CreateGuideSchedule($_GET['booking_id'] ?? null);
+    })(),
+
+    // đánh dấu sắp diễn ra
+    'markUpcoming' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->MarkUpComing($_GET['booking_id'] ?? null);
+    })(),
+
+
+    // chiết boong
     'bookingdetail' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBookingDetail($_GET['booking_id'] ?? null);
@@ -192,6 +205,12 @@ echo match ($act) {
     'createBooking' => (function () {
         requireAdmin();
         echo (new BookingController)->createBooking();
+    })(),
+
+    // chi tiết lịch trình booking
+    'bookingscheduledetail' => (function () {
+        requireAdmin();
+        require_once "./views/Admin/bookingscheduledetail.php";
     })(),
 
     // call api js booking
@@ -295,8 +314,7 @@ echo match ($act) {
 
     'dashboarthongke' => (function () {
         requireAdmin();
-        echo "bao cao thong ke";
-        require_once "./views/Admin/dashboard.php";
+        (new ReportController())->index();
         exit;
     })(),
 
@@ -311,7 +329,7 @@ echo match ($act) {
         requireGuide();
         require_once "./views/Admin/homeguide.php";
     })(),
-    // Trang chủ của HDV
+    // Homeguide
     'homeguide' => (function () {
         requireGuide();
         (new GuideController())->homeGuide();
@@ -324,8 +342,9 @@ echo match ($act) {
     // thông báo guide
     'mesageguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/mesageguide.php";
+        (new GuideController())->MesageGuide($_GET['guide_id'] ?? null);
     })(),
+
     'mesageguidedetail' => (function () {
         requireGuide();
         require_once "./views/Admin/mesageguidedetail.php";

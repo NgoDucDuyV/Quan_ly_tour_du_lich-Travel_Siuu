@@ -1,72 +1,65 @@
+<?php
+// Lọc thông báo: guide_status = PENDING + schedule_status = pending
+$notifications = array_filter($dataSchedulesByIdGuide, function ($sch) {
+    return
+        strtoupper(trim($sch['guide_status_code'] ?? '')) === 'PENDING' &&
+        strtoupper(trim($sch['schedule_status_code'] ?? '')) === 'PENDING';
+});
+
+$notificationCount = count($notifications);
+?>
+
 <div class="max-w-4xl mx-auto p-2 space-y-6">
 
-    <!-- Header giống dashboard -->
-    <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-3xl p-8 shadow-lg">
+    <!-- Header – đồng bộ màu main -->
+    <div class="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-3xl p-8 shadow-lg">
         <h1 class="text-3xl font-bold">Thông báo</h1>
-        <p class="mt-2 text-blue-100">Bạn có <span class="font-black">3</span> thông báo mới</p>
+        <p class="mt-2 text-indigo-100">Bạn có <span class="font-black"><?= $notificationCount ?></span> thông báo mới</p>
     </div>
 
-    <!-- Thông báo phân tour – Chưa đọc -->
-    <a href="?act=mesageguidedetail&id=123" class="block bg-white rounded-2xl shadow hover:shadow-xl transition group border border-gray-200 hover:border-blue-300">
-        <div class="p-6 flex items-center gap-5">
-            <div class="relative flex-shrink-0">
-                <div class="w-14 h-14 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i data-lucide="bus" class="w-8 h-8 text-orange-600"></i>
-                </div>
-                <span class="absolute -top-2 -right-2 w-5 h-5 bg-red-600 rounded-full border-4 border-white shadow-lg animate-pulse"></span>
-            </div>
-            <div class="flex-1">
-                <h3 class="text-lg font-bold text-gray-900">Bạn được phân tour mới!</h3>
-                <p class="text-gray-700 mt-1">Đà Lạt – Crazy House – Thác Datanla 4N3Đ</p>
-                <div class="flex items-center gap-4 mt-3 text-sm">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">#BK-2025-1208</span>
-                    <span class="text-gray-600">15-18/12/2025</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">10 phút trước</p>
-            </div>
-            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition"></i>
+    <?php if ($notificationCount === 0): ?>
+        <div class="text-center py-20 bg-white rounded-3xl shadow border border-gray-200">
+            <i class="fa-solid fa-bell-slash text-6xl text-gray-300 mb-6"></i>
+            <p class="text-2xl font-semibold text-gray-600">Chưa có thông báo mới</p>
+            <p class="text-gray-500 mt-3">Khi có tour mới cần bạn xác nhận, thông báo sẽ hiện ngay tại đây!</p>
         </div>
-    </a>
+    <?php else: ?>
+        <?php foreach ($notifications as $sch):
+            $start = date('d/m/Y', strtotime($sch['start_date']));
+            $end   = date('d/m/Y', strtotime($sch['end_date']));
+            $bookingCode = 'BK' . str_pad($sch['booking_id'], 6, '0', STR_PAD_LEFT);
+        ?>
+            <a href="?act=mesageguidedetail&id=<?= $sch['schedule_id'] ?>"
+                class="block bg-white rounded-2xl shadow hover:shadow-xl transition group border border-gray-200 hover:border-indigo-300">
 
-    <!-- Thông báo khác – Chưa đọc -->
-    <a href="?act=mesageguidedetail&id=124" class="block bg-white rounded-2xl shadow hover:shadow-xl transition group border border-gray-200 hover:border-blue-300">
-        <div class="p-6 flex items-center gap-5">
-            <div class="relative flex-shrink-0">
-                <div class="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i data-lucide="calendar-check" class="w-8 h-8 text-purple-600"></i>
+                <div class="p-6 flex items-center gap-5">
+                    <!-- Icon + Badge – ĐỒNG BỘ 100% với hệ thống -->
+                    <div class="relative flex-shrink-0">
+                        <div class="w-14 h-14 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl 
+                                    flex items-center justify-center group-hover:scale-110 transition">
+                            <i class="fa-solid fa-bus text-2xl text-indigo-600"></i>
+                        </div>
+                        <span class="absolute -top-2 -right-2 w-5 h-5 bg-red-600 rounded-full 
+                                    border-4 border-white shadow-lg animate-pulse"></span>
+                    </div>
+
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-gray-900">Bạn được phân tour mới!</h3>
+                        <p class="text-gray-700 mt-1">
+                            <?= htmlspecialchars($sch['tour_name'] ?? 'Tour chưa có tên') ?>
+                        </p>
+                        <div class="flex items-center gap-4 mt-3 text-sm">
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium">
+                                #<?= $bookingCode ?>
+                            </span>
+                            <span class="text-gray-600"><?= $start ?> - <?= $end ?></span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Vừa xong</p>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right text-xl text-gray-400 group-hover:text-indigo-600 transition"></i>
                 </div>
-                <span class="absolute -top-2 -right-2 w-5 h-5 bg-red-600 rounded-full border-4 border-white shadow-lg animate-pulse"></span>
-            </div>
-            <div class="flex-1">
-                <h3 class="text-lg font-bold text-gray-900">Phân tour mới – Khách VIP</h3>
-                <p class="text-gray-700 mt-1">Phú Quốc 5N4Đ – Đoàn 20 khách</p>
-                <div class="flex items-center gap-4 mt-3 text-sm">
-                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">#BK-2025-1215</span>
-                    <span class="text-gray-600">20-24/12/2025</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">1 giờ trước</p>
-            </div>
-            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition"></i>
-        </div>
-    </a>
-
-    <!-- Thông báo đã đọc -->
-    <a href="?act=tour_detail&id=1199" class="block bg-white rounded-2xl shadow hover:shadow-xl transition group">
-        <div class="p-6 flex items-center gap-5">
-            <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition">
-                <i data-lucide="circle-check" class="w-8 h-8 text-green-600"></i>
-            </div>
-            <div class="flex-1">
-                <h3 class="text-lg font-bold text-gray-900">Khách đã thanh toán đủ</h3>
-                <p class="text-gray-700 mt-1">Booking #BK-2025-1199 – Nha Trang</p>
-                <p class="text-xs text-gray-500 mt-3">Hôm qua, 14:30</p>
-            </div>
-            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition"></i>
-        </div>
-    </a>
-
+            </a>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-    lucide.createIcons();
-</script>
