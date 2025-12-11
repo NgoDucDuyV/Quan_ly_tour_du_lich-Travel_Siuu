@@ -23,59 +23,87 @@
             </div>
         <?php endif; ?>
         <!-- TABS HEADER -->
-        <div class="sticky top-0 z-10">
-            <nav class="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2 border-b border-slate-200
-                bg-transparent transition-colors duration-300
-                [@supports(position:sticky)]:backdrop-blur-sm
-                [@supports(position:sticky)]:bg-white/0
-                scroll-smooth">
-                <button type="button" data-tab="tab-info" class="tab-btn tab-active px-4 py-2 rounded-lg font-semibold text-gray-800 transition-colors duration-200">
+        <div class="sticky top-0 z-10 bg-white border-b border-slate-200">
+            <nav class="flex gap-1 overflow-x-auto no-scrollbar px-6 py-3 scroll-smooth">
+                <button type="button"
+                    data-tab="tab-info"
+                    class="tab-btn tab-active px-5 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap
+                        transition-all duration-200 flex items-center gap-2
+                        bg-indigo-100 text-hover border border-indigo-200">
+                    <i class="fa-solid fa-circle-info text-hover"></i>
                     Thông tin Tour
                 </button>
-                <button type="button" data-tab="tab-itinerary" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+
+                <button type="button"
+                    data-tab="tab-itinerary"
+                    class="tab-btn px-5 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap
+                        transition-all duration-200 flex items-center gap-2
+                        text-slate-600 hover:text-hover hover:bg-indigo-200 border border-transparent">
+                    <i class="fa-solid fa-route"></i>
                     Lịch trình
                 </button>
-                <!-- <button type="button" data-tab="tab-activity" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
-                    Hoạt động
-                </button> -->
-                <button type="button" data-tab="tab-images" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+
+                <button type="button"
+                    data-tab="tab-images"
+                    class="tab-btn px-5 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap
+                        transition-all duration-200 flex items-center gap-2
+                        text-slate-600 hover:text-hover hover:bg-indigo-200 border border-transparent">
+                    <i class="fa-solid fa-images"></i>
                     Ảnh Tour
                 </button>
-                <button type="button" data-tab="tab-supplier" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+
+                <button type="button"
+                    data-tab="tab-supplier"
+                    class="tab-btn px-5 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap
+                        transition-all duration-200 flex items-center gap-2
+                        text-slate-600 hover:text-hover hover:bg-indigo-200 border border-transparent">
+                    <i class="fa-solid fa-truck-field"></i>
                     Loại dịch vụ
                 </button>
-                <button type="button" data-tab="tab-version" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+
+                <button type="button"
+                    data-tab="tab-version"
+                    class="tab-btn px-5 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap
+                        transition-all duration-200 flex items-center gap-2
+                        text-slate-600 hover:text-hover hover:bg-indigo-200 border border-transparent">
+                    <i class="fa-solid fa-tags"></i>
                     Phiên bản Giá
                 </button>
-                <button type="button" data-tab="tab-policy"
-                    class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:text-main hover:bg-gray-100 transition-colors duration-200">
+
+                <button type="button"
+                    data-tab="tab-policy"
+                    class="tab-btn px-5 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap
+                        transition-all duration-200 flex items-center gap-2
+                        text-slate-600 hover:text-hover hover:bg-indigo-200 border border-transparent">
+                    <i class="fa-solid fa-shield-halved"></i>
                     Chính sách Tour
                 </button>
             </nav>
         </div>
 
-        <style>
-            .no-scrollbar::-webkit-scrollbar {
-                display: none;
-            }
+        <!-- JS giữ nguyên logic cũ của bạn -->
+        <script>
+            document.querySelectorAll('[data-tab]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.tab;
 
-            .no-scrollbar {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.remove('bg-indigo-100', 'text-indigo-700', 'border-indigo-200');
+                        b.classList.add('text-slate-600', 'hover:text-indigo-700', 'hover:bg-indigo-50', 'border-transparent');
+                    });
 
-            .tab-btn {
-                padding: 10px 14px;
-            }
+                    this.classList.remove('text-slate-600', 'hover:text-indigo-700', 'hover:bg-indigo-50', 'border-transparent');
+                    this.classList.add('bg-indigo-100', 'text-indigo-700', 'border-indigo-200');
 
-            .tab-active {
-                color: #1f55ad;
-                border-bottom: 2px solid #1f55ad;
-            }
-        </style>
+                    document.querySelectorAll('[id^="tab-"]').forEach(tab => tab.classList.add('hidden'));
+                    document.getElementById(target)?.classList.remove('hidden');
+                });
+            });
 
-
-        <!-- ===================== TAB 1: THÔNG TIN TOUR ===================== -->
+            // Tab đầu tiên active mặc định
+            document.querySelector('[data-tab="tab-info"]')?.classList.add('bg-indigo-100', 'text-indigo-700', 'border-indigo-200');
+        </script>
+        <!-- thông tin tour -->
         <div id="tab-info" class="tab-content block">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-300">

@@ -342,8 +342,9 @@ echo match ($act) {
     // thông báo guide
     'mesageguide' => (function () {
         requireGuide();
-        require_once "./views/Admin/mesageguide.php";
+        (new GuideController())->MesageGuide($_GET['guide_id'] ?? null);
     })(),
+
     'mesageguidedetail' => (function () {
         requireGuide();
         require_once "./views/Admin/mesageguidedetail.php";

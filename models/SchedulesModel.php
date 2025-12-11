@@ -211,6 +211,53 @@ class SchedulesModel
         }
     }
 
+    public function getSchedulesStatusByGuideId($guide_id)
+    {
+        try {
+            $sql = "
+            SELECT 
+                s.id                    AS schedule_id,
+                s.booking_id,
+                s.tour_id,
+                s.guide_id,
+                s.start_date,
+                s.end_date,
+                s.meeting_point,
+                s.vehicle,
+                s.hotel,
+                s.restaurant,
+                s.flight_info,
+                s.guide_notes,
+                sst.id 					AS schedule_status_id,
+                sst.code                AS schedule_status_code,
+                sst.name                AS schedule_status_name_vn,
+                gs.id 					AS guide_status_id,
+                gs.code                 AS guide_status_code,
+                gs.name                 AS guide_status_name_vn,
+                COALESCE(ss.description, 'Chưa có mô tả') AS status_description
+            FROM schedules s
+            LEFT JOIN schedule_status ss 
+                ON s.schedule_status_id = ss.id
+            LEFT JOIN schedule_status_types sst 
+                ON ss.schedule_status_type_id = sst.id
+            LEFT JOIN guide_status gs 
+                ON ss.guide_status_id = gs.id
+            WHERE s.guide_id = :guide_id
+            ORDER BY s.start_date DESC, s.id DESC
+        ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':guide_id', $guide_id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Lỗi truy vấn: " . $e->getMessage();
+            return [];
+        }
+    }
+
+
     public function getSchedulesByGuideId($guide_id)
     {
         try {

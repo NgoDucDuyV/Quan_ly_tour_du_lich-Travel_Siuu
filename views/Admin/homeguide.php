@@ -95,7 +95,7 @@
 
         <?php
         $todayTours = [];
-        $today = date('Y-m-d'); // Ngày hôm nay định dạng Y-m-d
+        $today = '2025-12-12'; // Ngày hôm nay định dạng Y-m-d
 
 
         foreach ($dataSchedulesByGuideId as $schedule) {
