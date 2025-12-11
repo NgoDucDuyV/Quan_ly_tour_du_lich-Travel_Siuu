@@ -50,6 +50,21 @@ class SchedulesModel
         return (int)$this->conn->lastInsertId();
     }
 
+    public function updateScheduleStatusId(
+        int $schedule_id,
+        int $status_id
+    ): bool {
+        $sql = "UPDATE schedules 
+            SET schedule_status_id = :status_id,
+                updated_at = NOW()
+            WHERE id = :schedule_id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':status_id'     => $status_id,
+            ':schedule_id'   => $schedule_id
+        ]);
+    }
 
     public function getAllSchedulesByTourId($tour_id)
     {
@@ -169,8 +184,10 @@ class SchedulesModel
                     s.restaurant,
                     s.flight_info,
                     s.guide_notes,
+                    sst.id 					AS schedule_status_id,
                     sst.code                AS schedule_status_code,
                     sst.name                AS schedule_status_name_vn,
+                    gs.id 					AS guide_status_id,
                     gs.code                 AS guide_status_code,
                     gs.name                 AS guide_status_name_vn,
                     COALESCE(ss.description, 'Chưa có mô tả') AS status_description

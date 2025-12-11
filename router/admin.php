@@ -184,6 +184,13 @@ echo match ($act) {
         echo (new GuideTourScheduleController)->CreateGuideSchedule($_GET['booking_id'] ?? null);
     })(),
 
+    // đánh dấu sắp diễn ra
+    'markUpcoming' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->MarkUpComing($_GET['booking_id'] ?? null);
+    })(),
+
+
     // chiết boong
     'bookingdetail' => (function () {
         requireAdmin();
@@ -306,10 +313,10 @@ echo match ($act) {
     })(),
 
     'dashboarthongke' => (function () {
-            requireAdmin();
-            (new ReportController())->index();
-            exit;
-        })(),
+        requireAdmin();
+        (new ReportController())->index();
+        exit;
+    })(),
 
     // show trang lỗi
     '404' => (function () {
