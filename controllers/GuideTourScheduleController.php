@@ -76,6 +76,12 @@ class GuideTourScheduleController
             'Khởi Tạo  trạng thái lịch trình chờ hướng dẫn viên sác nhận'
         );
 
+        // cập nhật thêm id ScheduleStatus
+        (new SchedulesModel())->updateScheduleStatusId(
+            $idSchedules,
+            $idScheduleStatus
+        );
+
         // cập nhật trạng thái của booking
         // lấy trang thái mới booking]
         $idBookingStatusGuide = 3;
