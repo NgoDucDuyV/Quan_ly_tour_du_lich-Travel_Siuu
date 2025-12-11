@@ -103,7 +103,10 @@
                                         group-hover:opacity-100 group-hover:visible 
                                         transition-all duration-200 z-20 overflow-hidden">
 
-                                    <a href="?mode=admin&act=viewstaff&id=<?= $value['id'] ?>"
+                                    <?php
+                                    $dataguide = (new GuideTourModel())->getGuideUserid($value['id']);
+                                    ?>
+                                    <a href="?mode=admin&act=guide_tour_schedule_detail&guide_id=<?= $dataguide['id'] ?>"
                                         class="flex items-center px-3 py-2 text-slate-700 hover:bg-slate-50 transition">
                                         <i class="fa-regular fa-eye w-5 mr-3"></i> Chi Tiết
                                     </a>

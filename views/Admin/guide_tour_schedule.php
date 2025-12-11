@@ -214,7 +214,7 @@
                 <div class="mt-auto border-t border-slate-100 bg-slate-50/50 px-6 py-4">
                     <div class="flex gap-3">
                         <!-- Xem chi tiết -->
-                        <a href="?mode=admin&act=guide_detail&id=<?= $g['id'] ?>"
+                        <a href="?mode=admin&act=guide_tour_schedule_detail&guide_id=<?= $g['id'] ?>"
                             class="flex-1 flex items-center justify-center gap-2 py-3 px-4 border border-slate-300 rounded-lg text-slate-700 font-medium text-sm hover:bg-white hover:border-slate-400 transition">
                             <i class="fa-solid fa-eye"></i>
                             Xem chi tiết

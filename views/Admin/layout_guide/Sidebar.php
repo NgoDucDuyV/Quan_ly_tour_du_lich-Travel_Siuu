@@ -75,7 +75,7 @@
     </nav>
 
     <!-- Card / info at bottom -->
-    <div class="max-w-xs mx-auto xl:block md:hidden mt-6">
+    <div class="max-w-xs mx-auto xl:block md:hidden mt-6 z-0">
         <div class="relative min-h-[300px] bg-white rounded-2xl shadow-lg p-6 pt-10" style="background: linear-gradient(180deg, rgba(238,246,255,0.8), rgba(255,255,255,0.95));">
             <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 ">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-main" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,7 +96,7 @@
                     <i data-lucide="log-out" class="w-5 h-5"></i>
                     Đăng Xuất
                 </a>
-            </div>  
+            </div>
 
             <div class="absolute inset-x-4 bottom-4 h-20 rounded-lg" style="background: linear-gradient(180deg, transparent, rgba(99,102,241,0.06)); filter: blur(12px); opacity: 0.9;"></div>
         </div>

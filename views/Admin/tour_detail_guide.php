@@ -8,7 +8,7 @@
         </h1>
         <a href="?mode=admin&act=scheduleguide"
             class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 
-                  bg-indigo-50 px-4 py-2 rounded-xl transition font-medium">
+                bg-indigo-50 px-4 py-2 rounded-xl transition font-medium">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             Quay lại
         </a>
