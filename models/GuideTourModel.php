@@ -420,25 +420,25 @@ class GuideTourModel
             t.name AS tour_name,
             s.start_date,
             s.end_date,
-           (
-        SELECT COUNT(bc.id)
-        FROM bookings b
-        JOIN booking_customers bc ON b.id = bc.booking_id
-        WHERE b.id = s.booking_id
-    ) AS total_customers,
-            ss.schedule_status_type_id,
-            sst.name AS schedule_status_name,
-            sst.code AS schedule_status_code,
-            gs.name AS guide_status_name,
-            gs.code AS guide_status_code
-        FROM schedules s
-        JOIN tours t ON t.id = s.tour_id
-        LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
-        LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
-        LEFT JOIN guide_status gs ON gs.id = ss.guide_status_id
-        WHERE s.guide_id = :guide_id
-          AND CURDATE() BETWEEN s.start_date AND s.end_date -- Đang diễn ra hôm nay
-        LIMIT 1
+            (
+            SELECT COUNT(bc.id)
+            FROM bookings b
+            JOIN booking_customers bc ON b.id = bc.booking_id
+            WHERE b.id = s.booking_id
+        ) AS total_customers,
+                ss.schedule_status_type_id,
+                sst.name AS schedule_status_name,
+                sst.code AS schedule_status_code,
+                gs.name AS guide_status_name,
+                gs.code AS guide_status_code
+            FROM schedules s
+            JOIN tours t ON t.id = s.tour_id
+            LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
+            LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
+            LEFT JOIN guide_status gs ON gs.id = ss.guide_status_id
+            WHERE s.guide_id = :guide_id
+            AND CURDATE() BETWEEN s.start_date AND s.end_date -- Đang diễn ra hôm nay
+            LIMIT 1
         ";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
