@@ -267,29 +267,10 @@ class GuideController
             'current_day_number' => $current_day_number
         ];
     }
-    // Lưu điểm danh 
-    public function saveAttendance()
-    {
-        // Đọc dữ liệu JSON từ fetch()
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        if (!$data || !is_array($data)) {
-            echo "Không nhận được dữ liệu!";
-            return;
-        }
-
-        $model = new GuideTourModel();
-
-        foreach ($data as $attendanceId => $status) {
-            $model->updateAttendance($attendanceId, $status);
-        }
-
-        echo "success";
-    }
     // Lưu điểm danh từng chặng 1 
     public function saveAttendanceByActivity()
     {
-        // Đọc dữ liệu JSON: { customer_id: { activity_id: status, ... } }
+        // Đọc dữ liệu JSON: { customer_id: { activity_id: { status: '...', notes: '...' }, ... }, ... }
         $data = json_decode(file_get_contents("php://input"), true);
 
         // 1. Xác định schedule_id đang hoạt động
@@ -310,8 +291,17 @@ class GuideController
         if (is_array($data)) {
             foreach ($data as $customerId => $activities) {
                 if (is_array($activities)) {
-                    foreach ($activities as $activityId => $status) {
-                        $model->saveOrUpdateAttendanceActivity($schedule_id, $customerId, $activityId, $status);
+                    foreach ($activities as $activityId => $record) {
+                        $status = $record['status'] ?? 'absent';
+                        $notes = $record['notes'] ?? NULL; // Nhận ghi chú
+
+                        // LOGIC ĐIỀU KIỆN: Nếu Đã đến, xóa ghi chú thành NULL
+                        if ($status === 'present') {
+                            $notes = NULL;
+                        }
+
+                        // Lưu vào DB (ĐÃ CÓ $notes mới)
+                        $model->saveOrUpdateAttendanceActivity($schedule_id, $customerId, $activityId, $status, $notes);
                         $successCount++;
                     }
                 }

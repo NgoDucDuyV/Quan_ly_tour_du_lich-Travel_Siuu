@@ -142,31 +142,22 @@ if (!function_exists('getStatusTextAndClass')) {
                                     foreach ($activities as $a): ?>
 
                                         <?php
-
                                         $activityId = $a['activity_id'];
-
-                                        $currentStatus = $c['attendance'][$activityId] ?? 'absent';
-
+                                        // Cấu trúc mới: ['status' => 'present/late/absent', 'notes' => '...']
+                                        $currentAttendance = $c['attendance'][$activityId] ?? ['status' => 'absent', 'notes' => NULL];
+                                        $currentStatus = $currentAttendance['status'];
+                                        $currentNotes = $currentAttendance['notes']; // Lấy ghi chú đã lưu
                                         $statusInfo = getStatusTextAndClass($currentStatus);
-
                                         ?>
-
                                         <td class="p-2 text-center border-l border-r min-w-[100px]">
-
                                             <button
-
                                                 class="activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition <?= $statusInfo['className'] ?>"
-
                                                 data-customer-id="<?= $c['customer_id'] ?>"
-
                                                 data-activity-id="<?= $activityId ?>"
-
-                                                data-status="<?= $currentStatus ?>">
-
-                                                <?= $statusInfo['text'] ?>
-
+                                                data-status="<?= $currentStatus ?>"
+                                                data-notes="<?= htmlspecialchars($currentNotes ?? '') ?>">
+                                                <?= $statusInfo['text'] ?> <?= $currentNotes ? '📝' : '' ?>
                                             </button>
-
                                         </td>
 
                                 <?php endforeach;
@@ -196,6 +187,26 @@ if (!function_exists('getStatusTextAndClass')) {
                 </button>
 
             </div>
+            <div id="notesModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
+                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md space-y-4 transform transition-all">
+                    <h3 class="text-xl font-bold text-gray-800">📝 Thêm Ghi Chú</h3>
+                    <p id="modalCustomerName" class="text-sm text-gray-600 font-medium"></p>
+
+                    <input type="hidden" id="modalCustomerId">
+                    <input type="hidden" id="modalActivityId">
+                    <input type="hidden" id="modalStatus">
+
+                    <div>
+                        <label for="notesInput" class="block text-sm font-medium text-gray-700 mb-2">Nội dung ghi chú:</label>
+                        <textarea id="notesInput" rows="4" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="Nhập lý do vắng mặt hoặc đến muộn..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button id="cancelNotes" class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Hủy</button>
+                        <button id="saveNotes" class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 transition">Lưu Ghi Chú</button>
+                    </div>
+                </div>
+            </div>
 
 
 
@@ -215,7 +226,7 @@ if (!function_exists('getStatusTextAndClass')) {
 </main>
 
 <script>
-    // 1. Dữ liệu thay đổi: { customer_id: { activity_id: new_status, ... } }
+    // 1. Cấu trúc dữ liệu thay đổi: { customer_id: { activity_id: { status: '...', notes: '...' }, ... } }
     let attendanceChanges = {};
     const statusOrder = ['absent', 'present', 'late'];
 
@@ -243,48 +254,136 @@ if (!function_exists('getStatusTextAndClass')) {
         };
     }
 
-    // Scroll to customer list
-    document.querySelector(".checkin-btn")?.addEventListener("click", () => {
-        document.getElementById("customerList").scrollIntoView({
-            behavior: "smooth"
-        });
+    // Biến tạm lưu trữ button đang được click
+    let currentButton = null;
+
+    // --- FIX LỖI CUỘN TRANG (Lỗi 1) ---
+    // Sử dụng DOMContentLoaded để đảm bảo các phần tử đã sẵn sàng
+    document.addEventListener("DOMContentLoaded", function() {
+        const btnCheckin = document.querySelector(".checkin-btn");
+        const customerList = document.getElementById("customerList");
+
+        if (btnCheckin && customerList) {
+            btnCheckin.addEventListener("click", function() {
+                customerList.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            });
+        }
     });
 
-    // 2. Xử lý click nút điểm danh theo Activity (.activity-status-btn)
-    document.querySelectorAll(".activity-status-btn").forEach(btn => {
-        btn.addEventListener("click", function() {
+    // --- XỬ LÝ MODAL GHI CHÚ (Lỗi 3 & Logic Notes) ---
+    const modal = document.getElementById('notesModal');
+    const notesInput = document.getElementById('notesInput');
+    const modalCustomerId = document.getElementById('modalCustomerId');
+    const modalActivityId = document.getElementById('modalActivityId');
+    const modalStatus = document.getElementById('modalStatus');
+    const modalCustomerName = document.getElementById('modalCustomerName');
 
-            const customerId = this.dataset.customerId;
-            const activityId = this.dataset.activityId;
-            const currentStatus = this.dataset.status;
+    function openNotesModal(customerId, activityId, status, notes, customerName) {
+        // Lấy nút đang thao tác để cập nhật sau
+        currentButton = document.querySelector(`[data-customer-id="${customerId}"][data-activity-id="${activityId}"]`);
 
-            const newStatus = getNextStatus(currentStatus);
+        modalCustomerId.value = customerId;
+        modalActivityId.value = activityId;
+        modalStatus.value = status;
+        notesInput.value = notes;
+        modalCustomerName.textContent = `Khách hàng: ${customerName}`;
 
-            // Cập nhật cấu trúc dữ liệu thay đổi
-            if (!attendanceChanges[customerId]) {
-                attendanceChanges[customerId] = {};
-            }
-            attendanceChanges[customerId][activityId] = newStatus;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        notesInput.focus();
+    }
 
-            // Cập nhật giao diện 
-            this.dataset.status = newStatus;
+    function closeNotesModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    document.getElementById('cancelNotes').addEventListener('click', closeNotesModal);
+
+    document.getElementById('saveNotes').addEventListener('click', function() {
+        const customerId = modalCustomerId.value;
+        const activityId = modalActivityId.value;
+        const newStatus = modalStatus.value;
+        const notes = notesInput.value.trim() || null; // Lưu NULL nếu trống
+
+        // Lưu thay đổi vào bộ nhớ đệm
+        if (!attendanceChanges[customerId]) {
+            attendanceChanges[customerId] = {};
+        }
+        attendanceChanges[customerId][activityId] = {
+            status: newStatus,
+            notes: notes
+        };
+
+        // Cập nhật giao diện nút
+        if (currentButton) {
             const {
                 text,
                 className
             } = getStatusTextAndClassJS(newStatus);
-            this.textContent = text;
-            this.className = "activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition " + className;
+            currentButton.dataset.status = newStatus;
+            currentButton.dataset.notes = notes || ''; // Cập nhật data-notes
+            currentButton.textContent = text + (notes ? ' 📝' : '');
+            currentButton.className = "activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition " + className;
+        }
+
+        closeNotesModal();
+    });
+
+    // --- LOGIC CHUYỂN TRẠNG THÁI (ĐIỂM DANH) - Đã FIX LỖI TRÙNG LẶP ---
+    document.querySelectorAll(".activity-status-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const customerId = this.dataset.customerId;
+            const activityId = this.dataset.activityId;
+            const currentStatus = this.dataset.status;
+            // Lấy ghi chú hiện tại (từ data-notes trong HTML, hoặc từ attendanceChanges nếu đã thay đổi)
+            const existingNotes = this.dataset.notes || (attendanceChanges[customerId] ? attendanceChanges[customerId][activityId]?.notes : '');
+
+            const newStatus = getNextStatus(currentStatus);
+
+            // Lấy tên khách hàng từ ô đầu tiên của hàng
+            const customerName = this.closest('tr').querySelector('td:first-child').textContent.trim();
+
+            if (newStatus === 'late' || newStatus === 'absent') {
+                // Mở Modal để nhập ghi chú
+                openNotesModal(customerId, activityId, newStatus, existingNotes, customerName);
+            } else {
+                // Trường hợp 'present' (Đã đến) -> Notes là NULL, không cần Modal
+                let notes = null;
+
+                // Lưu thay đổi vào bộ nhớ đệm
+                if (!attendanceChanges[customerId]) {
+                    attendanceChanges[customerId] = {};
+                }
+                attendanceChanges[customerId][activityId] = {
+                    status: newStatus,
+                    notes: notes // Notes là NULL
+                };
+
+                // Cập nhật giao diện 
+                this.dataset.status = newStatus;
+                this.dataset.notes = ''; // Xóa data-notes
+                const {
+                    text,
+                    className
+                } = getStatusTextAndClassJS(newStatus);
+                this.textContent = text;
+                this.className = "activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition " + className;
+            }
         });
     });
 
-    // 3. Xử lý lưu trữ khi bấm nút "Lưu điểm danh"
+    // 3. Xử lý lưu trữ khi bấm nút "Lưu điểm danh" (Lỗi 2)
     document.getElementById("saveAttendance")?.addEventListener("click", function() {
         if (Object.keys(attendanceChanges).length === 0) {
             alert("Không có thay đổi nào để lưu!");
             return;
         }
 
-        // Gửi dữ liệu đến endpoint mới (saveAttendanceByActivity)
+        // Gửi data theo cấu trúc mới { customerId: { activityId: { status, notes } } }
         fetch("?mode=admin&act=saveAttendanceByActivity", {
                 method: "POST",
                 headers: {
@@ -297,10 +396,10 @@ if (!function_exists('getStatusTextAndClass')) {
                 if (data.trim() === 'success') {
                     alert("Lưu điểm danh thành công!");
                     attendanceChanges = {};
-                    // Tùy chọn: reload trang để tải lại trạng thái mới nhất
                     window.location.reload();
                 } else {
-                    alert("Lưu điểm danh thất bại. Phản hồi server: " + data);
+                    console.error("Lưu điểm danh thất bại. Phản hồi server: ", data);
+                    alert("Lưu điểm danh thất bại. Vui lòng kiểm tra console.");
                 }
             })
             .catch(error => {
