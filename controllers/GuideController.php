@@ -420,4 +420,32 @@ class GuideController
         // die;
         require_once "./views/Admin/mesageguide.php";
     }
+
+    public function MesageGuideDetail($schedule_id)
+    {
+        if (!$schedule_id) {
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+
+        $dataSchedulesById = (new SchedulesModel())->getSchedulesStatusById($schedule_id);
+
+
+        $databooking = (new BookingModel())->getBookingById($dataSchedulesById[0]['booking_id']);
+
+        $dataCustomers = (new BookingCustomersModel())->getCustomersByBookingId($dataSchedulesById[0]['booking_id']);
+
+        // echo "<pre>";
+        // echo "\n=== \$dataSchedulesById ===\n";
+        // print_r($dataSchedulesById);
+
+        // echo "\n=== \$databooking ===\n";
+        // print_r($databooking);
+
+        // echo "\n=== \$dataCustomers ===\n";
+        // print_r($dataCustomers);
+        // echo "</pre>";
+        // die;
+        require_once "./views/Admin/mesageguidedetail.php";
+    }
 }

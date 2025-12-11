@@ -572,57 +572,57 @@ class GuideTourModel
     public function getSchedulesForGuide($guide_id)
     {
         $sql = "
-SELECT 
-s.id AS schedule_id,
-t.name AS tour_name,
-t.days AS tour_days, 
-t.nights AS tour_nights, 
-t.code AS tour_code,
-s.start_date,
-s.end_date,
-s.meeting_point,
-s.vehicle,
-s.hotel,
-s.restaurant,
-s.flight_info, 
-s.guide_notes, 
-s.schedule_status_id, 
+            SELECT 
+            s.id AS schedule_id,
+            t.name AS tour_name,
+            t.days AS tour_days, 
+            t.nights AS tour_nights, 
+            t.code AS tour_code,
+            s.start_date,
+            s.end_date,
+            s.meeting_point,
+            s.vehicle,
+            s.hotel,
+            s.restaurant,
+            s.flight_info, 
+            s.guide_notes, 
+            s.schedule_status_id, 
 
--- Lấy trạng thái lịch trình
-ss.schedule_status_type_id,
-sst.name AS schedule_status_name,
-sst.code AS schedule_status_code,
+            -- Lấy trạng thái lịch trình
+            ss.schedule_status_type_id,
+            sst.name AS schedule_status_name,
+            sst.code AS schedule_status_code,
 
--- Trạng thái HDV
-ss.guide_status_id,
-gs.name AS guide_status_name,
-gs.code AS guide_status_code
+            -- Trạng thái HDV
+            ss.guide_status_id,
+            gs.name AS guide_status_name,
+            gs.code AS guide_status_code
 
-FROM schedules s
-JOIN tours t 
-ON t.id = s.tour_id
+            FROM schedules s
+            JOIN tours t 
+            ON t.id = s.tour_id
 
-LEFT JOIN schedule_status ss 
-ON ss.schedule_id = s.id 
+            LEFT JOIN schedule_status ss 
+            ON ss.schedule_id = s.id 
 
-LEFT JOIN schedule_status_types sst 
-ON sst.id = ss.schedule_status_type_id
+            LEFT JOIN schedule_status_types sst 
+            ON sst.id = ss.schedule_status_type_id
 
-LEFT JOIN guide_status gs 
-ON gs.id = ss.guide_status_id
+            LEFT JOIN guide_status gs 
+            ON gs.id = ss.guide_status_id
 
-WHERE s.guide_id = :guide_id
--- FIX MỚI: Bao gồm các tour:
--- 1. Chưa có trạng thái (sst.code IS NULL - tour mới tạo)
--- 2. Đã có trạng thái nhưng KHÔNG phải là hoàn thành, hủy, hoặc đóng.
-AND (
-    sst.code IS NULL OR 
-    sst.code NOT IN ('completed', 'cancelled', 'closed') 
-)
--- Đảm bảo ngày kết thúc chưa qua ngày hiện tại
-AND s.end_date >= CURDATE() 
-ORDER BY s.start_date ASC
-";
+            WHERE s.guide_id = :guide_id
+            -- FIX MỚI: Bao gồm các tour:
+            -- 1. Chưa có trạng thái (sst.code IS NULL - tour mới tạo)
+            -- 2. Đã có trạng thái nhưng KHÔNG phải là hoàn thành, hủy, hoặc đóng.
+            AND (
+                sst.code IS NULL OR 
+                sst.code NOT IN ('completed', 'cancelled', 'closed') 
+            )
+            -- Đảm bảo ngày kết thúc chưa qua ngày hiện tại
+            AND s.end_date >= CURDATE() 
+            ORDER BY s.start_date ASC
+            ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
