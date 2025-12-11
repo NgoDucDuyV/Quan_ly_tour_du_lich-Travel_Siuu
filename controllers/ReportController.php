@@ -11,10 +11,10 @@ class ReportController
 
     public function index()
     {
-        // Lấy dữ liệu từ model
-        $completed = $this->model->getCompletedTours();
+        $completedBookings = $this->model->getCompletedBookings();
+        $totalRevenue      = $this->model->getTotalRevenueCompleted();
+        $totalBookings     = $this->model->countCompletedBookings();
 
-        // Gửi qua view
         require_once "./views/Admin/report.php";
     }
 }
