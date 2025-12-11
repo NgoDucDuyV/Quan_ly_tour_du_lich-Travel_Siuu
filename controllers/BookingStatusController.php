@@ -5,6 +5,7 @@ use BcMath\Number;
 class BookingStatusController
 {
 
+    // shor from cập nhất cọc tnah toán hoặc thanh toán
     public function ShowFormUpdateDeposit($booking_id)
     {
         // 1. Lấy thông tin booking
@@ -45,6 +46,7 @@ class BookingStatusController
 
 
 
+    // update thành toán cập nhật thanh toán
     public function UpdatePayment($booking_id)
     {
         $databooking   = (new BookingModel())->getBookingById($booking_id);
@@ -230,15 +232,6 @@ class BookingStatusController
             $data['note']
         );
 
-        // Ghi log trạng thái
-        (new BookingStatusModel())->insertBookingLog(
-            $databooking['booking_id'],
-            $databooking['status_type_code_master'],
-            $newBookingStatus['code'],
-            $_SESSION['admin_logged']['id'],
-            "Đặt cọc: +" . number_format($amount) . "₫"
-        );
-
         //lịch sử trang thái bôking
         $newStatusCode = (new BookingStatusModel())->getBookingStatusTypeById($data['booking_status_type_id'])['code'];
         (new BookingStatusModel())->insertBookingLog(
@@ -271,6 +264,7 @@ class BookingStatusController
     }
 
 
+    // update cập nhật cọc thanh toán
     public function UpdateDeposit($booking_id)
     {
         $databooking   = (new BookingModel())->getBookingById($booking_id);
@@ -436,9 +430,7 @@ class BookingStatusController
             exit;
         }
 
-        // ==================================================================
-        // 3. BÁO LỖI NẾU CHỌN SAI
-        // ==================================================================
+        // chọn sai các trường báo lỗi
         $_SESSION['error_message'] = "Không thể thực hiện!<br>
         Vui lòng chọn đúng một trong hai:<br><br>
         <strong>1. Đặt cọc:</strong><br>
@@ -450,6 +442,133 @@ class BookingStatusController
         • Loại thanh toán: <strong>Thanh toán</strong>";
 
         header("Location: " . BASE_URL . "?mode=admin&act=from_booking_update_deposit&booking_id=" . $booking_id);
+        exit;
+    }
+
+    public function MarkUpComing($booking_id)
+    {
+        if (!$booking_id || !is_numeric($booking_id)) {
+            $_SESSION['error_message'] = "ID booking không hợp lệ!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $bookingPrices = (new PaymentModel())->getBookingPricesByBookingId($booking_id);
+
+        $bookingModel = new BookingModel();
+        $schedulesModel = new SchedulesModel();
+        $schedulesStatusModel = new ScheduleStatusModel();
+
+        $databooking = $bookingModel->getBookingById($booking_id);
+        if (!$databooking) {
+            $_SESSION['error_message'] = "Không tìm thấy booking!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+        $schedule = $schedulesModel->getSchedulesStatusByBookingId($booking_id);
+        // echo '<pre>';
+        // var_dump($schedule);
+        // echo '<pre>';
+        // die;
+        // Trường hợp chưa có lịch trình (chưa phân HDV)
+        if (!$schedule || empty($schedule)) {
+            $_SESSION['error_message'] = "Booking #{$databooking['booking_code']} chưa được phân công hướng dẫn viên!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $schedule = $schedule[0];
+
+        $guideStatusCode = strtoupper($schedule['guide_status_code'] ?? '');
+        $scheduleStatusCode = strtoupper($schedule['schedule_status_code'] ?? '');
+
+        if ($guideStatusCode === 'PENDING') {
+            $_SESSION['error_message'] = "Không thể cập nhật! HDV <strong>" . ($schedule['guide_name'] ?? 'chưa rõ') .
+                "</strong> vẫn đang <strong class='text-orange-600'>Chờ xác nhận</strong> tour Booking #{$databooking['booking_code']}";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $allowedScheduleStatus = ['PLANNED', 'CONFIRMED'];
+        if (!in_array($scheduleStatusCode, $allowedScheduleStatus)) {
+            $_SESSION['error_message'] = "Không thể cập nhật! Lịch trình đang ở trạng thái <strong>{$schedule['schedule_status_name_vn']}</strong> – không thể chuyển sang 'Sắp diễn ra'";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        // kiểm tra thanh toán
+        if (empty($bookingPrices)) {
+            $_SESSION['error_message'] = "Chưa có thông tin thanh toán cho Booking #{$databooking['booking_code']}!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $priceInfo = $bookingPrices[0];
+        $remaining = (float)$priceInfo['remaining_amount'];
+
+        if ($remaining > 0) {
+            $formattedRemaining = number_format($remaining) . ' ₫';
+            $formattedTotal     = number_format($priceInfo['total_price']) . ' ₫';
+            $formattedPaid      = number_format($priceInfo['paid_amount']) . ' ₫';
+
+            $_SESSION['error_message'] = "
+            <div class='text-lefht'>
+                <strong>Booking " . $databooking['booking_code'] . ": Không thể đánh dấu 'Sắp diễn ra'</strong> vì khách <strong class='text-red-600'>chưa thanh toán đủ</strong>!<br><br>
+                <div class='bg-red-50 border border-red-200 rounded p-3 text-sm'>
+                    • Tổng tiền: <strong>{$formattedTotal}</strong><br>
+                    • Đã thanh toán: <strong class='text-emerald-600'>{$formattedPaid}</strong><br>
+                    • <strong class='text-red-600'>Còn nợ: {$formattedRemaining}</strong>
+                </div>
+            </div>
+        ";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        // id trang thái mới
+        $newIdBookingStatus = 4;
+        $newBookingStatus = (new BookingStatusModel())->getBookingStatusTypeById($newIdBookingStatus);
+
+        // Cập nhật trạng thái booking
+        (new BookingStatusModel())->updateStatusByBookingId(
+            $databooking['booking_id'],
+            $newIdBookingStatus,
+            $databooking['payment_type_id_master'],
+            'Đánh dấu sác nhận sắp diễn ra'
+        );
+
+        // Ghi log trạng thái
+        (new BookingStatusModel())->insertBookingLog(
+            $databooking['booking_id'],
+            $databooking['status_type_code_master'],
+            $newBookingStatus['code'],
+            $_SESSION['admin_logged']['id'],
+            "Xác Nhận Cập nhật trạng thái Sắp diễn ra !"
+        );
+
+        // $updateData = [
+        //     'schedule_status_code' => 'in_progress',     // hoặc 'confirmed' tùy bạn muốn
+        //     'guide_status_code'    => 'ON_ROUTE',        // HDV đang di chuyển đến điểm đón
+        //     'updated_at'           => date('Y-m-d H:i:s')
+        // ];
+
+        $result = $schedulesStatusModel->updateScheduleStatusByScheduleId(
+            $schedule[0]['schedule_id'],
+            $schedule[0]['schedule_status_id'],
+            3,
+            $schedule[0]['schedule_status_code'],
+            'ASSIGNED',
+            "Đã xác nhập cập nhật phần tour thành công hướng dẫn viên !"
+        );
+        if ($result) {
+            // Ghi log (tùy chọn)
+            // (new LogModel())->add("Admin đánh dấu tour BK{$databooking['booking_code']} là sắp diễn ra");    
+            $_SESSION['success_message'] = "Đã cập nhật thành công! Booking <strong>#{$databooking['booking_code']}</strong> đã được chuyển sang trạng thái <strong class='text-emerald-600'>Sắp diễn ra / Đang di chuyển</strong>. HDV sẽ nhận thông báo.";
+        } else {
+            $_SESSION['error_message'] = "Cập nhật thất bại! Vui lòng thử lại.";
+        }
+
+        header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
         exit;
     }
 }
