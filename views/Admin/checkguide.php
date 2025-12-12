@@ -1,408 +1,312 @@
 <?php
-
-// ĐỊNH NGHĨA HÀM PHP ĐỂ XỬ LÝ TRẠNG THÁI (Giữ nguyên)
-
+// Hàm trạng thái điểm danh - giữ nguyên, chỉ dùng màu chuẩn
 if (!function_exists('getStatusTextAndClass')) {
-
     function getStatusTextAndClass($status)
-
     {
-
-        $text = 'Vắng mặt';
-
-        $className = 'bg-red-500 text-white hover:bg-red-600';
-
-
-
-        if ($status === 'present') {
-
-            $text = 'Đã đến';
-
-            $className = 'bg-green-600 text-white hover:bg-green-700';
-        } else if ($status === 'late') {
-
-            $text = 'Đến muộn';
-
-            $className = 'bg-yellow-500 text-white hover:bg-yellow-600';
+        switch ($status) {
+            case 'present':
+                return ['bg' => 'bg-emerald-500', 'hover' => 'hover:bg-emerald-600'];
+            case 'late':
+                return ['bg' => 'bg-amber-500', 'hover' => 'hover:bg-amber-600'];
+            case 'absent':
+            default:
+                return ['bg' => 'bg-red-500', 'hover' => 'hover:bg-red-600'];
         }
-
-
-
-        return ['text' => $text, 'className' => $className];
     }
 }
-
 ?>
+<form method="POST" action="?mode=admin&act=saveAttendanceByActivity" class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto p-4 md:p-6 space-y-8">
 
-<main class="flex-1 p-8 space-y-10 bg-gray-50">
-
-    <header class="bg-gradient-to-br from-main to-blue-400 p-6 rounded-3xl shadow-md flex items-center justify-between border border-gray-100">
-        <div>
-            <h1 class="text-3xl text-white font-bold tracking-tight flex items-center gap-2">
-                📍 Check-in & Điểm danh
-            </h1>
-        </div>
-    </header>
-
-    <section class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-5">
-        <h2 class="text-xl font-semibold text-gray-700 flex items-center gap-2">
-            🚐 Tour hôm nay
-        </h2>
-
+        <!-- HEADER TOUR HÔM NAY – ĐỒNG BỘ VỚI DASHBOARD -->
         <?php if ($todayTour): ?>
-            <div class="p-6 rounded-2xl border bg-gradient-to-r from-blue-50 to-indigo-100 hover:shadow-lg transition cursor-pointer">
-                <div class="flex items-start justify-between">
-                    <div class="space-y-2">
-                        <h3 class="text-2xl font-bold text-gray-900">
-                            <?= $todayTour['tour_name'] ?? 'Không rõ tên tour' ?>
-                        </h3>
-                        <div class="text-gray-700 text-sm space-y-1">
-                            <p>📅 Ngày: <b><?= date('d/m/Y', strtotime($todayTour['start_date'])) ?></b> - <b><?= date('d/m/Y', strtotime($todayTour['end_date'])) ?></b></p>
-                            <p>👥 Tổng khách: <b><?= $todayTour['total_customers'] ?? 0 ?></b></p>
-                            <p>📌 Ngày hiện tại trong tour: <b class="text-indigo-800">Ngày <?= $current_day_number ?? 1 ?></b></p>
+            <div class="bg-gradient-to-br from-main to-blue-500 rounded-2xl shadow-lg hover:shadow-xl transition border border-blue-300 p-6 md:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+
+                    <!-- LEFT -->
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-white drop-shadow-xl">
+                            <?= htmlspecialchars($todayTour['tour_name']) ?>
+                        </h1>
+
+                        <div class="mt-3 flex flex-wrap items-center gap-4 text-sm text-white/90">
+                            <span class="font-mono font-bold bg-white/20 px-2 py-1 rounded-lg">
+                                #<?= $todayTour['tour_id'] ?>
+                            </span>
+
+                            <span class="opacity-60">•</span>
+
+                            <span class="font-semibold">
+                                <?= date('d/m', strtotime($todayTour['start_date'])) ?> →
+                                <?= date('d/m/Y', strtotime($todayTour['end_date'])) ?>
+                            </span>
+
+                            <span class="opacity-60">•</span>
+
+                            <span class="font-bold text-emerald-200">
+                                <?= $todayTour['total_customers'] ?? 0 ?> khách
+                            </span>
                         </div>
                     </div>
 
-                    <button class="checkin-btn px-6 py-3 bg-green-600 text-white rounded-xl shadow hover:bg-green-700 active:scale-95 transition font-medium">
-                        Điểm danh ngay
-                    </button>
+
+                    <!-- RIGHT -->
+                    <div class="text-right bg-white/20 backdrop-blur-sm px-5 py-4 rounded-2xl shadow-md">
+                        <p class="text-sm text-white/90">Điểm danh ngày</p>
+                        <p class="text-4xl font-extrabold text-white drop-shadow-lg">
+                            Ngày <?= $current_day_number ?>
+                        </p>
+                    </div>
                 </div>
             </div>
-        <?php else: ?>
-            <div class="p-4 bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-xl">
-                Hôm nay bạn không có tour nào.
+
+        <?php endif; ?>
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
+                <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success_message']; ?>
+                <?php unset($_SESSION['success_message']); ?>
             </div>
         <?php endif; ?>
-    </section>
+
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div>
+                    <?= $_SESSION['error_message'] ?>
+                </div>
+                <?php unset($_SESSION['error_message']); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $current_time_str = nowTime();  // Ví dụ: "14:35"
+        ?>
+
+        <div class="bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
+            <div class="bg-gradient-to-br from-main to-blue-400 text-white px-6 py-4 
+            flex flex-col md:flex-row items-center justify-between gap-3">
+
+                <!-- Tiêu đề -->
+                <h2 class="text-2xl md:text-xl font-bold text-white text-shadow">
+                    Điểm danh – Ngày <?= $current_day_number ?>
+                </h2>
+
+                <!-- Khu vực bên phải -->
+                <div class="flex items-center gap-4">
+
+                    <!-- Giờ hiện tại -->
+                    <div class="text-sm font-medium whitespace-nowrap">
+                        <i class="fa-solid fa-clock"></i> Giờ hiện tại:
+                        <strong><?= $current_time_str ?></strong>
+                    </div>
+
+                    <!-- Input tìm kiếm -->
+                    <div>
+                        <input type="text"
+                            id="search-input"
+                            placeholder="Tìm kiếm khách..."
+                            class="px-3 py-2 rounded-lg text-sm bg-white/20 placeholder-white/70
+                            border border-white/30 focus:outline-none focus:ring-2 
+                            focus:ring-white/60 text-white">
+                    </div>
+
+                </div>
+            </div>
 
 
-    <section id="customerList" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-6">
+            <?php if (!empty($customers) && !empty($activities)): ?>
 
+                <?php
+                $visible_activities = [];
+                foreach ($activities as $a) {
+                    $act_time = date('H:i', strtotime($a['activity_time']));
 
+                    // Thời gian được phép điểm danh: từ 15 phút trước đến 60 phút sau giờ hoạt động
+                    $start_allow = date('H:i', strtotime($a['activity_time']) - 900);  // -15 phút
+                    $end_allow   = date('H:i', strtotime($a['activity_time']) + 3600); // +60 phút
 
-        <h2 class="text-xl font-semibold text-gray-700 flex items-center gap-2">
+                    // Chỉ hiển thị nếu giờ hiện tại nằm trong khoảng cho phép điểm danh
+                    if ($current_time_str >= $start_allow && $current_time_str <= $end_allow) {
+                        $visible_activities[] = $a;
+                    }
+                }
+                ?>
 
-            📝 Danh sách điểm danh Ngày <?= $current_day_number ?? '?' ?>
+                <?php if (empty($visible_activities)): ?>
+                    <div class="text-center py-20 text-slate-500">
+                        <i class="fa-solid fa-calendar-xmark text-6xl text-slate-300 mb-4"></i>
+                        <p class="text-2xl font-bold text-slate-600">Không có buổi nào đang mở điểm danh</p>
+                        <p class="mt-3 text-lg">Giờ hiện tại: <strong class="text-main"><?= $current_time_str ?></strong></p>
+                        <p class="text-sm text-slate-400 mt-4">
+                            Các buổi sẽ tự động xuất hiện khi đến giờ (từ 15 phút trước).<br>
+                            Các buổi đã kết thúc quá 1 tiếng sẽ tự động ẩn.
+                        </p>
+                    </div>
 
-        </h2>
-        <?php if (!empty($customers) && !empty($activities)): ?>
+                <?php else: ?>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-100 border-b-2 border-slate-300 text-sm">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold sticky left-0 bg-slate-100 z-10">Khách hàng</th>
+                                    <th class="px-4 py-3 text-center">Năm sinh</th>
+                                    <th class="px-4 py-3 text-center">Hộ chiếu</th>
+                                    <th class="px-4 py-3 text-center">Loại khách</th>
 
+                                    <?php foreach ($visible_activities as $a):
+                                        $act_time = date('H:i', strtotime($a['activity_time']));
+                                        $is_current = ($current_time_str >= $act_time) &&
+                                            ($current_time_str <= date('H:i', strtotime($a['activity_time']) + 3600));
+                                    ?>
+                                        <th class="px-4 py-4 text-center max-w-[60px] relative">
+                                            <?php if ($is_current): ?>
+                                                <div class="top-2 right-2 bg-emerald-500 text-white text-xs px-3 py-1 rounded-full shadow-lg animate-pulse">
+                                                    ĐANG DIỄN RA
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="top-2 right-2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full shadow">
+                                                    SẮP DIỄN RA
+                                                </div>
+                                            <?php endif; ?>
+                                            <div class="font-bold text-main mt-4"><?= htmlspecialchars($a['activity_name']) ?></div>
+                                            <div class="text-lg font-bold <?= $is_current ? 'text-emerald-600 animate-pulse' : 'text-amber-600' ?>">
+                                                <?= $act_time ?>
+                                            </div>
+                                            <?php if (!empty($a['location'])): ?>
+                                                <div class="text-xs text-slate-500 mt-1 truncate max-w-[140px] mx-auto">
+                                                    <?= htmlspecialchars($a['location']) ?>
+                                                </div>
+                                            <?php endif; ?>
 
+                                        </th>
+                                    <?php endforeach; ?>
+                                </tr>
+                            </thead>
 
-            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow">
-
-                <table class="w-full min-w-[700px] text-left">
-
-                    <thead class="bg-gray-100 text-gray-600 sticky top-0">
-
-                        <tr>
-
-                            <th class="w-[180px] p-3 text-sm font-medium sticky left-0 bg-gray-100 border-r">Tên khách</th>
-
-                            <?php
-
-                            if (!empty($activities)):
-
-                                foreach ($activities as $a): ?>
-
-                                    <th class="p-2 text-xs font-medium text-center border-l border-r text-gray-700 hover:bg-gray-200 transition cursor-help" title="<?= htmlspecialchars($a['location'] ?? '') ?>">
-
-                                        <?= $a['activity_name'] ?><br><span class="text-indigo-500 font-bold"><?= date('H:i', strtotime($a['activity_time'])) ?></span>
-
-                                    </th>
-
-                            <?php endforeach;
-
-                            endif; ?>
-
-                        </tr>
-
-                    </thead>
-
-
-
-                    <tbody class="bg-white">
-
-                        <?php foreach ($customers as $c): ?>
-
-                            <tr class="border-b hover:bg-gray-50 transition">
-
-                                <td class="w-[180px] p-3 font-semibold text-gray-900 sticky left-0 bg-white border-r">
-
-                                    <?= htmlspecialchars($c['customer_name']) ?>
-
-                                </td>
-
-
-
-                                <?php
-
-                                if (!empty($activities)):
-
-                                    foreach ($activities as $a): ?>
-
-                                        <?php
-                                        $activityId = $a['activity_id'];
-                                        // Cấu trúc mới: ['status' => 'present/late/absent', 'notes' => '...']
-                                        $currentAttendance = $c['attendance'][$activityId] ?? ['status' => 'absent', 'notes' => NULL];
-                                        $currentStatus = $currentAttendance['status'];
-                                        $currentNotes = $currentAttendance['notes']; // Lấy ghi chú đã lưu
-                                        $statusInfo = getStatusTextAndClass($currentStatus);
-                                        ?>
-                                        <td class="p-2 text-center border-l border-r min-w-[100px]">
-                                            <button
-                                                class="activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition <?= $statusInfo['className'] ?>"
-                                                data-customer-id="<?= $c['customer_id'] ?>"
-                                                data-activity-id="<?= $activityId ?>"
-                                                data-status="<?= $currentStatus ?>"
-                                                data-notes="<?= htmlspecialchars($currentNotes ?? '') ?>">
-                                                <?= $statusInfo['text'] ?> <?= $currentNotes ? '📝' : '' ?>
-                                            </button>
+                            <tbody class="divide-y divide-slate-200">
+                                <?php foreach ($customers as $c): ?>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="px-6 py-5 font-semibold sticky left-0 bg-white z-10">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-gradient-to-br from-main to-blue-600 rounded-full text-white flex items-center justify-center font-bold text-sm">
+                                                    <?= strtoupper(mb_substr($c['customer_name'], 0, 2)) ?>
+                                                </div>
+                                                <div class="font-bold"><?= htmlspecialchars($c['customer_name']) ?></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-5 text-center text-sm text-slate-600">
+                                            <?= date('d/m/Y', strtotime($c['birth_year'])) ?>
+                                        </td>
+                                        <td class="px-4 py-5 text-center text-sm font-mono text-slate-700">
+                                            <?= htmlspecialchars($c['passport']) ?>
+                                        </td>
+                                        <td class="px-4 py-5 text-center min-w-[160px]">
+                                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                <?= htmlspecialchars($c['customer_types_name']) ?>
+                                            </span>
                                         </td>
 
-                                <?php endforeach;
+                                        <?php foreach ($visible_activities as $a):
+                                            $actId = $a['activity_id'];
+                                            $att = $c['attendance'][$actId] ?? ['status' => 'absent', 'notes' => ''];
+                                            $info = getStatusTextAndClass($att['status']);
+                                            $is_current = ($current_time_str >= date('H:i', strtotime($a['activity_time'])));
+                                        ?>
+                                            <td class="px-4 py-5 text-center min-w-[160px] border-l">
+                                                <select name="att[<?= $c['customer_id'] ?>][<?= $actId ?>][status]"
+                                                    class="attendance-select w-full px-4 py-3 rounded-lg text-white font-medium text-sm 
+                                                        transition-all duration-200 focus:outline-none"
+                                                    data-current="<?= $att['status'] ?? 'absent' ?>">
+                                                    <option value="present" <?= ($att['status'] ?? 'absent') === 'present' ? 'selected' : '' ?>>Đã đến</option>
+                                                    <option value="late" <?= ($att['status'] ?? 'absent') === 'late'    ? 'selected' : '' ?>>Đi muộn</option>
+                                                    <option value="absent" <?= ($att['status'] ?? 'absent') === 'absent'  ? 'selected' : '' ?>>Vắng</option>
+                                                </select>
+                                                <textarea name="att[<?= $c['customer_id'] ?>][<?= $actId ?>][notes]"
+                                                    rows="2"
+                                                    placeholder="Ghi chú..."
+                                                    class="note-field w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm 
+                                                        focus:ring-1 focus:ring-blue-400 resize-none transition-all 
+                                                        <?= ($att['status'] ?? 'absent') === 'present' ? 'hidden' : '' ?>">
+                                                    <?= htmlspecialchars($att['notes'] ?? '') ?>
+                                                </textarea>
+                                            </td>
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
 
-                                endif; ?>
+                                                    document.querySelectorAll('.attendance-select').forEach(select => {
+                                                        applyColor(select);
 
-                            </tr>
+                                                        select.addEventListener('change', function() {
+                                                            applyColor(this);
 
-                        <?php endforeach; ?>
+                                                            const notes = this.closest('td').querySelector('.note-field');
+                                                            if (this.value === 'present') {
+                                                                notes.classList.add('hidden');
+                                                                notes.value = "";
+                                                            } else {
+                                                                notes.classList.remove('hidden');
+                                                            }
+                                                        });
+                                                    });
 
-                    </tbody>
+                                                    function applyColor(el) {
+                                                        el.classList.remove(
+                                                            'bg-green-500', 'bg-green-600',
+                                                            'bg-amber-500', 'bg-amber-600',
+                                                            'bg-red-500', 'bg-red-600'
+                                                        );
 
-                </table>
+                                                        if (el.value === 'present') {
+                                                            el.classList.add('bg-green-500', 'hover:bg-green-600');
+                                                        } else if (el.value === 'late') {
+                                                            el.classList.add('bg-amber-500', 'hover:bg-amber-600');
+                                                        } else if (el.value === 'absent') {
+                                                            el.classList.add('bg-red-500', 'hover:bg-red-600');
+                                                        }
+                                                    }
+                                                });
+                                            </script>
 
-            </div>
-
-
-
-            <div class="text-right p-4 border-t">
-
-                <button id="saveAttendance"
-
-                    class="px-8 py-3 bg-blue-600 text-white rounded-2xl shadow-lg hover:bg-blue-700 active:scale-95 transition font-semibold">
-
-                    💾 Lưu điểm danh
-
-                </button>
-
-            </div>
-            <div id="notesModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
-                <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md space-y-4 transform transition-all">
-                    <h3 class="text-xl font-bold text-gray-800">📝 Thêm Ghi Chú</h3>
-                    <p id="modalCustomerName" class="text-sm text-gray-600 font-medium"></p>
-
-                    <input type="hidden" id="modalCustomerId">
-                    <input type="hidden" id="modalActivityId">
-                    <input type="hidden" id="modalStatus">
-
-                    <div>
-                        <label for="notesInput" class="block text-sm font-medium text-gray-700 mb-2">Nội dung ghi chú:</label>
-                        <textarea id="notesInput" rows="4" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="Nhập lý do vắng mặt hoặc đến muộn..."></textarea>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div class="flex justify-end space-x-3">
-                        <button id="cancelNotes" class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Hủy</button>
-                        <button id="saveNotes" class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 transition">Lưu Ghi Chú</button>
+                    <div class="p-6 border-t bg-slate-50 text-right">
+                        <button type="submit"
+                            class="px-12 py-4 bg-main hover:bg-hover text-white font-bold text-lg rounded-xl shadow-lg transition hover:shadow-xl hover:-translate-y-1">
+                            <i class="fa-solid fa-save mr-2"></i> Lưu điểm danh
+                        </button>
                     </div>
+
+                <?php endif; ?>
+
+            <?php else: ?>
+                <div class="text-right py-20 text-slate-400">
+                    <p class="text-2xl font-semibold">Chưa có dữ liệu điểm danh</p>
                 </div>
-            </div>
+            <?php endif; ?>
+        </div>
+</form>
 
-
-
-        <?php else: ?>
-
-            <div class="p-6 bg-gray-100 border border-gray-300 text-gray-700 rounded-xl text-center">
-
-                <p class="font-semibold text-lg">Không tìm thấy khách hàng hoặc lịch trình hoạt động cho Ngày <?= $current_day_number ?? '?' ?>.</p>
-
-                <p class="text-sm mt-1">Vui lòng kiểm tra lại dữ liệu Tour Itineraries và ngày hiện tại.</p>
-
-            </div>
-
-        <?php endif; ?>
-
-    </section>
-</main>
-
+<!-- JS ẩn/hiện ghi chú – cực nhẹ -->
 <script>
-    // 1. Cấu trúc dữ liệu thay đổi: { customer_id: { activity_id: { status: '...', notes: '...' }, ... } }
-    let attendanceChanges = {};
-    const statusOrder = ['absent', 'present', 'late'];
-
-    function getNextStatus(currentStatus) {
-        const currentIndex = statusOrder.indexOf(currentStatus);
-        const nextIndex = (currentIndex + 1) % statusOrder.length;
-        return statusOrder[nextIndex];
+    function toggleNote(select) {
+        const textarea = select.parentElement.querySelector('textarea');
+        if (select.value === 'present') {
+            textarea.classList.add('hidden');
+            textarea.value = '';
+        } else {
+            textarea.classList.remove('hidden');
+        }
     }
 
-    function getStatusTextAndClassJS(status) {
-        let text = 'Vắng mặt';
-        let className = 'bg-red-500 text-white hover:bg-red-600';
-
-        if (status === 'present') {
-            text = 'Đã đến';
-            className = 'bg-green-600 text-white hover:bg-green-700';
-        } else if (status === 'late') {
-            text = 'Đến muộn';
-            className = 'bg-yellow-500 text-white hover:bg-yellow-600';
-        }
-
-        return {
-            text,
-            className
-        };
-    }
-
-    // Biến tạm lưu trữ button đang được click
-    let currentButton = null;
-
-    // --- FIX LỖI CUỘN TRANG (Lỗi 1) ---
-    // Sử dụng DOMContentLoaded để đảm bảo các phần tử đã sẵn sàng
-    document.addEventListener("DOMContentLoaded", function() {
-        const btnCheckin = document.querySelector(".checkin-btn");
-        const customerList = document.getElementById("customerList");
-
-        if (btnCheckin && customerList) {
-            btnCheckin.addEventListener("click", function() {
-                customerList.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            });
-        }
+    // Khởi tạo khi load trang
+    document.querySelectorAll('select').forEach(sel => {
+        toggleNote(sel);
+        sel.addEventListener('change', () => toggleNote(sel));
     });
-
-    // --- XỬ LÝ MODAL GHI CHÚ (Lỗi 3 & Logic Notes) ---
-    const modal = document.getElementById('notesModal');
-    const notesInput = document.getElementById('notesInput');
-    const modalCustomerId = document.getElementById('modalCustomerId');
-    const modalActivityId = document.getElementById('modalActivityId');
-    const modalStatus = document.getElementById('modalStatus');
-    const modalCustomerName = document.getElementById('modalCustomerName');
-
-    function openNotesModal(customerId, activityId, status, notes, customerName) {
-        // Lấy nút đang thao tác để cập nhật sau
-        currentButton = document.querySelector(`[data-customer-id="${customerId}"][data-activity-id="${activityId}"]`);
-
-        modalCustomerId.value = customerId;
-        modalActivityId.value = activityId;
-        modalStatus.value = status;
-        notesInput.value = notes;
-        modalCustomerName.textContent = `Khách hàng: ${customerName}`;
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        notesInput.focus();
-    }
-
-    function closeNotesModal() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-
-    document.getElementById('cancelNotes').addEventListener('click', closeNotesModal);
-
-    document.getElementById('saveNotes').addEventListener('click', function() {
-        const customerId = modalCustomerId.value;
-        const activityId = modalActivityId.value;
-        const newStatus = modalStatus.value;
-        const notes = notesInput.value.trim() || null; // Lưu NULL nếu trống
-
-        // Lưu thay đổi vào bộ nhớ đệm
-        if (!attendanceChanges[customerId]) {
-            attendanceChanges[customerId] = {};
-        }
-        attendanceChanges[customerId][activityId] = {
-            status: newStatus,
-            notes: notes
-        };
-
-        // Cập nhật giao diện nút
-        if (currentButton) {
-            const {
-                text,
-                className
-            } = getStatusTextAndClassJS(newStatus);
-            currentButton.dataset.status = newStatus;
-            currentButton.dataset.notes = notes || ''; // Cập nhật data-notes
-            currentButton.textContent = text + (notes ? ' 📝' : '');
-            currentButton.className = "activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition " + className;
-        }
-
-        closeNotesModal();
-    });
-
-    // --- LOGIC CHUYỂN TRẠNG THÁI (ĐIỂM DANH) - Đã FIX LỖI TRÙNG LẶP ---
-    document.querySelectorAll(".activity-status-btn").forEach(btn => {
-        btn.addEventListener("click", function() {
-            const customerId = this.dataset.customerId;
-            const activityId = this.dataset.activityId;
-            const currentStatus = this.dataset.status;
-            // Lấy ghi chú hiện tại (từ data-notes trong HTML, hoặc từ attendanceChanges nếu đã thay đổi)
-            const existingNotes = this.dataset.notes || (attendanceChanges[customerId] ? attendanceChanges[customerId][activityId]?.notes : '');
-
-            const newStatus = getNextStatus(currentStatus);
-
-            // Lấy tên khách hàng từ ô đầu tiên của hàng
-            const customerName = this.closest('tr').querySelector('td:first-child').textContent.trim();
-
-            if (newStatus === 'late' || newStatus === 'absent') {
-                // Mở Modal để nhập ghi chú
-                openNotesModal(customerId, activityId, newStatus, existingNotes, customerName);
-            } else {
-                // Trường hợp 'present' (Đã đến) -> Notes là NULL, không cần Modal
-                let notes = null;
-
-                // Lưu thay đổi vào bộ nhớ đệm
-                if (!attendanceChanges[customerId]) {
-                    attendanceChanges[customerId] = {};
-                }
-                attendanceChanges[customerId][activityId] = {
-                    status: newStatus,
-                    notes: notes // Notes là NULL
-                };
-
-                // Cập nhật giao diện 
-                this.dataset.status = newStatus;
-                this.dataset.notes = ''; // Xóa data-notes
-                const {
-                    text,
-                    className
-                } = getStatusTextAndClassJS(newStatus);
-                this.textContent = text;
-                this.className = "activity-status-btn px-2 py-1 rounded-full shadow-sm font-medium text-xs transition " + className;
-            }
-        });
-    });
-
-    // 3. Xử lý lưu trữ khi bấm nút "Lưu điểm danh" (Lỗi 2)
-    document.getElementById("saveAttendance").addEventListener("click", async function() {
-        if (Object.keys(attendanceChanges).length === 0) {
-            alert("Không có thay đổi nào để lưu!");
-            return;
-        }
-        try {
-            const response = await axios.post(`${BASE_URL}?mode=admin&act=saveAttendanceByActivity`, attendanceChanges);
-            const data = response.data;
-            console.log(data);
-
-            if (data === "success") {
-                alert("Lưu điểm danh thành công!");
-                attendanceChanges = {};
-                window.location.reload();
-            } else {
-                console.error(" Server trả về lỗi:", data);
-                alert("Lưu điểm danh thất bại. Kiểm tra console.");
-            }
-
-        } catch (error) {
-            console.error("Lỗi Axios khi gửi dữ liệu:", error);
-            alert("Đã xảy ra lỗi khi gửi điểm danh lên server.");
-        }
-    });
-</script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-    lucide.createIcons();
 </script>

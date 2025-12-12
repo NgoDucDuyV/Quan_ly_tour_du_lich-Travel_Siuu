@@ -82,3 +82,7 @@ $notificationCount = count($notifications);
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
