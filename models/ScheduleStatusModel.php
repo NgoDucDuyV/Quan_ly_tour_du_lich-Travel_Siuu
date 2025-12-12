@@ -63,6 +63,18 @@ class ScheduleStatusModel
         string $guide_status_code,
         string $description
     ): bool {
+
+        // echo "<pre>DEBUG DATA:\n";
+        // print_r([
+        //     'schedule_id' => $schedule_id,
+        //     'schedule_status_type_id' => $schedule_status_type_id,
+        //     'guide_status_id' => $guide_status_id,
+        //     'schedule_status_type_code' => $schedule_status_type_code,
+        //     'guide_status_code' => $guide_status_code,
+        //     'description' => $description
+        // ]);
+        // echo "</pre>";
+        // die;
         try {
             $sql = "UPDATE `schedule_status`
                 SET 
@@ -83,9 +95,11 @@ class ScheduleStatusModel
                 ':guide_status_code'           => $guide_status_code,
                 ':description'                 => $description
             ]);
+            return true;
         } catch (Exception $e) {
             error_log("Lỗi updateScheduleStatusByScheduleId: " . $e->getMessage());
             throw new Exception("Không thể cập nhật trạng thái lịch theo schedule_id: " . $e->getMessage());
+            return false;
         }
     }
 }

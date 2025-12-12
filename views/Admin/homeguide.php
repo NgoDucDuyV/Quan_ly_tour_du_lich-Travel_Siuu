@@ -16,6 +16,23 @@
         </div>
     </section>
 
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="mb-5 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-check-circle"></i> <?= $_SESSION['success_message']; ?>
+            <?php unset($_SESSION['success_message']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>
+                <?= $_SESSION['error_message'] ?>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        </div>
+    <?php endif; ?>
+
 
     <!-- 3 CARD THỐNG KÊ -->
     <section class="grid md:grid-cols-4 gap-6">
@@ -95,8 +112,13 @@
 
         <?php
         $todayTours = [];
-        $today = '2025-12-12'; // Ngày hôm nay định dạng Y-m-d
+        // $today = '2025-12-12'; // Ngày hôm nay định dạng Y-m-d
+        $today = today(); // Ngày hôm nay định dạng Y-m-d
 
+        // echo '<pre>';
+        // var_dump($today);
+        // echo '<pre>';
+        // die;
 
         foreach ($dataSchedulesByGuideId as $schedule) {
             $start = $schedule['start_date'];

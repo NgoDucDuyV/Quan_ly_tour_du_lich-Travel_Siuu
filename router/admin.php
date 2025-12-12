@@ -363,6 +363,12 @@ echo match ($act) {
         (new GuideController())->MesageGuideDetail($_GET['schedule_id'] ?? null);
     })(),
 
+    // xác nhận tour
+    'accept_tour' => (function () {
+        requireGuide();
+        (new GuideController())->AcceptTour($_GET['schedule_id'] ?? null);
+    })(),
+
 
     // ScheduleGuide
     // Lịch trình của HDV
