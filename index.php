@@ -62,6 +62,22 @@ function today()
     global $FAKE_DATE;
     return $FAKE_DATE ?? date('Y-m-d');
 }
+
+$FAKE_TIME = null;
+
+function setFakeTime($time)
+{
+    global $FAKE_TIME;
+    $FAKE_TIME = $time; // format: H:i:s
+}
+
+setFakeTime('14:00');
+
+function nowTime()
+{
+    global $FAKE_TIME;
+    return $FAKE_TIME ?? date('H:i');
+}
 // echo '<pre>';
 // var_dump(today());
 // echo '<pre>';
