@@ -15,7 +15,7 @@ if (!function_exists('getStatusTextAndClass')) {
     }
 }
 ?>
-<form method="POST" action="?mode=admin&act=saveAttendanceByActivity" class="min-h-screen bg-gray-50">
+<form method="POST" action="?mode=admin&act=saveAttendanceByActivity" class="min-h-screen bg-gray-50 max-w-[1900px] mx-auto">
     <div class="max-w-7xl mx-auto p-4 md:p-6 space-y-8">
 
         <!-- HEADER TOUR HÔM NAY – ĐỒNG BỘ VỚI DASHBOARD -->
