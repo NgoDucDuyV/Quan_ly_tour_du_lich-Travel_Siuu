@@ -670,7 +670,7 @@ if (!empty($tourFullData)) {
                             function calcEndDate(start) {
                                 if (!start) return '';
                                 const d = new Date(start);
-                                d.setDate(d.getDate() + numberOfDays);
+                                d.setDate(d.getDate() + numberOfDays - 1);
                                 return d.toISOString().split('T')[0];
                             }
 
