@@ -160,25 +160,56 @@
 
                 <div class="space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Trạng thái Booking</label>
-                        <select name="booking_status_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
-                            <option value="">-- Chọn trạng thái --</option>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            Trạng thái Booking
+                        </label>
+                        <select name="booking_status_type_id"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition">
+
+                            <option value="<?= $databooking['status_type_id_master'] ?>" selected hidden>
+                                <?= htmlspecialchars($databooking['status_type_name'] ?? 'Trạng thái hiện tại') ?>
+                            </option>
+
                             <?php foreach ($bookingStatusTypes as $s): ?>
-                                <option value="<?= $s['id'] ?>" <?= $s['id'] == $databooking['status_type_id_master'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($s['name']) ?>
-                                </option>
+                                <?php if ($s['id'] == 8):
+                                ?>
+                                    <option value="<?= $s['id'] ?>">
+                                        <?= htmlspecialchars($s['name']) ?>
+                                    </option>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
+
+                        <div class="mt-2 text-xs text-slate-500">
+                            Trạng thái hiện tại:
+                            <span class="font-medium text-slate-700">
+                                <?= htmlspecialchars($databooking['status_type_name'] ?? 'Chưa xác định') ?>
+                            </span>
+                            <?php if ($databooking['status_type_id_master'] != 8): ?>
+                                → Có thể chuyển thành <strong class="text-red-600">Đã hủy</strong>
+                            <?php endif; ?>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Trạng thái Thanh toán</label>
-                        <select name="payment_status_type_id" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition" required>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            Trạng thái Thanh toán
+                        </label>
+                        <select name="payment_status_type_id"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-main focus:ring-4 focus:ring-main/10 transition"
+                            required>
+
                             <option value="">-- Chọn trạng thái thanh toán --</option>
+
                             <?php foreach ($paymentStatusTypes as $p): ?>
-                                <option value="<?= $p['id'] ?>" <?= $p['id'] == $databooking['payment_type_id_master'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($p['name']) ?>
-                                </option>
+                                <?php
+                                if (in_array($p['id'], [3, 4, 5])):
+                                ?>
+                                    <option value="<?= $p['id'] ?>"
+                                        <?= $p['id'] == $databooking['payment_type_id_master'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($p['name']) ?>
+                                    </option>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
                     </div>
