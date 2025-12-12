@@ -99,3 +99,7 @@
         if (e.target === this) this.remove();
     });
 </script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>

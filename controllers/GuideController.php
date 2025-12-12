@@ -303,59 +303,103 @@ class GuideController
             'current_day_number' => $current_day_number
         ];
     }
+
     // Lưu điểm danh từng chặng 1 
-    public function saveAttendanceByActivity()
+    public function saveAttendance()
     {
-        // Đọc dữ liệu JSON: { customer_id: { activity_id: { status: '...', notes: '...' }, ... }, ... }
+        // Bắt buộc phải có 2 dòng này ở đầu mọi AJAX trả JSON
+        ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            exit;
+        }
+
         $data = json_decode(file_get_contents("php://input"), true);
+        if (!is_array($data) || empty($data)) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            exit;
+        }
 
-        // Debug cho dễ nhìn
-        // 1. Xác định schedule_id đang hoạt động
-        $user_id = $_SESSION['admin_logged']['id'];
-        $guide_id = (new GuideTourModel())->getGuideUserid($user_id)['id'];
-        $todayTour = (new GuideTourModel())->getTodayTour($guide_id);
+        $user_id = $_SESSION['admin_logged']['id'] ?? 0;
+        $model   = new GuideTourModel();
+        $guide   = $model->getGuideUserid($user_id);
 
+        if (!$guide) {
+            echo json_encode(['success' => false, 'message' => 'Không tìm thấy hướng dẫn viên']);
+            exit;
+        }
+
+        $todayTour = $model->getTodayTour($guide['id']);
         if (!$todayTour) {
-            echo "Lỗi: Không tìm thấy tour hôm nay để lưu điểm danh.";
-            return;
+            echo json_encode(['success' => false, 'message' => 'Hôm nay không có tour']);
+            exit;
         }
 
         $schedule_id = $todayTour['schedule_id'];
+        $count = 0;
+
+        foreach ($data as $customerId => $status) {
+            if (in_array($status, ['present', 'late', 'absent'], true)) {
+                $model->saveOrUpdateAttendance($schedule_id, $customerId, $status);
+                $count++;
+            }
+        }
+
+        echo json_encode([
+            'success' => true,
+            'message' => "Đã cập nhật trạng thái tổng cho $count khách"
+        ]);
+        exit;
+    }
+
+    public function saveAttendanceByActivity()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['att'])) {
+            $_SESSION['error'] = 'Dữ liệu không hợp lệ!';
+            header("Location: ?mode=admin&act=checkguide");
+            exit;
+        }
+
         $model = new GuideTourModel();
-        $successCount = 0;
+        $user_id = $_SESSION['admin_logged']['id'];
+        $guide = $model->getGuideUserid($user_id);
+        $todayTour = $model->getTodayTour($guide['id']);
 
-        // 2. Vòng lặp qua dữ liệu và lưu vào Model
-        if (is_array($data)) {
-            foreach ($data as $customerId => $activities) {
-                if (is_array($activities)) {
-                    foreach ($activities as $activityId => $record) {
-                        $status = $record['status'] ?? 'absent';
-                        $notes = $record['notes'] ?? NULL; // Nhận ghi chú
+        if (!$todayTour) {
+            $_SESSION['error'] = 'Không có tour hôm nay!';
+            header("Location: ?mode=admin&act=checkguide");
+            exit;
+        }
 
-                        // LOGIC ĐIỀU KIỆN: Nếu Đã đến, xóa ghi chú thành NULL
-                        if ($status === 'present') {
-                            $notes = NULL;
-                        }
+        $schedule_id = $todayTour['schedule_id'];
+        $saved = 0;
 
-                        // Lưu vào DB (ĐÃ CÓ $notes mới)
-                        $model->saveOrUpdateAttendanceActivity($schedule_id, $customerId, $activityId, $status, $notes);
-                        $successCount++;
-                    }
+        foreach ($_POST['att'] as $customerId => $activities) {
+            foreach ($activities as $activityId => $data) {
+                $status = $data['status'] ?? 'absent';
+                $notes = ($status === 'present') ? null : ($data['notes'] ?? null);
+
+                $ok = $model->saveOrUpdateAttendanceActivity(
+                    $schedule_id,
+                    $customerId,
+                    $activityId,
+                    $status,
+                    $notes
+                );
+
+                if ($ok) {
+                    $model->saveOrUpdateAttendance($schedule_id, $customerId, $status);
+                    $saved++;
                 }
             }
         }
 
-        if ($successCount > 0) {
-            echo "success";
-        } else {
-            echo "Lỗi: Không có dữ liệu hợp lệ để lưu trữ.";
-        }
-        echo "=============== DEBUG FROM saveAttendanceByActivity() ===============\n";
-        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        echo "\n=====================================================================\n";
+        $_SESSION['success'] = "Đã lưu thành công $saved điểm danh!";
+        header("Location: ?mode=admin&act=checkguide");
         exit;
     }
-
     // RequestGuide
     // Yêu cầu đặc biệt của HDV
     public function requestGuide()
