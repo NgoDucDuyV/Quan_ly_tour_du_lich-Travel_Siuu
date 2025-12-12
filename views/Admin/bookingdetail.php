@@ -63,7 +63,7 @@
                 <h3 class="text-lg font-bold text-slate-800">Lịch Trình Trạng Thái HDV</h3>
 
                 <!-- Nút xem trạng thái HDV – nổi bật + icon -->
-                <a href="<?= BASE_URL ?>?mode=admin&act=bookingscheduledetail&schedule_id=<?= $dataSchedulesById[0]['schedule_id'] ?>"
+                <a href="<?= BASE_URL ?>?mode=admin&act=bookingscheduledetail&booking_id=<?= $booking_id ?>"
                     target="_blank"
                     class="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-md hover:shadow-lg flex items-center gap-2.5 transform hover:-translate-y-0.5">
                     Xem LT và Trạng thái HDV

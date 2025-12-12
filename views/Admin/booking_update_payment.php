@@ -44,6 +44,17 @@
             <?php unset($_SESSION['error_message']); ?>
         </div>
     <?php endif; ?>
+
+    <?php if (isset($_SESSION['warning_message'])): ?>
+        <div class="mb-5 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <?= $_SESSION['warning_message'] ?>
+            </div>
+            <?php unset($_SESSION['warning_message']); ?>
+        </div>
+    <?php endif; ?>
+
     <!-- 3 Card tổng quan -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <!-- Card 1: Khách hàng -->
