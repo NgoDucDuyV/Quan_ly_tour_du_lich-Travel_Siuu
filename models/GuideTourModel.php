@@ -559,10 +559,14 @@ class GuideTourModel
         $sqlCustomers = "
             SELECT 
                 bc.id AS customer_id, 
-                bc.full_name AS customer_name
+                bc.full_name AS customer_name,
+                bc.birth_year AS birth_year,
+                bc.passport AS passport,
+                ct.name AS customer_types_name
             FROM schedules s
             JOIN bookings b ON s.booking_id = b.id       /* FIX: Đảm bảo JOIN từ schedules.booking_id */
             JOIN booking_customers bc ON b.id = bc.booking_id
+            JOIN customer_types ct ON ct.id = bc.customer_type_id
             WHERE s.id = :schedule_id
             ORDER BY bc.id ASC
         ";

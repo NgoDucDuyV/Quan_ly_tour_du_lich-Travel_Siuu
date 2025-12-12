@@ -396,7 +396,7 @@ class GuideController
             }
         }
 
-        $_SESSION['success'] = "Đã lưu thành công $saved điểm danh!";
+        $_SESSION['success_message'] = "Đã lưu thành công $saved điểm danh!";
         header("Location: ?mode=admin&act=checkguide");
         exit;
     }
