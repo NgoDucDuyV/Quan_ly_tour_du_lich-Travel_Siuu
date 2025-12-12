@@ -5,7 +5,7 @@
     $name = $_SESSION['admin_logged']['fullname'] ?? "Hướng dẫn viên";
     ?>
 
-    <section class="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-3xl p-8 shadow-lg">
+    <section class="relative bg-gradient-to-br from-main to-blue-400 text-white rounded-3xl p-8 shadow-lg">
         <div class="relative z-10">
             <h1 class="text-3xl text-dark font-bold">
                 Xin chào, HDV <span class="text-white text-shadow-xl"><?= $name ?></span> 👋
@@ -56,14 +56,18 @@
 
         <!-- CARD 2 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition group">
-
             <div class="flex items-center gap-4">
                 <div class="p-3 bg-green-100 rounded-xl group-hover:bg-green-200">
                     <i data-lucide="clock" class="w-6 h-6 text-green-700"></i>
                 </div>
                 <div>
                     <p class="text-gray-500">Lịch làm việc</p>
-                    <h3 class="text-xl font-bold text-gray-800">12/11 - 19/11</h3>
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <?= (!empty($todayTours) && isset($todayTours[0]['start_date'], $todayTours[0]['end_date']))
+                            ? $todayTours[0]['start_date'] . " - " . $todayTours[0]['end_date']
+                            : "chưa có lịch"
+                        ?>
+                    </h3>
                 </div>
             </div>
         </div>
@@ -107,34 +111,10 @@
     <section class="bg-white p-6 rounded-2xl shadow">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <i data-lucide="map"></i> Lịch trình hôm nay
-            <span class="text-sm font-normal text-gray-500">(<?= date('d/m/Y') ?>)</span>
+            <span class="text-sm font-normal text-gray-500">(<?= today() ?>)</span>
         </h2>
 
-        <?php
-        $todayTours = [];
-        // $today = '2025-12-12'; // Ngày hôm nay định dạng Y-m-d
-        $today = today(); // Ngày hôm nay định dạng Y-m-d
-
-        // echo '<pre>';
-        // var_dump($today);
-        // echo '<pre>';
-        // die;
-
-        foreach ($dataSchedulesByGuideId as $schedule) {
-            $start = $schedule['start_date'];
-            $end   = $schedule['end_date'];
-            $status_code = $schedule['schedule_status_code']; // Lấy mã trạng thái từ Model đã sửa
-
-            // Điều kiện: (1) Đang diễn ra hôm nay VÀ (2) Trạng thái không phải là Hoàn thành/Đã hủy
-            if (
-                ($today >= $start && $today <= $end) && // <-- Logic này bao gồm tour đang diễn ra
-                !in_array($status_code, ['completed', 'cancelled', 'closed'])
-            ) {
-                $todayTours[] = $schedule;
-            }
-        }
-
-        if (empty($todayTours)): ?>
+        <?php if (empty($todayTours)): ?>
             <div class="p-8 text-center text-gray-500 bg-gray-50 rounded-xl">
                 <i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-3 text-gray-400"></i>
                 <p>Hôm nay bạn không có lịch hướng dẫn nào.</p>
@@ -148,18 +128,17 @@
                     $isOngoing = ($today > $schedule['start_date'] && $today < $schedule['end_date']) ||
                         ($today == $schedule['start_date']) ||
                         ($today == $schedule['end_date']);
-
                     // Trạng thái hôm nay
                     $todayStatus = $today == $schedule['start_date'] ? "Bắt đầu hôm nay" : ($today == $schedule['end_date'] ? "Kết thúc hôm nay" : "Đang diễn ra");
                 ?>
-                    <div class="border rounded-xl overflow-hidden bg-gradient-to-br from-indigo-50 to-blue-50 hover:shadow-lg transition-all duration-300">
+                    <div class="border rounded-xl overflow-hidden bg-gradient-to-br from-main to-blue-400 hover:shadow-lg transition-all duration-300">
                         <!-- Tiêu đề tour - Có thể click để mở chi tiết -->
                         <div class="p-5 cursor-pointer flex justify-between items-center bg-white bg-opacity-70 hover:bg-opacity-100 transition"
                             onclick="this.closest('.border').querySelector('.details').classList.toggle('hidden')">
                             <div>
-                                <h3 class="font-bold text-lg text-indigo-800">
+                                <h3 class="font-bold text-lg text-dark">
                                     <?= htmlspecialchars($schedule['tour_name']) ?>
-                                    <span class="text-sm font-medium text-indigo-600">(<?= $schedule['tour_code'] ?>)</span>
+                                    <span class="text-sm font-medium text-main">(<?= $schedule['tour_code'] ?>)</span>
                                 </h3>
                                 <p class="text-gray-700 mt-1 flex items-center gap-4 text-sm">
                                     <span class="flex items-center gap-1">
@@ -174,6 +153,12 @@
                                 <p class="text-green-600 font-semibold text-sm mt-2">
                                     <i data-lucide="clock"></i> <?= $todayStatus ?>
                                 </p>
+                                <div class="flex justify-center md:justify-start">
+                                    <a href="#" class="px-8 py-3 bg-white text-main font-bold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                                        <i class="fa-solid fa-play"></i>
+                                        Bắt đầu dẫn tour
+                                    </a>
+                                </div>
                             </div>
                             <div class="text-right">
                                 <span class="inline-block px-4 py-2 rounded-full bg-green-100 text-green-700 font-bold text-sm">
@@ -182,6 +167,7 @@
                                 <i data-lucide="chevron-down" class="w-6 h-6 text-gray-500 ml-3 transition-transform"
                                     id="arrow-<?= $schedule['schedule_id'] ?>"></i>
                             </div>
+
                         </div>
 
                         <!-- Phần chi tiết (mở rộng khi click) -->
@@ -226,11 +212,11 @@
                                 </div>
                             <?php endif; ?>
 
-                            <div class="text-right mt-4">
-                                <button onclick="this.closest('.details').classList.add('hidden')"
-                                    class="text-sm text-gray-500 hover:text-gray-700 underline">
-                                    Đóng chi tiết ↑
-                                </button>
+                            <div class="flex justify-center md:justify-start">
+                                <a href="#" class="px-8 py-3 bg-white text-main font-bold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-play"></i>
+                                    Bắt đầu dẫn tour
+                                </a>
                             </div>
                         </div>
                     </div>

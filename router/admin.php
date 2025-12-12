@@ -455,13 +455,46 @@ echo match ($act) {
         $activities = $data['activities'];
         $current_day_number = $data['current_day_number'];
 
-        require "./views/Admin/checkguide.php";
+        // echo "<pre>";
+        // echo "\n================ DEBUG ================\n";
+
+        // echo '--- $todayTour =  ---\n';
+        // print_r($todayTour);
+        // echo "\n";
+        // die;
+
+        // echo "--- customers ---\n";
+        // print_r($customers);
+        // echo "\n";
+
+        // echo "--- activities ---\n";
+        // print_r($activities);
+        // echo "\n";
+
+        // echo "--- current_day_number ---\n";
+        // var_dump($current_day_number);
+        // echo "\n";
+
+        // echo "=======================================\n";
+        // die;
+
+        if ($activities) {
+            require "./views/Admin/checkguide.php";
+        } else {
+            require "./views/Admin/giaodiennutbatdautour.php";
+        }
     })(),
 
+    // lấy danh sách khách booking lưu vào bảng điểm danh
+    // 'saveAttendanceByActivity' => (function () {
+    //     requireGuide();
+    //     (new GuideController())->saveAttendanceRecords($schedule_id, $guide_id, $records);
+    //     exit;
+    // })(),
     // Lưu điểm danh theo chặng 
     'saveAttendanceByActivity' => (function () {
         requireGuide();
-        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        (new GuideController())->saveAttendanceByActivity();
         exit;
     })(),
     // RequestGuide

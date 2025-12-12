@@ -90,9 +90,9 @@
                 <a href="<?= BASE_URL ?>?mode=admin&act=logout"
                     onclick="return confirm('Bạn có chắc muốn đăng xuất?')"
                     class="flex items-center gap-2 px-5 py-2.5 
-              bg-blue-600 text-white font-medium rounded-xl 
-              shadow-md hover:bg-blue-700 active:scale-95 
-              transition duration-200">
+                    bg-main text-white font-medium rounded-xl 
+                    shadow-md hover:bg-hover active:scale-95 
+                    transition duration-200">
                     <i data-lucide="log-out" class="w-5 h-5"></i>
                     Đăng Xuất
                 </a>
