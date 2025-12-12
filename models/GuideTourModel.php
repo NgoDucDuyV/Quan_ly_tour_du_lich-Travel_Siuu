@@ -273,24 +273,27 @@ class GuideTourModel
     // Lấy khách điểm danh theo lịch trình 
     public function getCustomersAttendanceBySchedule($schedule_id)
     {
+
+        echo $schedule_id;
+        die;
         // Lấy danh sách khách hàng thuộc Schedule này (từ bookings -> booking_customers)
         $sqlCustomers = "
-    SELECT bc.id AS customer_id, bc.full_name AS customer_name
-    FROM bookings b
-    JOIN booking_customers bc ON b.id = bc.booking_id
-    JOIN schedules s ON b.id = s.booking_id
-    WHERE s.id = :schedule_id
-";
+            SELECT bc.id AS customer_id, bc.full_name AS customer_name
+            FROM bookings b
+            JOIN booking_customers bc ON b.id = bc.booking_id
+            JOIN schedules s ON b.id = s.booking_id
+            WHERE s.id = :schedule_id
+        ";
         $stmtCustomers = $this->conn->prepare($sqlCustomers);
         $stmtCustomers->execute(['schedule_id' => $schedule_id]);
         $customers = $stmtCustomers->fetchAll(PDO::FETCH_ASSOC);
 
         // Lấy tất cả trạng thái điểm danh cho các khách trong tour này
         $sqlAttendance = "
-    SELECT customer_id, activity_id, status, notes -- ĐÃ THÊM NOTES
-    FROM attendance_activity
-    WHERE schedule_id = :schedule_id
-";
+            SELECT customer_id, activity_id, status, notes -- ĐÃ THÊM NOTES
+            FROM attendance_activity
+            WHERE schedule_id = :schedule_id
+        ";
         $stmtAttendance = $this->conn->prepare($sqlAttendance);
         $stmtAttendance->execute(['schedule_id' => $schedule_id]);
         $attendanceData = $stmtAttendance->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
@@ -474,6 +477,7 @@ class GuideTourModel
     // Tour hôm nay
     public function getTodayTour($guide_id)
     {
+        $today = today();
         $sql = "
         SELECT
             s.id AS schedule_id,
@@ -498,11 +502,14 @@ class GuideTourModel
             LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
             LEFT JOIN guide_status gs ON gs.id = ss.guide_status_id
             WHERE s.guide_id = :guide_id
-            AND CURDATE() BETWEEN s.start_date AND s.end_date -- Đang diễn ra hôm nay
+            AND :today BETWEEN s.start_date AND s.end_date -- Đang diễn ra hôm nay
             LIMIT 1
         ";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today
+        ]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     // Tour trong tuần

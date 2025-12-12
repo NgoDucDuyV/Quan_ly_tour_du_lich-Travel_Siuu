@@ -365,7 +365,7 @@
                                             <!-- 4. Hủy booking (trừ các trạng thái đã kết thúc) -->
                                             <?php if (!in_array($current, ['CANCELED', 'CLOSED', 'COMPLETED'])): ?>
                                                 <div class="border-t border-slate-200 my-2"></div>
-                                                <a href="?act=cancelBooking&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=huy_booking&booking_id=<?= $b['booking_id'] ?>"
                                                     onclick="return confirm('⚠️ HỦY booking này?\nKhách sẽ được thông báo và tiền cọc có thể bị hoàn/hủy theo chính sách!\nHành động KHÔNG THỂ hoàn tác!')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50">
                                                     <i class="fa-regular fa-ban"></i> Hủy booking
@@ -375,7 +375,7 @@
                                             <!-- 5. Khôi phục nếu đã hủy -->
                                             <?php if ($current === 'CANCELED'): ?>
                                                 <!-- <div class="border-t border-slate-200 my-2"></div> -->
-                                                <a href="?act=restoreBooking&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=restoreBooking&booking_id=<?= $b['booking_id'] ?>"
                                                     onclick="return confirm('Khôi phục booking này về trạng thái trước khi hủy?')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-amber-600 hover:bg-amber-50">
                                                     <i class="fa-solid fa-rotate-left"></i> Khôi phục booking

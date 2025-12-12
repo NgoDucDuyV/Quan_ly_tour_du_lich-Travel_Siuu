@@ -45,6 +45,53 @@ class BookingStatusController
     }
 
 
+    // huy booking
+    public function HuyBooking($booking_id)
+    {
+        $_SESSION['warning_message'] = "
+            Để hủy booking, bạn cần cập nhật số tiền hoàn lại cho khách trước.
+            Sau khi hoàn tiền xong, hãy tiến hành hủy booking.
+        ";
+        header("Location: " . BASE_URL . "?mode=admin&act=from_booking_update_payment&booking_id=" . $booking_id);
+        exit;
+    }
+    // khôi phục bôking
+    public function RestoreBooking($booking_id)
+    {
+
+        $databooking   = (new BookingModel())->getBookingById($booking_id);
+
+        // id trang thái mới
+        $newIdBookingStatus = 1;
+        $newBookingStatus = (new BookingStatusModel())->getBookingStatusTypeById($newIdBookingStatus);
+
+        // Cập nhật trạng thái booking
+        (new BookingStatusModel())->updateStatusByBookingId(
+            $databooking['booking_id'],
+            $newIdBookingStatus,
+            1,
+            'Khôi phục booking'
+        );
+
+        // Ghi log trạng thái
+        (new BookingStatusModel())->insertBookingLog(
+            $databooking['booking_id'],
+            $databooking['status_type_code_master'],
+            $newBookingStatus['code'],
+            $_SESSION['admin_logged']['id'],
+            "Khôi phục hoạt dộng booking!"
+        );
+
+
+        $_SESSION['success_message'] =
+            "Khôi phục thành công! Booking <strong>#{$databooking['booking_code']}</strong> 
+            đã được kích hoạt lại và có thể tiếp tục xử lý như bình thường.";
+
+        header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+        exit;
+    }
+
+
 
     // update thành toán cập nhật thanh toán
     public function UpdatePayment($booking_id)
@@ -368,8 +415,11 @@ class BookingStatusController
                 $_SESSION['admin_logged']['id']
             );
 
-            $_SESSION['success_message'] = "Xác nhận đặt cọc thành công!<br>
+            $_SESSION['success_message'] =
+                "Xác nhận đặt cọc thành công!<br>
+            Booking: <strong>#{$databooking['booking_code']}</strong><br>
             Đã thu: <strong>" . number_format($amount) . "₫</strong>";
+
 
             header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
             exit;
@@ -423,8 +473,11 @@ class BookingStatusController
                 $_SESSION['admin_logged']['id']
             );
 
-            $_SESSION['success_message'] = "Thanh toán đủ thành công!<br>
-            Booking đã được thanh toán <strong>100%</strong>: <strong>" . number_format($totalAmount) . "₫</strong>";
+            $_SESSION['success_message'] =
+                "Thanh toán đủ thành công!<br>
+            Booking: <strong>#{$databooking['booking_code']}</strong><br>
+            Đã thanh toán <strong>100%</strong>: <strong>" . number_format($totalAmount) . "₫</strong>";
+
 
             header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
             exit;

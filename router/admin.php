@@ -145,13 +145,26 @@ echo match ($act) {
         (new AdminSupplierController)->showSupplierTypesList();
     })(),
 
+
+
+    // <--------- BOOKING --------->
     // list quản lý booking
     'bookinglist' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
 
-    // 'Cập nhật đặt cọc booking'
+    // huy bôking
+    'huy_booking' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController())->HuyBooking($_GET['booking_id'] ?? null);
+    })(),
+    // KHÔI PHỤC
+    'restoreBooking' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController())->RestoreBooking($_GET['booking_id'] ?? null);
+    })(),
+
     'from_booking_update_deposit' => (function () {
         requireAdmin();
         echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
@@ -245,6 +258,11 @@ echo match ($act) {
         (new BookingController())->getsupplierPricesBySupplierId($requestData);
         exit;
     })(),
+
+
+
+
+    // <----------- DICHJ VUJ --------->
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
         requireAdmin();
