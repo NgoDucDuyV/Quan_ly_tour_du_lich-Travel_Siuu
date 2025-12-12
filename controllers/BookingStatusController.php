@@ -467,7 +467,7 @@ class BookingStatusController
         }
         $schedule = $schedulesModel->getSchedulesStatusByBookingId($booking_id);
         // echo '<pre>';
-        // var_dump($schedule);
+        // var_dump($schedule[0]['schedule_id']);
         // echo '<pre>';
         // die;
         // Trường hợp chưa có lịch trình (chưa phân HDV)
@@ -546,19 +546,18 @@ class BookingStatusController
             "Xác Nhận Cập nhật trạng thái Sắp diễn ra !"
         );
 
-        // $updateData = [
-        //     'schedule_status_code' => 'in_progress',     // hoặc 'confirmed' tùy bạn muốn
-        //     'guide_status_code'    => 'ON_ROUTE',        // HDV đang di chuyển đến điểm đón
-        //     'updated_at'           => date('Y-m-d H:i:s')
-        // ];
-
-        $result = $schedulesStatusModel->updateScheduleStatusByScheduleId(
-            $schedule[0]['schedule_id'],
-            $schedule[0]['schedule_status_id'],
+        $updateData = [
+            'schedule_status_code' => 'in_progress',     // hoặc 'confirmed' tùy bạn muốn
+            'guide_status_code'    => 'ON_ROUTE',        // HDV đang di chuyển đến điểm đón
+            'updated_at'           => date('Y-m-d H:i:s')
+        ];
+        $result = (new ScheduleStatusModel())->updateScheduleStatusByScheduleId(
+            $schedule['schedule_id'],
+            1,
             3,
-            $schedule[0]['schedule_status_code'],
+            'planned',
             'ASSIGNED',
-            "Đã xác nhập cập nhật phần tour thành công hướng dẫn viên !"
+            "Đã xác nhập cập nhật phần tour thành công hướng dẫn viên chuyển hướng chờ ngày khở hành !"
         );
         if ($result) {
             // Ghi log (tùy chọn)

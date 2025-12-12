@@ -44,11 +44,26 @@ require_once __DIR__ . '/controllers/AdminSupplierController.php';
 
 require_once __DIR__ . '/controllers/ReportController.php';
 
+// feck dữ liệu ngày
+$FAKE_DATE = null;
 
+function setFakeDate($date)
+{
+    global $FAKE_DATE;
+    $FAKE_DATE = $date;
+}
 
+setFakeDate('2026-01-05');
 
-
-
+function today()
+{
+    global $FAKE_DATE;
+    return $FAKE_DATE ?? date('Y-m-d');
+}
+// echo '<pre>';
+// var_dump(today());
+// echo '<pre>';
+// die;
 $mode = isset($_GET['mode']) ? $_GET['mode'] : 'admin';
 ob_start();
 switch ($mode) {

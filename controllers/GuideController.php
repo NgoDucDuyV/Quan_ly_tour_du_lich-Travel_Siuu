@@ -435,6 +435,7 @@ class GuideController
 
         $dataCustomers = (new BookingCustomersModel())->getCustomersByBookingId($dataSchedulesById[0]['booking_id']);
 
+        $datatour = (new TourModel())->getOne($dataSchedulesById[0]['tour_id']);
         // echo "<pre>";
         // echo "\n=== \$dataSchedulesById ===\n";
         // print_r($dataSchedulesById);
@@ -444,8 +445,56 @@ class GuideController
 
         // echo "\n=== \$dataCustomers ===\n";
         // print_r($dataCustomers);
+
+        // echo "\n=== \$datatour ===\n";
+        // print_r($datatour);
         // echo "</pre>";
         // die;
         require_once "./views/Admin/mesageguidedetail.php";
+    }
+
+    public function AcceptTour($schedule_id)
+    {
+        if (!$schedule_id) {
+            $_SESSION['error_message'] = "Thiếu ID lịch trình!";
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+
+        $dataSchedulesById = (new SchedulesModel())->getSchedulesStatusById($schedule_id);
+
+        if (empty($dataSchedulesById)) {
+            $_SESSION['error_message'] = "Không tìm thấy lịch trình!";
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+
+        $guide_id = $dataSchedulesById[0]['guide_id'] ?? null;
+
+        if (!$guide_id) {
+            $_SESSION['error_message'] = "Không tìm thấy Hướng dẫn viên của lịch trình!";
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+
+        $updateStatus = (new ScheduleStatusModel())->updateScheduleStatusByScheduleId(
+            $schedule_id,
+            6,
+            2,
+            'AVAILABLE',
+            'confirmed',
+            'HDV Đã xác nhận đi tour phục vụ đoàn'
+        );
+
+        if (!$updateStatus) {
+            $_SESSION['error_message'] = "Cập nhật trạng thái thất bại!";
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+
+        $_SESSION['success_message'] = "Xác nhận tour thành công!";
+
+        header("Location: ?mode=admin&act=mesageguide&guide_id=" . $guide_id);
+        exit;
     }
 }
