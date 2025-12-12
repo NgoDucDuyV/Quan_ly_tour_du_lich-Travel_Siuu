@@ -187,7 +187,7 @@ if (!function_exists('getStatusTextAndClass')) {
                             <tbody class="divide-y divide-slate-200">
                                 <?php foreach ($customers as $c): ?>
                                     <tr class="hover:bg-slate-50 transition">
-                                        <td class="px-6 py-5 font-semibold sticky left-0 bg-white z-10">
+                                        <td class="px-6 py-5 font-semibold sticky left-0 min-w-[100px] bg-white z-10">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-10 h-10 bg-gradient-to-br from-main to-blue-600 rounded-full text-white flex items-center justify-center font-bold text-sm">
                                                     <?= strtoupper(mb_substr($c['customer_name'], 0, 2)) ?>
