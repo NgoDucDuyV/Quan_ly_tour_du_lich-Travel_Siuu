@@ -86,10 +86,50 @@ class BookingController
         require_once "./views/Admin/bookingdetail.php";
     }
 
-    public function ShowBookingScheduleDetail()
+    public function ShowBookingScheduleDetail($booking_id)
     {
+        // Lấy dữ liệu trạng thái lịch trình theo booking_id
+        $dataSchedulesStatus = (new SchedulesModel())->getSchedulesStatusByBookingId($booking_id);
+
+        // Lấy thông tin booking
+        $databooking = (new BookingModel())->getBookingById($booking_id);
+
+        // Khởi tạo biến mặc định để tránh lỗi undefined
+        $dataguideByid = [];
+        $dataTourDetai = [];
+
+        // Nếu có lịch trình thì lấy thêm dữ liệu khác
+        if (!empty($dataSchedulesStatus)) {
+
+            // Lấy thông tin HDV
+            $dataguideByid = (new GuideTourModel())->getGuideById($dataSchedulesStatus[0]['guide_id']);
+
+            // Lấy chi tiết tour
+            $dataTourDetai = (new TourModel())->TourDetailItineraryModel($dataSchedulesStatus[0]['tour_id']);
+        }
+
+        // Xuất toàn bộ dữ liệu để debug
+        // echo "<pre>";
+        // echo '=== $dataSchedulesStatus =  ===\n';
+        // var_dump($dataSchedulesStatus);
+
+        // echo '\n=== $databooking =  ===\n';
+        // var_dump($databooking);
+
+        // echo '\n=== $dataguideByid =  ===\n';
+        // var_dump($dataguideByid);
+
+        // echo '\n=== $dataTourDetai =  ===\n';
+        // var_dump($dataTourDetai);
+
+        // echo "</pre>";
+
+        // die;
+
+        // Load view
         require_once "./views/Admin/bookingscheduledetail.php";
     }
+
 
     public function ShowFromNewBooking($tour_id = null)
     {

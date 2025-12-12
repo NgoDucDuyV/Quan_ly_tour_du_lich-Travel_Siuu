@@ -23,6 +23,8 @@ require_once __DIR__ . '/models/GuideTourModel.php';
 require_once __DIR__ . '/models/SchedulesModel.php';
 require_once __DIR__ . '/models/ReportModel.php';
 require_once __DIR__ . '/models/ScheduleStatusModel.php';
+// điểm danh 
+require_once __DIR__ . '/models/AttenDanceModel.php';
 
 
 // admin Controller
@@ -53,7 +55,7 @@ function setFakeDate($date)
     $FAKE_DATE = $date;
 }
 
-setFakeDate('2026-01-05');
+setFakeDate('2026-01-21');
 
 function today()
 {

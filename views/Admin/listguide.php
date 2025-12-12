@@ -1,24 +1,106 @@
-<main class="flex-1 p-8 space-y-6 bg-gray-50 min-h-screen">
+<main class="flex-1 p-4 space-y-4 bg-gray-50 min-h-screen md:p-8 md:space-y-6">
 
-        <header class="p-4 bg-white rounded-2xl shadow-sm border border-indigo-200">
-                <?php if ($todayTour): ?>
-                        <div class="text-indigo-800">
-                                <p class="font-bold text-xl flex items-center gap-2">
-                                        <i data-lucide="map" class="w-5 h-5"></i>
-                                        Tour hôm nay: <?= htmlspecialchars($todayTour['tour_name'] ?? 'N/A') ?>
-                                    </p>
-                                <p class="text-sm mt-1">Ngày đi: <?= date("d/m/Y", strtotime($todayTour['start_date'] ?? 'now')) ?></p>
-                            </div>
-                    <?php else: ?>
-                        <div class="text-yellow-800">
-                                <p class="font-semibold text-xl">
-                                        <i data-lucide="calendar-x" class="w-5 h-5 inline mr-2"></i>
-                                        Hôm nay bạn không có tour nào đang diễn ra.
-                                    </p>
-                                <p class="text-sm mt-1">Danh sách khách hàng đang trống.</p>
-                            </div>
-                    <?php endif; ?>
-            </header>
+    <header class="p-5 bg-gradient-to-br from-main to-blue-400 text-white rounded-2xl shadow-lg overflow-hidden relative md:p-6">
+        <?php if (!empty($datatour) && is_array($datatour) && !empty($datatour['name'])): ?>
+            <div class="relative z-10 space-y-5">
+
+                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div class="flex-1">
+                        <h2 class="font-black text-white text-shadow-xl text-2xl leading-tight md:text-3xl drop-shadow-md">
+                            <?= htmlspecialchars($datatour['name']) ?>
+                        </h2>
+                        <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
+                            <span class="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full font-bold border border-white/30">
+                                #<?= htmlspecialchars($datatour['code']) ?>
+                            </span>
+                            <span class="px-4 py-1.5 bg-emerald-400/30 backdrop-blur-sm rounded-full font-bold border border-emerald-300/50">
+                                <?= htmlspecialchars($datatour['duration']) ?>
+                            </span>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($datatour['images'])): ?>
+                        <div class="flex-shrink-0 mt-4 md:mt-0">
+                            <img src="<?= BASE_URL ?><?= htmlspecialchars($datatour['images']) ?>"
+                                alt="Tour hôm nay"
+                                class="w-full h-40 object-cover rounded-xl shadow-2xl border-4 border-white/30 md:w-64 md:h-44">
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Thông tin nhanh dạng icon – cực dễ đọc trên mobile -->
+                <div class="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+                    <div class="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                        <div class="w-10 h-10 bg-white/25 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-sun text-yellow-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-white/70 text-shadow-xl text-xs">Số ngày</p>
+                            <p class="font-bold text-lg"><?= $datatour['days'] ?> ngày</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                        <div class="w-10 h-10 bg-white/25 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-moon text-blue-200"></i>
+                        </div>
+                        <div>
+                            <p class="text-white/70 text-shadow-xl text-xs">Số đêm</p>
+                            <p class="font-bold text-lg"><?= $datatour['nights'] ?> đêm</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                        <div class="w-10 h-10 bg-white/25 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-location-dot text-pink-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-white/70 text-shadow-xl text-xs">Điểm đến</p>
+                            <p class="font-bold text-base">Phú Quốc</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                        <div class="w-10 h-10 bg-white/25 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-flag text-emerald-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-white/70 text-shadow-xl text-xs">Danh mục</p>
+                            <p class="font-bold text-sm"><?= htmlspecialchars($datatour['categoriesname']) ?></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nút hành động nổi bật (nếu cần) -->
+                <div class="flex justify-center md:justify-start">
+                    <button class="px-8 py-3 bg-white text-main font-bold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i>
+                        Bắt đầu dẫn tour
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-32 translate-x-20"></div>
+
+        <?php else: ?>
+            <div class="text-center py-12 from-accent to-light">
+                <div class="text-8xl mb-6 opacity-30">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+                <h2 class="font-bold text-2xl md:text-3xl mb-3">
+                    Hôm nay bạn được nghỉ ngơi
+                </h2>
+                <p class="text-white/80 text-sm max-w-md mx-auto">
+                    Hiện tại chưa có tour nào được phân công cho hôm nay. Hãy tận hưởng ngày tự do và sẵn sàng cho hành trình tiếp theo nhé!
+                </p>
+                <div class="mt-8">
+                    <i class="fa-solid fa-heart text-red-400 text-4xl animate-pulse"></i>
+                </div>
+            </div>
+        <?php endif; ?>
+    </header>
 
     <form method="GET" class="flex items-center w-full gap-3 bg-white p-4 rounded-2xl shadow-sm">
         <input type="hidden" name="mode" value="admin">
@@ -31,17 +113,17 @@
             class="flex-1 border border-gray-300 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-blue-500 outline-none transition"
             placeholder="Tìm kiếm theo tên hoặc passport...">
 
-        <button class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700 duration-150">
+        <button class="px-4 py-3 bg-main text-white font-semibold rounded-xl shadow hover:bg-hover duration-150 md:px-6">
             <i data-lucide="search" class="w-5 h-5"></i>
         </button>
     </form>
 
-    <section class="bg-white p-6 rounded-2xl shadow-xl">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Danh sách Khách đặt Tour</h2>
+    <section class="bg-white p-4 rounded-2xl shadow-xl md:p-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-4 md:text-xl">Danh sách Khách đặt Tour</h2>
         <div class="overflow-x-auto">
             <table class="w-full border-collapse text-left min-w-[900px]">
                 <thead>
-                    <tr class="bg-indigo-50 text-indigo-700 text-sm border-b border-indigo-200">
+                    <tr class="bg-indigo-50 text-main text-sm border-b border-indigo-200">
                         <th class="p-3 font-semibold">Tên Khách</th>
                         <th class="p-3 font-semibold">Năm Sinh</th>
                         <th class="p-3 font-semibold">Loại Khách</th>
@@ -57,7 +139,7 @@
                         <?php foreach ($datacustomers as $c): ?>
 
                             <?php
-                            // Chuyển đổi và xử lý NULL (FIXED: Đã dùng toán tử ?? và kiểm tra strtotime)
+                            // Chuyển đổi và xử lý NULL
                             $typeId = $c['customer_type_id'] ?? 0;
                             $typeName = match ($typeId) {
                                 1 => 'Người lớn',
@@ -66,7 +148,7 @@
                                 default => 'Không rõ'
                             };
                             $typeColor = match ($typeId) {
-                                1 => 'bg-blue-100 text-blue-700',
+                                1 => 'bg-blue-100 text-hover',
                                 2 => 'bg-orange-100 text-orange-700',
                                 3 => 'bg-red-100 text-red-700',
                                 default => 'bg-gray-100 text-gray-700'
@@ -94,7 +176,7 @@
                                     </span>
                                 </td>
                                 <td class="p-3 text-gray-700"><?= $passport ?></td>
-                                <td class="p-3 font-semibold text-indigo-600"><?= $tourName ?></td>
+                                <td class="p-3 font-semibold text-main"><?= $tourName ?></td>
                                 <td class="p-3 text-gray-700"><?= $bookingStart ?></td>
                             </tr>
 

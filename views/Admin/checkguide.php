@@ -36,9 +36,9 @@ if (!function_exists('getStatusTextAndClass')) {
 
 <main class="flex-1 p-8 space-y-10 bg-gray-50">
 
-    <header class="bg-white p-6 rounded-3xl shadow-md flex items-center justify-between border border-gray-100">
+    <header class="bg-gradient-to-br from-main to-blue-400 p-6 rounded-3xl shadow-md flex items-center justify-between border border-gray-100">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+            <h1 class="text-3xl text-white font-bold tracking-tight flex items-center gap-2">
                 📍 Check-in & Điểm danh
             </h1>
         </div>
@@ -377,35 +377,29 @@ if (!function_exists('getStatusTextAndClass')) {
     });
 
     // 3. Xử lý lưu trữ khi bấm nút "Lưu điểm danh" (Lỗi 2)
-    document.getElementById("saveAttendance")?.addEventListener("click", function() {
+    document.getElementById("saveAttendance").addEventListener("click", async function() {
         if (Object.keys(attendanceChanges).length === 0) {
             alert("Không có thay đổi nào để lưu!");
             return;
         }
+        try {
+            const response = await axios.post(`${BASE_URL}?mode=admin&act=saveAttendanceByActivity`, attendanceChanges);
+            const data = response.data;
+            console.log(data);
 
-        // Gửi data theo cấu trúc mới { customerId: { activityId: { status, notes } } }
-        fetch("?mode=admin&act=saveAttendanceByActivity", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(attendanceChanges)
-            })
-            .then(res => res.text())
-            .then(data => {
-                if (data.trim() === 'success') {
-                    alert("Lưu điểm danh thành công!");
-                    attendanceChanges = {};
-                    window.location.reload();
-                } else {
-                    console.error("Lưu điểm danh thất bại. Phản hồi server: ", data);
-                    alert("Lưu điểm danh thất bại. Vui lòng kiểm tra console.");
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi khi lưu điểm danh:", error);
-                alert("Đã xảy ra lỗi khi gửi dữ liệu lên server.");
-            });
+            if (data === "success") {
+                alert("Lưu điểm danh thành công!");
+                attendanceChanges = {};
+                window.location.reload();
+            } else {
+                console.error(" Server trả về lỗi:", data);
+                alert("Lưu điểm danh thất bại. Kiểm tra console.");
+            }
+
+        } catch (error) {
+            console.error("Lỗi Axios khi gửi dữ liệu:", error);
+            alert("Đã xảy ra lỗi khi gửi điểm danh lên server.");
+        }
     });
 </script>
 <script src="https://unpkg.com/lucide@latest"></script>

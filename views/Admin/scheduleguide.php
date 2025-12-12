@@ -1,13 +1,13 @@
 <main class="flex-1 p-8 space-y-10 bg-gray-50 min-h-screen">
 
-    <header class="relative bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-2xl p-6 shadow-lg flex justify-between items-center">
-        <h1 class="text-3xl font-bold flex items-center gap-3">
+    <header class="relative bg-gradient-to-r from-main to-blue-400 text-white rounded-2xl p-6 shadow-lg flex justify-between items-center">
+        <h1 class="text-3xl text-white text-shadow-xl font-bold flex items-center gap-3">
             <i data-lucide="calendar" class="w-7 h-7"></i>
             Lịch Trình Hướng Dẫn
         </h1>
 
         <a href="?mode=admin&act=sheduleguide"
-            class="bg-white text-blue-600 font-semibold px-4 py-2 rounded-xl text-sm shadow hover:bg-blue-50 transition duration-200">
+            class="bg-white text-main font-semibold px-4 py-2 rounded-xl text-sm shadow hover:bg-blue-50 transition duration-200">
             Quản lý lịch trình
         </a>
     </header>
@@ -96,7 +96,7 @@
         <!-- LỊCH SỬ TOUR -->
         <section class="bg-white p-6 rounded-3xl shadow-lg">
             <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-4">
-                <i data-lucide="clock-history" class="w-5 h-5 text-blue-600"></i>
+                <i data-lucide="clock-history" class="w-5 h-5 text-main"></i>
                 Lịch Sử Tour Gần Đây (Đã kết thúc)
             </h2>
 

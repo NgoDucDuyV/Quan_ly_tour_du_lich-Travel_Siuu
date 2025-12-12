@@ -1,8 +1,8 @@
 <main class="flex-1 p-6 space-y-8">
 
     <!-- HEADER -->
-    <header class="bg-white p-6 rounded-2xl shadow flex items-center justify-between">
-        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
+    <header class="bg-white p-6 bg-gradient-to-br from-main to-blue-400 rounded-2xl shadow flex items-center justify-between">
+        <h1 class="text-3xl text-white text-shadow-2xl font-bold text-dark tracking-tight">
             Nhật ký tour & khách
         </h1>
     </header>
@@ -45,7 +45,7 @@
                 </div>
 
 
-                <button class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
+                <button class="w-full py-3 bg-main text-white font-semibold rounded-xl shadow hover:bg-hover">
                     Lưu nhật ký
                 </button>
             </form>

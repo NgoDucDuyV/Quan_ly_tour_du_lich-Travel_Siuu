@@ -145,13 +145,26 @@ echo match ($act) {
         (new AdminSupplierController)->showSupplierTypesList();
     })(),
 
+
+
+    // <--------- BOOKING --------->
     // list quản lý booking
     'bookinglist' => (function () {
         requireAdmin();
         echo (new BookingController)->ShowBooking();
     })(),
 
-    // 'Cập nhật đặt cọc booking'
+    // huy bôking
+    'huy_booking' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController())->HuyBooking($_GET['booking_id'] ?? null);
+    })(),
+    // KHÔI PHỤC
+    'restoreBooking' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController())->RestoreBooking($_GET['booking_id'] ?? null);
+    })(),
+
     'from_booking_update_deposit' => (function () {
         requireAdmin();
         echo (new BookingStatusController())->ShowFormUpdateDeposit($_GET['booking_id'] ?? null);
@@ -245,6 +258,11 @@ echo match ($act) {
         (new BookingController())->getsupplierPricesBySupplierId($requestData);
         exit;
     })(),
+
+
+
+
+    // <----------- DICHJ VUJ --------->
     //thêm loại dịch vụ
     'add-supplier-type' => (function () {
         requireAdmin();
@@ -437,13 +455,46 @@ echo match ($act) {
         $activities = $data['activities'];
         $current_day_number = $data['current_day_number'];
 
-        require "./views/Admin/checkguide.php";
+        // echo "<pre>";
+        // echo "\n================ DEBUG ================\n";
+
+        // echo '--- $todayTour =  ---\n';
+        // print_r($todayTour);
+        // echo "\n";
+        // die;
+
+        // echo "--- customers ---\n";
+        // print_r($customers);
+        // echo "\n";
+
+        // echo "--- activities ---\n";
+        // print_r($activities);
+        // echo "\n";
+
+        // echo "--- current_day_number ---\n";
+        // var_dump($current_day_number);
+        // echo "\n";
+
+        // echo "=======================================\n";
+        // die;
+
+        if ($activities) {
+            require "./views/Admin/checkguide.php";
+        } else {
+            require "./views/Admin/giaodiennutbatdautour.php";
+        }
     })(),
 
+    // lấy danh sách khách booking lưu vào bảng điểm danh
+    // 'saveAttendanceByActivity' => (function () {
+    //     requireGuide();
+    //     (new GuideController())->saveAttendanceRecords($schedule_id, $guide_id, $records);
+    //     exit;
+    // })(),
     // Lưu điểm danh theo chặng 
     'saveAttendanceByActivity' => (function () {
         requireGuide();
-        (new GuideController())->saveAttendanceByActivity(); // Gọi hàm lưu mới
+        (new GuideController())->saveAttendanceByActivity();
         exit;
     })(),
     // RequestGuide
