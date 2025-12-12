@@ -175,6 +175,8 @@ class GuideTourModel
     // Thêm nhật ký mới
     public function insertLog($schedule_id, $guide_id, $content, $images)
     {
+        $log_date = date('Y-m-d');
+
         $sql = "INSERT INTO tour_logs (schedule_id, guide_id, log_date, content, images)
             VALUES (:schedule_id, :guide_id, :log_date, :content, :images)";
 
@@ -182,12 +184,14 @@ class GuideTourModel
         $stmt->execute([
             'schedule_id' => $schedule_id,
             'guide_id' => $guide_id,
+            'log_date' => $log_date,
             'content' => $content,
             'images' => json_encode($images)
         ]);
 
         return $this->conn->lastInsertId();
     }
+
 
     // Xóa nhật ký 
     public function deleteLog($id)
@@ -238,7 +242,7 @@ class GuideTourModel
     {
         // Chuyển đổi ngày bắt đầu và ngày hiện tại sang đối tượng DateTime
         $start = new DateTime($start_date);
-        $now = new DateTime(date('Y-m-d')); // Lấy ngày hiện tại
+        $now = new DateTime(today()); // Lấy ngày hiện tại
 
         // Tính khoảng cách giữa hai ngày
         $interval = $start->diff($now);
@@ -274,8 +278,6 @@ class GuideTourModel
     public function getCustomersAttendanceBySchedule($schedule_id)
     {
 
-        echo $schedule_id;
-        die;
         // Lấy danh sách khách hàng thuộc Schedule này (từ bookings -> booking_customers)
         $sqlCustomers = "
             SELECT bc.id AS customer_id, bc.full_name AS customer_name
@@ -287,7 +289,9 @@ class GuideTourModel
         $stmtCustomers = $this->conn->prepare($sqlCustomers);
         $stmtCustomers->execute(['schedule_id' => $schedule_id]);
         $customers = $stmtCustomers->fetchAll(PDO::FETCH_ASSOC);
-
+        // echo "<pre>";
+        // var_dump($customers);
+        // die;
         // Lấy tất cả trạng thái điểm danh cho các khách trong tour này
         $sqlAttendance = "
             SELECT customer_id, activity_id, status, notes -- ĐÃ THÊM NOTES
@@ -297,7 +301,9 @@ class GuideTourModel
         $stmtAttendance = $this->conn->prepare($sqlAttendance);
         $stmtAttendance->execute(['schedule_id' => $schedule_id]);
         $attendanceData = $stmtAttendance->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
-
+        // echo "<pre>";
+        // var_dump($attendanceData);
+        // die;
         // Kết hợp dữ liệu (Customer ID -> Activity ID -> { Status, Notes })
         $result = [];
         foreach ($customers as $customer) {
@@ -319,6 +325,8 @@ class GuideTourModel
 
         return $result;
     }
+
+
     //  Lưu điểm danh khách của Hdv 
     public function saveOrUpdateAttendanceActivity($schedule_id, $customer_id, $activity_id, $status, $notes = NULL)
     {
@@ -350,8 +358,8 @@ class GuideTourModel
         SELECT COUNT(*) 
         FROM notifications 
         WHERE guide_id = :guide_id 
-          AND is_read = 0 
-          AND deleted_at IS NULL
+        AND is_read = 0 
+        AND deleted_at IS NULL
     ";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['guide_id' => $guide_id]);
@@ -478,6 +486,8 @@ class GuideTourModel
     public function getTodayTour($guide_id)
     {
         $today = today();
+        // echo $today;
+        // die;
         $sql = "
         SELECT
             s.id AS schedule_id,
@@ -515,6 +525,7 @@ class GuideTourModel
     // Tour trong tuần
     public function getThisWeekTours($guide_id)
     {
+        $today = today();
         $sql = "
         SELECT 
             s.*, 
@@ -529,30 +540,37 @@ class GuideTourModel
         FROM schedules s
         JOIN tours t ON s.tour_id = t.id
         WHERE s.guide_id = :guide_id
-        AND YEARWEEK(s.start_date, 1) = YEARWEEK(CURDATE(), 1)
+        AND YEARWEEK(s.start_date, 1) = YEARWEEK(:today, 1)
         ORDER BY s.start_date ASC
         ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today
+        ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Tour gần đây
     public function getRecentTours($guide_id)
     {
+        $today = today();
         $sql = "
             SELECT s.*, t.name AS tour_name,
             (SELECT COUNT(*) FROM attendance WHERE schedule_id = s.id) AS total_customers
             FROM schedules s
             JOIN tours t ON s.tour_id = t.id
             WHERE s.guide_id = :guide_id
-            AND s.end_date < CURDATE()
+            AND s.end_date < :today
             ORDER BY s.end_date DESC
             LIMIT 5
         ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today
+        ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Lấy tất cả các dữ liệu có trên trang chủ
@@ -575,9 +593,11 @@ class GuideTourModel
         $stmt->execute(['sid' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     // Lấy lịch trình theo 
     public function getSchedulesForGuide($guide_id)
     {
+        $today = today();
         $sql = "
             SELECT 
             s.id AS schedule_id,
@@ -627,12 +647,15 @@ class GuideTourModel
                 sst.code NOT IN ('completed', 'cancelled', 'closed') 
             )
             -- Đảm bảo ngày kết thúc chưa qua ngày hiện tại
-            AND s.end_date >= CURDATE() 
+            AND s.end_date >= :today 
             ORDER BY s.start_date ASC
             ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today,
+        ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -655,33 +678,41 @@ class GuideTourModel
     // Thống kê tour tuần này
     public function getTourStatsThisWeek($guide_id)
     {
+        $today = today();
         $sql = "
             SELECT COUNT(*) AS total 
             FROM schedules
             WHERE guide_id = :guide_id 
-            AND YEARWEEK(start_date, 1) = YEARWEEK(CURDATE(), 1)
+            AND YEARWEEK(start_date, 1) = YEARWEEK(:today, 1)
         ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today,
+        ]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     // Lấy danh sách khách hàng theo HDV
     public function getCustomerListByTourid($tour_id, $start_date, $end_date)
     {
+        $today = today();
         // Lấy booking_id liên quan đến tour/ngày/hdv này
         $sqlBookingId = "
         SELECT booking_id FROM schedules 
         WHERE tour_id = :tour_id 
-          AND CURDATE() BETWEEN start_date AND end_date
+        AND :today BETWEEN start_date AND end_date
         LIMIT 1
         ";
         $stmtBooking = $this->conn->prepare($sqlBookingId);
         $stmtBooking->execute([
             'tour_id' => $tour_id,
+            'today' => $today
         ]);
         $bookingId = $stmtBooking->fetchColumn();
-
+        // echo "<pre>";
+        // Var_dump($bookingId);
+        // die;
         if (!$bookingId) return [];
 
         $sql = "
@@ -737,47 +768,55 @@ class GuideTourModel
     // Tổng số khách trong ngày hnay 
     public function getTotalCustomersToday($guide_id)
     {
+        $today = today();
         $sql = "
         SELECT COUNT(bc.id) AS total_customers
         FROM schedules s
         JOIN bookings b ON b.id = s.booking_id
         JOIN booking_customers bc ON bc.booking_id = b.id
         WHERE s.guide_id = :guide_id
-        AND CURDATE() BETWEEN s.start_date AND s.end_date
+        AND :today BETWEEN s.start_date AND s.end_date
         AND s.id = (
             SELECT id FROM schedules 
             WHERE guide_id = :guide_id 
-            AND CURDATE() BETWEEN start_date AND end_date
+            AND :today BETWEEN start_date AND end_date
             LIMIT 1
         )
     ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today
+        ]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     // Thêm hàm đếm tour sắp tới/đang diễn ra
     // Trong Model/GuideTourModel.php
     public function countUpcomingTours($guide_id)
     {
+        $today = today();
         $sql = "
-    SELECT 
-        COUNT(s.id) AS total_upcoming_tours
-    FROM schedules s
-    LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
-    LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
-    WHERE s.guide_id = :guide_id
-    -- Đếm tất cả tour CHƯA kết thúc ngày hôm nay
-    AND s.end_date >= CURDATE()
-    -- VÀ trạng thái KHÔNG phải là hoàn thành/hủy/đóng
-    AND (
-        sst.code IS NULL OR 
-        sst.code NOT IN ('completed', 'cancelled', 'closed') 
-    )
+        SELECT 
+            COUNT(s.id) AS total_upcoming_tours
+        FROM schedules s
+        LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
+        LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
+        WHERE s.guide_id = :guide_id
+        -- Đếm tất cả tour CHƯA kết thúc ngày hôm nay
+        AND s.end_date >= :today
+        -- VÀ trạng thái KHÔNG phải là hoàn thành/hủy/đóng
+        AND (
+            sst.code IS NULL OR 
+            sst.code NOT IN ('completed', 'cancelled', 'closed') 
+        )
     ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['guide_id' => $guide_id]);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today' => $today
+        ]);
 
         // Trả về số lượng dưới dạng integer
         return (int) $stmt->fetchColumn();

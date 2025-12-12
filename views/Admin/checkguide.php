@@ -36,9 +36,9 @@ if (!function_exists('getStatusTextAndClass')) {
 
 <main class="flex-1 p-8 space-y-10 bg-gray-50">
 
-    <header class="bg-white p-6 rounded-3xl shadow-md flex items-center justify-between border border-gray-100">
+    <header class="bg-gradient-to-br from-main to-blue-400 p-6 rounded-3xl shadow-md flex items-center justify-between border border-gray-100">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+            <h1 class="text-3xl text-white font-bold tracking-tight flex items-center gap-2">
                 📍 Check-in & Điểm danh
             </h1>
         </div>

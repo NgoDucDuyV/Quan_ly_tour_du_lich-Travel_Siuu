@@ -1,8 +1,8 @@
 <main class="flex-1 p-6 space-y-8">
 
     <!-- HEADER -->
-    <header class="bg-white p-6 rounded-2xl shadow flex items-center justify-between">
-        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
+    <header class="from-main bg-gradient-to-br from-main to-blue-400 p-6 rounded-2xl shadow flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-white text-shadow-xl tracking-tight">
             Yêu cầu đặc biệt
         </h1>
     </header>
@@ -67,7 +67,7 @@
                 </div>
 
                 <button
-                    class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
+                    class="w-full py-3 bg-main text-white font-semibold rounded-xl shadow hover:bg-blue-700">
                     Gửi yêu cầu
                 </button>
             </form>
@@ -85,7 +85,7 @@
                 <h2 class="text-2xl font-semibold text-gray-800">📌 Yêu cầu đã gửi</h2>
 
                 <a href="?mode=admin&act=requestguide_all"
-                    class="text-blue-600 hover:underline text-sm">
+                    class="text-main hover:underline text-sm">
                     Xem tất cả
                 </a>
             </div>
