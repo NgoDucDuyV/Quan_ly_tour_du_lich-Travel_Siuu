@@ -369,7 +369,6 @@ class GuideTourModel
     public function saveAttendanceByActivity()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-
         $user_id = $_SESSION['admin_logged']['id'];
         $guide = (new GuideTourModel())->getGuideUserid($user_id);
         $todayTour = (new GuideTourModel())->getTodayTour($guide['id']);
