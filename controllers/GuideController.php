@@ -87,7 +87,7 @@ class GuideController
         (new ScheduleStatusModel())->updateScheduleStatusByScheduleId(
             $schedule_id,
             2,
-            4,
+            5,
             "in_progress",
             "ON_ROUTE",
             "hướng dẫn viên đang bắt đàu tour di chuyển hoạt đôgnj tour"
@@ -112,7 +112,6 @@ class GuideController
         header("Location: " . BASE_URL . "?mode=admin&act=checkguide");
         exit;
     }
-
 
     // ListGuide
     // Danh sách khách của HDV

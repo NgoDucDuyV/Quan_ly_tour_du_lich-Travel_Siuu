@@ -92,6 +92,133 @@ class BookingStatusController
     }
 
 
+    public function CompleteTour($booking_id)
+    {
+        if (!$booking_id || !is_numeric($booking_id)) {
+            $_SESSION['error_message'] = "ID booking không hợp lệ!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $bookingModel = new BookingModel();
+        $schedulesModel = new SchedulesModel();
+        $scheduleStatusModel = new ScheduleStatusModel();
+
+        $databooking = $bookingModel->getBookingById($booking_id);
+        if (!$databooking) {
+            $_SESSION['error_message'] = "Không tìm thấy booking!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $schedules = $schedulesModel->getSchedulesStatusByBookingId($booking_id);
+        if (!$schedules || empty($schedules)) {
+            $_SESSION['error_message'] = "Booking #{$databooking['booking_code']} chưa được phân công HDV!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $schedule = $schedules[0];
+
+        $guideStatusCode = strtoupper($schedule['guide_status_code'] ?? '');
+        if ($guideStatusCode === 'PENDING') {
+            $_SESSION['error_message'] = "Không thể hoàn tất! HDV <strong>" . ($schedule['guide_name'] ?? 'chưa rõ') . "</strong> vẫn đang <strong class='text-orange-600'>Chờ xác nhận</strong>";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $scheduleStatusCode = strtoupper($schedule['schedule_status_code'] ?? '');
+        $allowedStatuses = ['PLANNED', 'CONFIRMED', 'IN_PROGRESS', 'ON_ROUTE'];
+        if (!in_array($scheduleStatusCode, $allowedStatuses)) {
+            $_SESSION['error_message'] = "Không thể hoàn tất! Lịch trình đang ở trạng thái <strong>{$schedule['schedule_status_name_vn']}</strong>";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        // Cập nhật trạng thái schedule sang completed + guide sang COMPLETED
+        $scheduleStatusModel->updateScheduleStatusByScheduleId(
+            $schedule['schedule_id'],
+            3,               // schedule_status_type_id = completed
+            6,               // guide_status_id = COMPLETED
+            'completed',     // schedule_status_code
+            'COMPLETED',     // guide_status_code
+            'Tour đã hoàn thành, HDV kết thúc dẫn đoàn'
+        );
+
+        // Cập nhật trạng thái booking sang COMPLETED
+        $bookingStatusId = 6; // COMPLETED
+        (new BookingStatusModel())->updateStatusByBookingId(
+            $databooking['booking_id'],
+            $bookingStatusId,
+            $databooking['payment_type_id_master'],
+            'Booking đã hoàn tất'
+        );
+
+        (new BookingStatusModel())->insertBookingLog(
+            $databooking['booking_id'],
+            $databooking['status_type_code_master'],
+            'COMPLETED',
+            $_SESSION['admin_logged']['id'],
+            'Xác nhận hoàn tất tour và HDV kết thúc dẫn đoàn'
+        );
+
+        $_SESSION['success_message'] = "Booking <strong>#{$databooking['booking_code']}</strong> và tour đã được đánh dấu <strong class='text-emerald-600'>Hoàn thành</strong>.";
+        header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+        exit;
+    }
+
+
+    // đóng kết thúc bôking
+    public function CloseBooking($booking_id)
+    {
+        if (!$booking_id || !is_numeric($booking_id)) {
+            $_SESSION['error_message'] = "ID booking không hợp lệ!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $bookingModel = new BookingModel();
+        $databooking = $bookingModel->getBookingById($booking_id);
+
+        if (!$databooking) {
+            $_SESSION['error_message'] = "Không tìm thấy booking!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        // Kiểm tra trạng thái hiện tại có thể đóng không
+        $currentStatus = strtoupper($databooking['status_type_code_master'] ?? '');
+        if ($currentStatus !== 'COMPLETED') {
+            $_SESSION['error_message'] = "Booking #{$databooking['booking_code']} chưa hoàn tất, không thể đóng!";
+            header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+            exit;
+        }
+
+        $newBookingStatusId = 7; // CLOSED
+        $bookingStatusModel = new BookingStatusModel();
+
+        // Cập nhật trạng thái booking sang CLOSED
+        $bookingStatusModel->updateStatusByBookingId(
+            $booking_id,
+            $newBookingStatusId,
+            $databooking['payment_type_id_master'],
+            'Booking đã kết thúc'
+        );
+
+        // Ghi log
+        $bookingStatusModel->insertBookingLog(
+            $booking_id,
+            $databooking['status_type_code_master'],
+            'CLOSED',
+            $_SESSION['admin_logged']['id'],
+            'Đóng booking sau khi hoàn tất tour và HDV'
+        );
+
+        $_SESSION['success_message'] = "Booking <strong>#{$databooking['booking_code']}</strong> đã được đóng (CLOSED).";
+
+        header("Location: " . BASE_URL . "?mode=admin&act=bookinglist");
+        exit;
+    }
 
     // update thành toán cập nhật thanh toán
     public function UpdatePayment($booking_id)
