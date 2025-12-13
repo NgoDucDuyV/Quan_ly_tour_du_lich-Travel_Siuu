@@ -124,8 +124,10 @@ if (!function_exists('getStatusTextAndClass')) {
 
                     // Thời gian được phép điểm danh: từ 15 phút trước đến 60 phút sau giờ hoạt động
                     $start_allow = date('H:i', strtotime($a['activity_time']) - 900);  // -15 phút
-                    $end_allow   = date('H:i', strtotime($a['activity_time']) + 3600); // +60 phút
-
+                    $end_allow   = date('H:i', strtotime($a['activity_time']) + 6600); // +100 phút
+                    // echo $start_allow;
+                    // echo $end_allow;
+                    // die;
                     // Chỉ hiển thị nếu giờ hiện tại nằm trong khoảng cho phép điểm danh
                     if ($current_time_str >= $start_allow && $current_time_str <= $end_allow) {
                         $visible_activities[] = $a;
