@@ -89,7 +89,6 @@ class CategoryController
         $this->redirectToList();
     }
 
-    // Xóa danh mục
     public function delete($id)
     {
         $id = (int) $id;
@@ -99,14 +98,21 @@ class CategoryController
         }
 
         try {
+            $count = $this->model->countToursByCategory($id);
+            if ($count > 0) {
+                $_SESSION['error'] = 'Không thể xóa danh mục vì vẫn còn tour thuộc danh mục này!';
+                $this->redirectToList();
+            }
+
             $this->model->delete($id);
             $_SESSION['success'] = 'Xóa danh mục thành công!';
         } catch (Throwable $e) {
-            $_SESSION['error'] = 'Lỗi SQL khi xóa danh mục: ' . $e->getMessage();
+            $_SESSION['error'] = 'Lỗi SQL khi xóa danh mục!';
         }
 
         $this->redirectToList();
     }
+
 
     // Hàm tiện ích redirect về list cho thống nhất
     private function redirectToList()

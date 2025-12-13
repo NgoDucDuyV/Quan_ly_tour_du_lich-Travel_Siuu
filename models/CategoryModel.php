@@ -74,4 +74,11 @@ class CategoryModel
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([$id]);
     }
+    public function countToursByCategory($categoryId)
+    {
+        $sql = "SELECT COUNT(*) FROM tours WHERE category_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$categoryId]);
+        return (int) $stmt->fetchColumn();
+    }
 }

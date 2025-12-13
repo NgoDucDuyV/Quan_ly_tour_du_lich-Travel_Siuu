@@ -211,7 +211,7 @@
     </div>
 </div>
 
-<!-- ================= JS ================= -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
