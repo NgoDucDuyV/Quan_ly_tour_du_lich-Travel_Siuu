@@ -36,17 +36,24 @@ class ReportModel
     }
 
 
-    public function getTotalRevenueCompleted() //tính tổng doanh thu các tour có trạng thái thành công
+    public function getTotalRevenueCompleted()
     {
-        $sql = "
-            SELECT COALESCE(SUM(b.total_price), 0)
-            FROM bookings b
-            WHERE b.end_date < CURDATE()
-        ";
+        $today = today();
 
-        $stmt = $this->conn->query($sql);
+        $sql = "
+        SELECT COALESCE(SUM(b.total_price), 0)
+        FROM bookings b
+        WHERE b.end_date < :today
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ':today' => $today
+        ]);
+
         return (int)$stmt->fetchColumn();
     }
+
 
 
     public function countCompletedBookings() //tính số bk đã hoàn thành
