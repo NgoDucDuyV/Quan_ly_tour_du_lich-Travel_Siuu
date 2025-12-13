@@ -55,7 +55,7 @@ function setFakeDate($date)
     $FAKE_DATE = $date;
 }
 
-setFakeDate('2026-02-01');
+setFakeDate('2025-12-16');
 
 function today()
 {
@@ -71,7 +71,7 @@ function setFakeTime($time)
     $FAKE_TIME = $time; // format: H:i:s
 }
 
-setFakeTime('11:50');
+// setFakeTime('10:10');
 
 function nowTime()
 {
