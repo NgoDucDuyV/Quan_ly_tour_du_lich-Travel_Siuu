@@ -103,6 +103,12 @@ class BookingStatusModel
         int $payment_status_type_id,
         ?string $description = null
     ): bool {
+        // echo "<pre style='background:#000;color:#0f0;padding:10px;margin:10px 0;'>";
+        // echo "ID: $booking_id\n";
+        // echo "Status: $booking_status_type_id\n";
+        // echo "Payment: $payment_status_type_id\n";
+        // echo "Desc: " . ($description ?? 'NULL') . "\n";
+        // die;
 
         // Lấy code từ bảng liên quan
         $sqlCode = "SELECT 

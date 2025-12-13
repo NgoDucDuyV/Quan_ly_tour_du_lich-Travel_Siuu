@@ -386,6 +386,11 @@ echo match ($act) {
         requireGuide();
         (new GuideController())->AcceptTour($_GET['schedule_id'] ?? null);
     })(),
+    // bắt đầu tour
+    'start_tour' => (function () {
+        requireGuide();
+        (new GuideController())->StartTour($_GET['schedule_id'] ?? null);
+    })(),
 
 
     // ScheduleGuide
@@ -454,12 +459,23 @@ echo match ($act) {
         $customers = $data['customers'];
         $activities = $data['activities'];
         $current_day_number = $data['current_day_number'];
+        $todayTours = $data['todayTours'];
 
+        // echo '<pre>';
+        // var_dump($todayTours);
+        // die;
 
-        if ($activities) {
-            require "./views/Admin/checkguide.php";
-        } else {
+        if (!$activities) {
+            $_SESSION['warning_message'] = "Bạn chưa có lịch trình điểm danh ngày hôm nay!";
+            header("Location: ?mode=admin&act=homeguide");
+            exit;
+        }
+        $startedStatuses = ['in_progress', 'paused', 'partially_done', 'completed'];
+        $hasStarted = in_array($todayTours[0]['schedule_status_code'] ?? '', $startedStatuses);
+        if (!$hasStarted) {
             require "./views/Admin/giaodiennutbatdautour.php";
+        } else {
+            require "./views/Admin/checkguide.php";
         }
     })(),
     // Lưu điểm danh 

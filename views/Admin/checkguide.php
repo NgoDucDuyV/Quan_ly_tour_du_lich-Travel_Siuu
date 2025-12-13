@@ -15,8 +15,8 @@ if (!function_exists('getStatusTextAndClass')) {
     }
 }
 ?>
-<form method="POST" action="?mode=admin&act=saveAttendanceByActivity" class="min-h-screen bg-gray-50 max-w-[1900px] mx-auto">
-    <div class="max-w-7xl mx-auto p-4 md:p-6 space-y-8">
+<form method="POST" id="attendanceForm" action="?mode=admin&act=saveAttendanceByActivity" class="min-h-screen bg-gray-50 max-w-[1900px] mx-auto">
+    <div class="max-w-[1800px] mx-auto p-4 md:p-6 space-y-8">
 
         <!-- HEADER TOUR HÔM NAY – ĐỒNG BỘ VỚI DASHBOARD -->
         <?php if ($todayTour): ?>
@@ -51,7 +51,7 @@ if (!function_exists('getStatusTextAndClass')) {
 
 
                     <!-- RIGHT -->
-                    <div class="text-right bg-white/20 backdrop-blur-sm px-5 py-4 rounded-2xl shadow-md">
+                    <div class="text-right min-w-[160px] bg-white/20 backdrop-blur-sm px-5 py-4 rounded-2xl shadow-md">
                         <p class="text-sm text-white/90">Điểm danh ngày</p>
                         <p class="text-4xl font-extrabold text-white drop-shadow-lg">
                             Ngày <?= $current_day_number ?>
@@ -291,6 +291,15 @@ if (!function_exists('getStatusTextAndClass')) {
             <?php endif; ?>
         </div>
 </form>
+<script>
+    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Ngăn form submit ngay lập tức
+
+        if (confirm('Bạn có chắc chắn muốn lưu điểm danh không?')) {
+            this.submit(); // Nếu xác nhận, gửi form
+        }
+    });
+</script>
 
 <!-- JS ẩn/hiện ghi chú – cực nhẹ -->
 <script>

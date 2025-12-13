@@ -189,18 +189,16 @@ class GuideTourModel
     {
         $today = today();
         $sql = "
-        SELECT COUNT(bc.id) AS total_customers
+        SELECT 
+            COUNT(bc.id) AS total_customers
         FROM schedules s
+        JOIN schedule_status ss ON s.schedule_status_id = ss.id
         JOIN bookings b ON b.id = s.booking_id
         JOIN booking_customers bc ON bc.booking_id = b.id
         WHERE s.guide_id = :guide_id
         AND :today BETWEEN s.start_date AND s.end_date
-        AND s.id = (
-            SELECT id FROM schedules 
-            WHERE guide_id = :guide_id 
-            AND :today BETWEEN start_date AND end_date
-            LIMIT 1
-        )
+        AND ss.schedule_status_type_code NOT IN ('PENDING', 'COMPLETED', 'CANCELED')
+        AND ss.guide_status_code NOT IN ('PENDING', 'COMPLETED', 'CANCELED');
     ";
 
         $stmt = $this->conn->prepare($sql);
@@ -239,19 +237,55 @@ class GuideTourModel
         // Trả về số lượng dưới dạng integer
         return (int) $stmt->fetchColumn();
     }
+
+
+    public function getUpcomingTours($guide_id)
+    {
+        $today = today(); // lấy ngày hiện tại, định dạng Y-m-d
+
+        $sql = "
+        SELECT 
+            s.*, 
+            ss.guide_status_code,
+            ss.schedule_status_type_code,
+            ss.description AS status_description
+        FROM schedules s
+        LEFT JOIN schedule_status ss ON ss.schedule_id = s.id
+        LEFT JOIN schedule_status_types sst ON sst.id = ss.schedule_status_type_id
+        WHERE s.guide_id = :guide_id
+        AND s.end_date >= :today
+        AND (
+            sst.code IS NULL OR 
+            sst.code NOT IN ('completed', 'cancelled', 'closed')
+        )
+        ORDER BY s.start_date ASC
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'guide_id' => $guide_id,
+            'today'    => $today
+        ]);
+
+        // Trả về tất cả dữ liệu dưới dạng mảng
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Đếm tour đã hoàn thành 
     public function countCompletedTours($guide_id)
     {
         $sql = "
-        SELECT COUNT(*)
-        FROM schedules s
-        JOIN schedule_status ss ON ss.schedule_id = s.id
-        JOIN schedule_status_types st ON st.id = ss.schedule_status_type_id
-        WHERE s.guide_id = :gid
-        AND st.code = 'completed'
+        SELECT COUNT(*) AS total_completed
+            FROM schedules s
+            JOIN schedule_status ss ON ss.schedule_id = s.id
+            JOIN schedule_status_types st ON st.id = ss.schedule_status_type_id
+            JOIN guide_status gs ON gs.code = ss.guide_status_code
+            WHERE s.guide_id = :guide_id
+            AND st.code = 'completed'
+            AND gs.code = 'COMPLETED'
     ";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['gid' => $guide_id]);
+        $stmt->execute(['guide_id' => $guide_id]);
         return (int)$stmt->fetchColumn();
     }
 
