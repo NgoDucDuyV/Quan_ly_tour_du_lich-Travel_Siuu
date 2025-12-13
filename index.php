@@ -215,5 +215,9 @@ $content_views = ob_get_clean();
 
 </body>
 <script src="<?= BASE_URL ?>assets\Js\admin\siderbar.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
 
 </html>
