@@ -55,7 +55,7 @@
 
                                     <td class="p-4 text-center">
                                         <?php
-                                        $status = date("Y-m-d") >= $tour['start_date'] ? "Đang diễn ra" : "Sắp tới";
+                                        $status = today() >= $tour['start_date'] ? "Đang diễn ra" : "Sắp tới";
                                         $color = $status == "Đang diễn ra"
                                             ? 'bg-green-100 text-green-700 border-green-200'
                                             : 'bg-yellow-100 text-yellow-700 border-yellow-200';
@@ -67,7 +67,7 @@
 
                                     <td class="p-3 text-center space-x-2">
                                         <?php
-                                        $today_YMD = date("Y-m-d");
+                                        $today_YMD = today();
                                         $is_active = $today_YMD >= $tour['start_date'] && $today_YMD <= $tour['end_date'];
                                         $schedule_id = $tour['id'];
 

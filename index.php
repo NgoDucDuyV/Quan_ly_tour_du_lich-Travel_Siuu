@@ -55,7 +55,7 @@ function setFakeDate($date)
     $FAKE_DATE = $date;
 }
 
-setFakeDate('2025-12-17');
+setFakeDate('2026-02-01');
 
 function today()
 {
