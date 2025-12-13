@@ -310,3 +310,7 @@ if (!function_exists('getStatusTextAndClass')) {
         sel.addEventListener('change', () => toggleNote(sel));
     });
 </script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
