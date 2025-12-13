@@ -16,12 +16,24 @@ class GuideController
 
         // $today = date('Y-m-d');
         // echo "<pre>";
-        // var_dump($today);
+        // // var_dump($today);
         // var_dump($dataSchedulesByGuideId);
         // echo "<pre>";
         // die;
 
-        $totalUpcomingTours = $model->countUpcomingTours($guide_id);
+        $totalUpcomingTours = $model->getUpcomingTours($guide_id);
+
+        $countUpcomingTours = 0;
+
+        foreach ($totalUpcomingTours as $tour) {
+            if (isset($tour['guide_status_code']) && strtoupper($tour['guide_status_code']) !== 'PENDING') {
+                $countUpcomingTours++;
+            }
+        }
+        // echo '<pre>';
+        // var_dump($countUpcomingTours);
+        // echo '<pre>';
+        // die;
         //Đếm khách hôm nay
         $totalCustomersToday = $model->getTotalCustomersToday($guide_id);
         // Đếm số tour hoàn thành
@@ -33,7 +45,7 @@ class GuideController
         $todayTours = [];
         $today = today();
         // echo '<pre>';
-        // var_dump($today);
+        // var_dump($totalCompletedTours);
         // echo '<pre>';
         // die;
         foreach ($dataSchedulesByGuideId as $schedule) {
@@ -59,6 +71,46 @@ class GuideController
         $requests = $model->getRecentRequests($guide_id);
 
         require_once "./views/Admin/homeguide.php";
+    }
+
+    public function StartTour($schedule_id)
+    {
+        // echo $schedule_id;
+        // die;
+        $dataschedule = (new SchedulesModel())->getAllSchedulesByid($schedule_id);
+        $databooking = (new BookingModel())->getBookingById($dataschedule[0]['booking_id']);
+        // echo '<pre>';
+        // var_dump($databooking);
+        // echo '<pre>';
+        // die;
+        // update trạng thái
+        (new ScheduleStatusModel())->updateScheduleStatusByScheduleId(
+            $schedule_id,
+            2,
+            4,
+            "in_progress",
+            "ON_ROUTE",
+            "hướng dẫn viên đang bắt đàu tour di chuyển hoạt đôgnj tour"
+        );
+        // cập nhật trạng thái booking
+        (new BookingStatusModel())->updateStatusByBookingId(
+            $databooking['booking_id'],
+            5,
+            $databooking['payment_type_id_master'],
+            'Hướng dẫn viên bắt đầu haotj đôgn tour !'
+        );
+
+        // Ghi log trạng thái
+        (new BookingStatusModel())->insertBookingLog(
+            $databooking['booking_id'],
+            $databooking['status_type_code_master'],
+            'IN_PROGRESS',
+            $_SESSION['admin_logged']['id'],
+            "Hướng dẫn viên xác nhận bắt đầu hoạt đôngj tour"
+        );
+
+        header("Location: " . BASE_URL . "?mode=admin&act=checkguide");
+        exit;
     }
 
 
@@ -261,9 +313,34 @@ class GuideController
     // Check-in và điểm danh của HDV
     public function checkGuide()
     {
+
         $user_id = $_SESSION['admin_logged']['id'];
         $guide = (new GuideTourModel())->getGuideUserid($user_id);
         $guide_id = $guide['id'];
+
+        $dataSchedulesByGuideId = (new GuideTourModel())->getSchedulesForGuide($guide_id);
+
+        $todayTours = [];
+        $today = today();
+        // echo '<pre>';
+        // var_dump($totalCompletedTours);
+        // echo '<pre>';
+        // die;
+        foreach ($dataSchedulesByGuideId as $schedule) {
+            $start = $schedule['start_date'];
+            $end   = $schedule['end_date'];
+            // echo $start;
+            // die;
+            $status_code = $schedule['schedule_status_code']; // Lấy mã trạng thái từ Model đã sửa
+
+            // Điều kiện: (1) Đang diễn ra hôm nay VÀ (2) Trạng thái không phải là Hoàn thành/Đã hủy
+            if (
+                ($today >= $start && $today <= $end) && // <-- Logic này bao gồm tour đang diễn ra
+                !in_array($status_code, ['completed', 'cancelled', 'closed'])
+            ) {
+                $todayTours[] = $schedule;
+            }
+        }
 
         $model = new GuideTourModel();
 
@@ -300,7 +377,8 @@ class GuideController
             'todayTour' => $todayTour,
             'customers' => $customers,
             'activities' => $activities,
-            'current_day_number' => $current_day_number
+            'current_day_number' => $current_day_number,
+            'todayTours' => $todayTours
         ];
     }
 

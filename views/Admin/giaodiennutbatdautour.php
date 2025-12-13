@@ -85,7 +85,7 @@ $todayTour = $todayTour ?? null;
             <!-- NÚT BẮT ĐẦU ĐIỂM DANH – SIÊU NỔI BẬT -->
             <?php if ($todayTour): ?>
                 <div class="pt-8">
-                    <a href="?mode=guide&act=attendance_today&schedule_id=<?= $todayTour['schedule_id'] ?>"
+                    <a href="?mode=admin&act=start_tour&schedule_id=<?= $todayTour['schedule_id'] ?>"
                         class="block w-full group">
                         <button class="w-full py-7 bg-gradient-to-br from-main to-blue-400 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 transition-all duration-300 flex items-center justify-center gap-5 group-hover:gap-8">
                             <i class="fa-solid fa-circle-play text-xl"></i>
