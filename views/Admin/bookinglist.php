@@ -347,7 +347,7 @@
                                             <?php endif; ?>
 
                                             <?php if ($current === 'IN_PROGRESS'): ?>
-                                                <a href="?act=completeTour&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=completeTour&booking_id=<?= $b['booking_id'] ?>"
                                                     onclick="return confirm('Tour đã hoàn thành đúng kế hoạch?')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-cyan-600 hover:bg-cyan-50">
                                                     <i class="fa-solid fa-trophy"></i> Hoàn thành tour
@@ -355,7 +355,7 @@
                                             <?php endif; ?>
 
                                             <?php if ($current === 'COMPLETED'): ?>
-                                                <a href="?act=closeBooking&id=<?= $b['booking_id'] ?>"
+                                                <a href="?act=closeBooking&booking_id=<?= $b['booking_id'] ?>"
                                                     onclick="return confirm('Đóng booking và chuyển vào lưu trữ?')"
                                                     class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50">
                                                     <i class="fa-solid fa-box-archive"></i> Đóng booking (Kết thúc)

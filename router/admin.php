@@ -208,6 +208,18 @@ echo match ($act) {
         echo (new BookingStatusController)->MarkUpComing($_GET['booking_id'] ?? null);
     })(),
 
+    // hoàn thành bôking
+    'completeTour' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->CompleteTour($_GET['booking_id'] ?? null);
+    })(),
+
+    // kết thúc booking
+    'closeBooking' => (function () {
+        requireAdmin();
+        echo (new BookingStatusController)->CloseBooking($_GET['booking_id'] ?? null);
+    })(),
+
 
     // chiết boong
     'bookingdetail' => (function () {
